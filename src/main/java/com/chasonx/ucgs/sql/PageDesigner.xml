@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="selectPageTemplateListField">
+		select p.id,p.fguid,p.fsiteguid,p.fadminguid,p.ftitle,p.furl,p.fstate,p.flinkpageurl,p.fmodifytime,
+		p.fchecked,s.fsitename as sitename,u.fadminname as adminname,p.fwidth,p.fheight,
+		p.fdevicetype,p.fremark,p.fdevicedesc
+	</SqlDataItem>
+	<SqlDataItem id="selectPageTemplateList">
+		from t_pagedesigner p
+		INNER JOIN t_site s ON p.fsiteguid = s.fguid
+		INNER JOIN t_adminuser u ON p.fadminguid = u.fguid where 1 = 1
+		<if test="siteGuid != null">
+			and p.fsiteguid = '{siteGuid}'
+		</if>
+		<if test="adminGuid != null">
+			and p.fadminguid = '{adminGuid}'
+		</if>
+		<if test="delete != null">
+			and p.fdelelte = {delete}
+		</if>
+		<if test="checked != null">
+			and p.fchecked = {checked}
+		</if>
+		<if test="groupby != null">
+			{groupby}
+		</if>
+		 order by p.id desc
+	</SqlDataItem>
+</SqlDataItems>

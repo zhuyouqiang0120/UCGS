@@ -1,0 +1,70 @@
+
+2017-04-17 09:45:17
+[ERROR]-[com.chasonx.ucgs.common.Tools.writeLog()]: 
+ ---------- UCGS Log 2017-04-17 09:45:17  ----------- 
+Controller 	   : com.chasonx.ucgs.controller.MainController
+Method 		   : index
+UrlPara         : null
+Exception Type  : java.lang.NullPointerException
+Exception Detail: null
+java.lang.NullPointerException
+	at com.chasonx.ucgs.controller.MainController.index(MainController.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:71)
+	at com.chasonx.ucgs.interceptor.SaveLog.intercept(SaveLog.java:50)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:65)
+	at com.jfinal.plugin.activerecord.tx.TxByMethods.intercept(TxByMethods.java:57)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:65)
+	at com.chasonx.ucgs.interceptor.AdminUserInterceptor.intercept(AdminUserInterceptor.java:86)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:65)
+	at com.jfinal.core.ActionHandler.handle(ActionHandler.java:74)
+	at com.jfinal.plugin.druid.DruidStatViewHandler.handle(DruidStatViewHandler.java:75)
+	at com.jfinal.ext.handler.ContextPathHandler.handle(ContextPathHandler.java:47)
+	at com.jfinal.core.JFinalFilter.doFilter(JFinalFilter.java:72)
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1212)
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:399)
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:766)
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:450)
+	at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+	at org.mortbay.jetty.Server.handle(Server.java:326)
+	at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:542)
+	at org.mortbay.jetty.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:928)
+	at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:549)
+	at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:212)
+	at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:404)
+	at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:410)
+	at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:582)
+
+2017-04-17 09:45:17
+[ERROR]-[com.jfinal.core.ActionHandler.handle()]: /main
+com.jfinal.render.RenderException: java.io.FileNotFoundException: Template /WEB-INF/views/index.html not found.
+	at com.jfinal.render.FreeMarkerRender.render(FreeMarkerRender.java:130)
+	at com.jfinal.core.ActionHandler.handle(ActionHandler.java:93)
+	at com.jfinal.plugin.druid.DruidStatViewHandler.handle(DruidStatViewHandler.java:75)
+	at com.jfinal.ext.handler.ContextPathHandler.handle(ContextPathHandler.java:47)
+	at com.jfinal.core.JFinalFilter.doFilter(JFinalFilter.java:72)
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1212)
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:399)
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:766)
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:450)
+	at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+	at org.mortbay.jetty.Server.handle(Server.java:326)
+	at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:542)
+	at org.mortbay.jetty.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:928)
+	at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:549)
+	at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:212)
+	at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:404)
+	at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:410)
+	at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:582)
+Caused by: java.io.FileNotFoundException: Template /WEB-INF/views/index.html not found.
+	at freemarker.template.Configuration.getTemplate(Configuration.java:489)
+	at freemarker.template.Configuration.getTemplate(Configuration.java:452)
+	at com.jfinal.render.FreeMarkerRender.render(FreeMarkerRender.java:126)
+	... 19 more

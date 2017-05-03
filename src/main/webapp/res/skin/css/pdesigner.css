@@ -1,0 +1,205 @@
+@charset 'utf-8';
+
+.ChasonxP_pdIcon_std			{display:inline-block;width:40px;height:20px;background:url('page/std.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_phone 			{display:inline-block;width:40px;height:20px;background:url('page/phone.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_image			{display:inline-block;width:40px;height:20px;background:url('page/image.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_text			{display:inline-block;width:40px;height:20px;background:url('page/text.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_items			{display:inline-block;width:40px;height:20px;background:url('page/items.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_button			{display:inline-block;width:40px;height:20px;background:url('page/button.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_topic			{display:inline-block;width:40px;height:20px;background:url('page/toplist.png') no-repeat;position:relative;top:4px;}
+.ChasonxP_pdIcon_video			{display:inline-block;width:40px;height:20px;background:url('page/video.png') no-repeat;position:relative;top:4px;}
+
+@keyframes	LED			{
+							0% {border:1px solid #0e0e0e;}
+							50%{border:1px solid #d68b09;}
+							100% {border:1px solid #0e0e0e;}
+						}
+-moz-@keyframes	LED			{
+							0% {border:1px solid #0e0e0e;}
+							50%{border:1px solid #d68b09;}
+							100% {border:1px solid #0e0e0e;}
+						}
+-webkit-@keyframes	LED	{
+							0% {border:1px solid #0e0e0e;}
+							50%{border:1px solid #d68b09;}
+							100% {border:1px solid #0e0e0e;}
+						}						
+
+#LoadingFadeTop 		{position:absolute;top:0px;width:100%;height:50%;background:#000;z-index:4004;transition:.8s;-moz-transition:.8s;-webkit-transition:.8s;}
+#LoadingFadeBottom 		{position:absolute;bottom:0px;width:100%;height:50%;background:#000;z-index:4003;transition:.8s;-moz-transition:.8s;-webkit-transition:.8s;}
+#LoadingLogoBox			{width:220px;height:220px;position:absolute;top:36.5%;left:44%;z-index:4005;transition:1s;-moz-transition:1s;-webkit-transition:1s;}
+#LoadingLogoBox #loadingText{width:220px;height:50px;top:-50px;line-height:50px;text-align:center;font-weight:bold;color:#d68b09;position:absolute;}
+#LoadingLogoBox #logo	{width:220px;height:220px;position:absolute;animation:LED 5s linear infinite;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;
+						background:url(page/udptload2.png) no-repeat;background-position:-1px -1px;background-size:100% 100%;transition:1s;-moz-transition:1s;-webkit-transition:1s;}
+.LoadingLogoFade		{width:50px !important;height:50px !important;border:none !important;animation:none !important;}	
+.LoadingLogoBoxMove		{width:50px !important;height:50px !important;left:1px !important;top:1px !important;}	
+#LoadingLogoBox #logo2  {width:220px;height:200px;position:absolute;top:0px;z-index:4006;background:url(page/udptload1.png) no-repeat;
+						transition:1s;-moz-transition:1s;-webkit-transition:1s;overflow:hidden;}
+.LogoRotate 			{transform:rotate(360deg) scale(1.5,1.5);-moz-transform:rotate(360deg) scale(1.5,1.5); -webkit-transform:rotate(360deg) scale(1.5,1.5); }						
+
+#PD_Bottom 				{text-align:center;vertical-align:middle;line-height:30px;color:#908F8F;}
+#PD_Designer 			{position:absolute;left:0px;top:0px;bottom:0px;width:85%;background:url('../images/grid_line.png');background-color:#000;overflow:auto;padding:10px;}
+#PD_Designer_Box		{position:absolute;left:10px;top:10px;right:10px;bottom:10px;overflow:auto;}
+#PD_ATTR 				{position:absolute;top:0px;bottom:0px;right:0px;width:15%;overflow:auto;background:#2e2e2e;}
+#PD_ATTR hr				{border: 1px #585858 dashed; margin: 5px 0px;}
+#PD_Top .PD_ButtonBox 	{position:absolute;top:8px;left:150px;min-width:100px;width:auto !important;}
+#PD_Top .PD_DataSorce 	{position:absolute;top:8px;right:250px;height:30px;vertical-align:middle;line-height:30px;cursor:pointer;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;
+						padding:0px 8px;color:#ad1414;background:#ffbf00;}
+#PD_Top .PD_DataSorce:hover{background:#d8a306;}
+#PD_Top .PD_DataSorce .dataIcon{background:url('page/data.png') no-repeat;display:inline-block;width:20px;height:20px;position:relative;top:5px;}
+.ChasonxSite 			{position:absolute;right:10px;top:8px;width:auto !important;min-width:200px;height:30px;vertical-align:middle;line-height:30px;}
+.ChasonxSite font		{position:relative;top:-8px;}
+.ChasonxSite .siteDataItems{width:150px;height:28px;display:inline-block;border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;background:#f6f6f6;overflow:hidden;cursor:pointer;}
+.ChasonxSite .siteDataItems .left{display:inline-block;width:73%;height:28px;padding:0px 5px;background:#ffbf00;color:#900b0b;transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;overflow:hidden;}
+.ChasonxSite .siteDataItems .right{display:inline-block;width:20%;height:28px;background:#b38705;color:#c5c5c5;text-align:center;vertical-align:middle;line-height:28px;position:relative;top:-11px;transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;}
+.ChasonxSite .siteDataItems:hover .left{background:#d8a304;color:#656464;}
+.ChasonxSite .siteDataItems:hover .right{background:#806003;color:#5b5959;}
+
+.ChasonxP_ControlItems 			{height:auto !important;width:100%;}
+.ChasonxP_ControlItems .title 	{height:30px;vertical-align:middle;line-height:30px;background:#464646;font-size:11px;cursor:pointer;color :#a0a0a0;transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;}
+.ChasonxP_ControlItems .ConPanel {background:#252525;display:block;}	
+.ChasonxP_ControlItems .ConPanel .ConItem{height:35px;width:100%;cursor:move;margin:1px 0px;transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;color:#a5a5a5;}
+.ChasonxP_ControlItems .ConPanel .ConItem i{font-size:22px; position: relative;top: 6px; margin: 0px 10px;}	
+.ChasonxP_ControlItems .ConPanel .ConItem:hover{box-shadow:0px 0px 2px 1px #6ffcfc;-moz-box-shadow:0px 0px 2px 1px #6ffcfc;-webkit-box-shadow:0px 0px 2px 1px #6ffcfc;color:#6ffcfc;}
+.ChasonxP_ControlItemFocus 		{color:#e2a109 !important;}
+
+#PD_ATTR p				{margin:3px 0px;position:relative;}
+#PD_ATTR  .title 		{height:30px;vertical-align:middle;line-height:30px;background:#CECECE;padding-left:5px;color:#585858;}
+#PD_ATTR p b	 		{display:inline-block;width:70px;text-align:right;position:relative;top:-5px;color:#b3b3b3; word-break: break-all; white-space: normal;}	
+.ChasonxP_transition 	{order-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;}	
+#Ctrl_List 				{display:inline-block;height:15px;vertical-align: middle;line-height: 15px; font-size: 12px; text-align: center;padding:2px 6px;color:#efdf06;
+						background:#000;position:absolute;left:40px;top:4px;cursor:pointer;}
+.ChasonxP_currEdit 		{position:absolute;width:auto;min-width:120px;height:15px;left:250px;top:4px;color:#09bfca;font-size:12px;vertical-align:middle;line-height:15px;}
+.viewCode 			    {position:absolute;top:3px;right:15%;width:80px;height:20px;text-align: center;vertical-align: middle; line-height: 20px;background: #000; color: #ce9427; cursor: pointer;}
+.viewCode:hover,.viewCodeFocus{color:#19f5ce;}
+
+#Ctrl_List:hover,.Ctrl_List_Focus{background:#ffbf00 !important;color:#da0f0f !important;}		
+#Ctrl_Clear 			{position:absolute;background:#000;cursor:pointer;left : 125px;top:4px;width:70px;height:15px;vertical-middle;line-height:15px;text-align:center;color:#efdf06;padding:2px 4px;}				
+#Ctrl_Clear:hover		{background:#d94242;color:#fff;}
+
+.ChasonxP_slideInput 			{display:inline-block;width:146px;height:25px;position:relative;top:2px;color:#fff;}
+.ChasonxP_slideInput input		{position:absolute;left:0px;top:2px;padding:3px;width:65%;background: #5d5d5d; border: none; color: #f6f6f6;}
+.ChasonxP_slideInput font		{position:absolute;right:16%;top:3px;color:#1479d3;}
+.ChasonxP_slideBase 			{display:inline-block;width:14%;position:absolute;vertical-align:middle;line-height:9px;font-size:10px;text-align:center;cursor:pointer;
+								transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;moz-user-select: -moz-none;
+								-moz-user-select: none;-o-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;}
+.ChasonxP_slideInput .mult 	    {right:0px;bottom:0px;height:12px;background:#878685;}
+.ChasonxP_slideInput .mult:hover {background:#ccc;color:red;}
+.ChasonxP_slideInput .add		{right:0px;top:0px;height:12px;background:#878685;}
+.ChasonxP_slideInput .add:hover  {background:#ccc;color:red;}
+
+.ChasonxP_fontAlign 				{display:inline-block;min-width:40px;width:auto !important;padding:0px 2px;height:20px;text-align:center;vertical-middle;line-height:20px;background:#b2b2b2;color:#000;font-size:10px;cursor:default;}
+.ChasonxP_fontAlign:hover,.ChasonxP_fontAlignFocus{background:#000;color:#fff;}
+.ChasonxP_fontAlignL				{border-radius:4px 0px 0px 4px;-moz-border-radius:4px 0px 0px 4px;-webkit-border-radius:4px 0px 0px 4px;}
+.ChasonxP_fontAlignR				{border-radius:0px 4px 4px 0px;-moz-border-radius:0px 4px 4px 0px;-webkit-border-radius:0px 4px 4px 0px;}
+
+.ChasonxP_browserText 				{width:117px;border:2px solid #878685;padding:3px;background: #5d5d5d; border: none; color: #f6f6f6;}
+.ChasonxP_browserBtn 				{width:23px;display:inline-block;background:#4a4a4a;color:#f7a50b;    height: 21px;border:none;
+   									 vertical-align: middle; line-height: 21px;
+									transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;}
+.ChasonxP_browserBtn:hover			{background:#ccc;color:red;}
+
+.ChasonxP_color 		{display:inline-block;width:146px;height:25px;position:relative;top:2px;}
+.ChasonxP_color input 	{position:absolute;left:0px;top:0px;padding:5px;width:60%;background: #5d5d5d; border: none; color: #f6f6f6;}
+.ChasonxP_color .color	{position:absolute;display:inline-block;width:32%;top:0px;right:0px;height:23px;border:1px solid  #8a8a8a;}
+.ChasonxP_select 		{padding:2px;border:2px solid #878685;width:146px;background: #5d5d5d; border: none; color: #f6f6f6;}
+
+.ChasonxP_Focus 		{box-shadow:0px 0px 6px 2px #0cf5f2;z-index:100;}
+.ChasonxP_extendAttr 	{margin-top:5px;color:#00abff;padding:0px 20px;border-top:1px solid #7d7d7d;}
+
+#dataSourcePanel 		{position:relative;width:100%;height:100%;}
+#dataSourcePanel .top	{position:absolute;left:0px;top:0px;right:0px;height:30px;vertical-align: middle;line-height: 30px; font-weight: bold;padding-left: 10px;}
+#dataSourcePanel  .left {position:absolute;left:0px;top:30px;bottom:0px;width:50%;background:#ddd;overflow:auto;}
+#dataSourcePanel  .left span{display:inline-block;width:100%;height:30px;vertical-align:middle;line-height:30px;cursor:pointer;}
+#dataSourcePanel  .left span:hover{background:#292928;}
+#dataSourcePanel  .left p{display:inline-block;color: #787779;position: relative; left: 10%; width: auto !important;}
+#dataSourcePanel  .left font{color:#01a820;font-weight:bold;}
+#dataSourcePanel  .left b{color:#025293;font-size:20px;}
+#dataSourcePanel  .left u{text-decoration: none;color: #2b98e8;font-weight: bold;position:relative;top:-1px;}
+#dataSourcePanel .right {position:absolute;right:0px;top:30px;bottom:0px;width:50%;background:#d8d8d8;}
+#ChooseDataSourcePanel  {position:absolute;left:5%;top:5%;bottom:5%;right:5%;}
+#ChooseDataSourcePanel label{display:inline-block;width:120px;text-align:right;font-weight:bold;color:#4e5050;}
+#ChooseDataSourcePanel p{margin:5px 0px;}
+#ChooseDataSourcePanel input[type='checkbox']{position:relative;top:6px;width:20px;height:20px;}
+
+.ChasonxP_SiteItem_Panel{position:absolute;width:200px;height:400px;right:9px;top:34px;background:#ffbf00;z-index:300;border-radius:5px 0px 5px 5px;
+						-moz-border-radius:5px 0px 5px 5px;-webkit-border-radius:5px 0px 5px 5px;display:none;overflow:auto;overflow-x:hidden;}
+.ChasonxP_SiteItem_Panel div{padding:0px 8px;height:25px;margin:0px auto;vertical-align:middle;line-height:25px;color:#02250f;cursor:default;word-break:break-all;overflow: hidden;white-space:nowrap; text-overflow:ellipsis;}	
+.ChasonxP_SiteItem_Panel_span{display:inline-block;width:10px;height:10px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;background:#05a731;}
+.ChasonxP_SiteItem_Panel div:hover{background:#dea805;}		
+.ChasonxP_DataBind		{width:100%;height:100%;position:relative;}	
+.ChasonxP_DataBind .left{position:absolute;width:50%;left:0px;top:0px;bottom:0px;background:#fff;overflow:auto;}	
+.ChasonxP_DataBind .left span{display:inline-block;width:100%;height:30px;vertical-align:middle;line-height:30px;cursor:pointer;font-weight:bold;}
+.ChasonxP_DataBind .left span input{position:relative;top:3px;width:18px;height:18px;}
+.ChasonxP_DataBind .left p{display:inline-block;color: #787779;position: relative; left: 10%; width: auto !important;}
+.ChasonxP_DataBind .right{position:absolute;width:50%;right:0px;top:0px;bottom:0px;overflow:auto;}
+.ChasonxP_DataBind .right p{color:#545453;word-break:break-all;}
+.ChasonxP_DataBind .right span{width:50%;height:30px;padding:0px 5px;display:block;font-weight:bold;border: 1px solid #f5f3f3;vertical-align: middle; line-height: 30px;  margin: 1px 0px;background: #04afe4; text-align: center; color: #fff;
+							   position:relative;left:60px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;}	
+							   
+#DataSourceLink 		{display:inline-block;width: 150px; height: 25px;  position: relative; background: #20b57f; border-radius: 5px;text-align:center;-moz-border-radius: 5px;-webkit-border-radius: 5px;
+						 vertical-align:middle;line-height:25px;color:#fff;cursor:default;top:3px;}
+#DataSourceLink:hover   {background:#1da071;}
+#DataSourceBindCtrlBox  {position:absolute;height: 199px; width: 60%; z-index: 20; background: #20b57f;left: 60px;border-radius:0px 5px 5px 5px;
+						-moz-border-radius:0px 5px 5px 5px;-webkit-border-radius:0px 5px 5px 5px;display:none;}
+#DataSourceBindCtrlBox span{width: 92%;display: inline-block; left: 2px;  background-color: #20b57f; border: none;text-align: left; color: #f6f6f6; cursor: default;}	
+#DataSourceBindCtrlBox span:hover,.DSBFocus{background:#e8e8e8 !important;color:#20b57f;}					
+
+#codeViewerPanel 		{position:absolute;background: #000000;left: 0px; top: 0px; bottom: 0px; right: 15%;z-index: 2048;display:none;}
+.pageIcon				{display:inline-block;width:20px;height:19px;background:url(page/pico.png) no-repeat;position:relative;top:4px;}
+#_SiteTemplateListPanel div {padding:0px 5px;height:25px;line-height:25px;vertical-align:middle;color: #313131; font-size: 15px; cursor: pointer;}
+#_SiteTemplateListPanel div:hover,.SiteTLP_Focus{background:#dcdcdc;}
+
+.labelP .summary		{word-break: break-all; white-space: normal;display: block; width: 63%; position: relative; left: 72px;transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;
+    					padding: 4px 0px; background: #dcdcdc; color: #bdbdbd;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;}
+.labelP .summary:hover 	{color:#000;}    					
+.labelP .algin			{position:absolute;top:2px;}    
+
+.ChasonxP_TemplateList  {position:absolute;width:350px;height:auto !important;min-height:200px;max-height:800px;overflow:auto;background:#ffbf00;z-index:100;border-radius: 0px 4px 4px;-moz-border-radius: 0px 4px 4px;-webkit-border-radius: 0px 4px 4px;display:none;}	
+.ChasonxP_TemplateList div{height:28px;vertical-align:middle;line-height:28px;padding:0px 3px;color: #060606;font-size: 15px;cursor:default;position:relative;}	
+.ChasonxP_TemplateList div:hover{background:#e89c0c;}	
+.ChasonxP_TemplateList div:hover span{display:block;}
+.ChasonxP_TemplateList div span{float: right; display: inline-block; background: #ca5252; width: 50px; height: 20px;  font-size: 14px; vertical-align: middle; line-height: 20px; text-align: center; margin-top: 4px;color: #e8e7e7;cursor:pointer;
+								border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;display:none;}
+.ChasonxP_TemplateList div span:first-child{margin: 4px; background: #0a9e16;}								
+
+/*devPanel */
+#ChasonxDevPanel007 			{position:fixed;width:150px;height:150px;z-index:1020;bottom:10px;margin:0px auto;left:45%;
+				  				 box-shadow: 0px 0px 20px #000;overflow:hidden;border-radius:50%;transform:rotate(45deg);}
+#ChasonxDevPanel007 div			{width:75px;height:75px;float:left;text-align:center;vertical-align:middle;line-height:75px;background:#525252;color:#fff;cursor:pointer;
+								 transition:.5s;-webkit-transition:.5s;-moz-transition:.5s;}
+#ChasonxDevPanel007 div:hover	{box-shadow: 0px 0px 10px #000; position: relative; background: #353535;}
+#ChasonxDevPanel007 div:nth-child(1) font{transform:rotate(-45deg) skew(0deg);display:block;}
+#ChasonxDevPanel007 div:nth-child(2) font{transform:rotate(45deg) skew(0deg);display:block;}
+#ChasonxDevPanel007 div:nth-child(3) font{transform:rotate(-135deg) skew(0deg);display:block;}
+#ChasonxDevPanel007 div:nth-child(4) font{transform:rotate(135deg) skew(0deg);display:block;}
+
+#ChasonxDevPanel007 #DevMovePanel{width:50px;height:50px;position:absolute;top:50px;background:#353535;display:block;border-radius:50%;left: 50px; text-align: center;vertical-align: middle;  line-height: 50px;
+								 box-shadow: 0px 0px 6px #424242;font-size:24px;color:#f6f6f6;cursor:move;}	
+
+#ChasonxCodePad007 				{width: 700px; height: 80%; border: 1px solid #dedede; position: absolute;
+   								 z-index: 1020;left: 20%; top: 5%;background: #f6f6f6; border-radius: 5px;
+    							box-shadow: 0px 0px 10px #000;}
+#ChasonxCodePad007 .title		{height: 25px;vertical-align: middle;line-height: 25px; text-align: center; color: #6d6d6d;cursor:default;position:relative;z-index:100;background:#f6f6f6;}
+#ChasonxCodePad007 .title #codePadArrow_left{float: left;font-size: 22px; font-weight: bold;cursor:pointer;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;}
+.codePadArrowTurnRight			{transform:rotate(180deg);}
+
+#ChasonxCodePad007 .title #codePadArrow_right{float: right;font-size: 22px; font-weight: bold;cursor:pointer;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;}
+#ChasonxCodePad007 .left		{position:absolute;background:#ddd;top:25px;bottom:0px;left:0px;width:25%;z-index:100;}
+#ChasonxCodePad007 .left .runBtn{width: 50px; height: 28px;display: inline-block; background: #4190d6;text-align: center;padding: 0px 2px;
+    							vertical-align: middle;line-height: 28px; margin: 5px; color: #f6f6f6; box-shadow: 0px 0px 8px #7d7d7d; cursor: pointer;}
+#ChasonxCodePad007 .left .runBtn:hover{background:#3680c1;}    							
+#ChasonxCodePad007 .left label  {color: #656262;margin: 5px 0px; display: block;padding-left: 5px;}
+#ChasonxCodePad007 .left input,textarea,select{padding: 4px; border: none; box-shadow: 0px 0px 6px #6f6969; width: 90%;display: block; margin: 0px auto;}
+#ChasonxCodePad007 .left .icon  {display:inline-block;width: 35px; height: 23px;background: #ffffff;box-shadow: 0px 0px 8px #7d7d7d;font-size:20px;text-align:center;}
+#ChasonxCodePad007 .right		{position:absolute;right:0px;bottom:0px;top:25px;width:75%;z-index:100;}	
+
+#ChasonxCodePad007 .pluginList  {width: 200px; height: 100%; background: #fff; position: absolute; top: 0px;overflow:auto;overflow-x:hidden;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;
+   								 left: 0px; border-radius: 5px 0px 0px 5px;z-index:99;}		
+#ChasonxCodePad007 .pluginList div{height:25px;padding-left:8px;font-size:15px;vertical-align:middle;line-height:25px;color:#9e9e9e;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;cursor:default;}  
+#ChasonxCodePad007 .pluginList div:hover{background: #333;color: #f6f6f6; padding-left: 20px;}	
+#ChasonxCodePad007 .pluginHelp   { width: 600px;  height: 100%;  position: absolute; background: #fff; top: 0px;  right: 0px; border-radius: 0px 5px 5px 0px;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;}
+#ChasonxCodePad007 .pluginHelp iframe{border:none;width:100%;height:100%;}
+.devAboutLabel					{display:inline-block;width:100px;color:#909090;}							 					 			  				 
+
+		

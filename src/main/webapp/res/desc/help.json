@@ -1,0 +1,8 @@
+<div class="mainDownItems" title="ZensVision_TM_UCGS_Help-v1.3.pdf" onclick="Desc.downloadHelp(this);">
+<span>PDF</span>
+UCGS操作手册v1.3
+</div>
+<div class="mainDownItems" title="ZensVision_UCGS_PR_Help-v1.1.pdf" onclick="Desc.downloadHelp(this);">
+<span>PDF</span>
+资源下发手册v1.1
+</div>

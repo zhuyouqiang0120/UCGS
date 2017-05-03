@@ -1,0 +1,25 @@
+/***
+ * @author
+ * @desc 
+ * @time
+ */
+ChasonxUPDTools.plugins("${PLUGINGROUP}",{
+	text   : '${PLUGINTITLE}',
+	classes: '${CLASSNAME}',
+	eleType: 'div',
+	clear  : true,
+	attr   : {
+		width : 1280,
+		height: 720
+	},
+	customAttr : {
+		guid : '',
+		state : '',
+		status : ''
+	},
+	append : function(){
+		var ele = this.creatEle();
+		ele.setAttribute('style',this.getStyle());
+		this.appendToDraw(ele);
+	}
+});

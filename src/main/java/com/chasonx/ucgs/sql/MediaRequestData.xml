@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="getSiteList">
+		select fguid as guid,fsitename as sitename,fsitealias as alias from t_site where fdelete = 0 and fstate = 1
+	</SqlDataItem>
+	<SqlDataItem id="getMediaList">
+		select id,fguid as guid,fname as mname,ftempguid as templateGuid,ftype as type,fwidth as width,fheight as height,fcodec as codec,fbigrate as bigrate,fsize as size,
+		fstate as state,fextdata as medialist,fmodifytime as modifytime,fmodifyer as modifyer,fmarkname as markname,fmarkid as markid,
+		fitems as items from t_template_status where  fdelete = 0 
+	</SqlDataItem>
+	<SqlDataItem id="getTempMrList">
+	SELECT t.ftname as tempname,t.fguid as guid,t.fcreatetime as createtime,t.fstate as state,t.fpreviewpath as previewpath,t.fpublish as publish FROM `t_template` t 
+	WHERE t.ftempsourceguid = ? and t.fcreateguid = ?
+	</SqlDataItem>
+</SqlDataItems>

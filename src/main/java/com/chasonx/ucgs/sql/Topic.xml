@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="selectTopicRelateBySiteGuid">
+		select * from t_topic_relate where fcolguid in (select fguid from t_column where fsiteguid = ?)
+	</SqlDataItem>
+	<SqlDataItem id="selectTopicRelateByColumnGuidList">
+		select * from t_topic_relate where fcolguid in (?)
+	</SqlDataItem>
+	<SqlDataItem id="selectTopicBySiteGuid">
+	    select * from t_topic where fguid in (
+			select ftopicguid from (
+				  select ftopicguid from t_topic_relate where   fcolguid in (
+						select fguid from t_column where fsiteguid = ?
+					)
+			) as temps
+		)
+	</SqlDataItem>
+	<SqlDataItem id="selectTopicByColumnGuidList">
+	    select * from t_topic where fguid in (
+			select ftopicguid from (
+				  select ftopicguid from t_topic_relate where   fcolguid in (?)
+			) as temps
+		)
+	</SqlDataItem>
+	<SqlDataItem id="selectTopicContentBySiteGuid">
+		select * from t_topic_content where ftopicguid in (
+			 select ftopicguid from (
+				  select ftopicguid from t_topic_relate where   fcolguid in (
+						select fguid from t_column where fsiteguid = ?
+					)
+			 ) as temps
+		)
+	</SqlDataItem>
+	<SqlDataItem id="selectTopicContentByColumnGuidList">
+		select * from t_topic_content where ftopicguid in (
+			 select ftopicguid from (
+				  select ftopicguid from t_topic_relate where   fcolguid in (?)
+			 ) as temps
+		)
+	</SqlDataItem>
+	<SqlDataItem id="deleteTopicRelativeBySiteGuid">
+	  delete from t_topic_relate where fcolguid in (select fguid from t_column where fsiteguid = ?)
+	</SqlDataItem>
+	<SqlDataItem id="deleteTopicBySiteGuid">
+	  delete from t_topic where fguid in (
+			select ftopicguid from (
+				  select ftopicguid from t_topic_relate where   fcolguid in (
+						select fguid from t_column where fsiteguid = ?
+					)
+			) as temps
+		)
+	</SqlDataItem>
+	<SqlDataItem id="deleteTopicContentBySiteGuid">
+	  delete from t_topic_content where ftopicguid in (
+			 select ftopicguid from (
+				  select ftopicguid from t_topic_relate where   fcolguid in (
+						select fguid from t_column where fsiteguid = ?
+					)
+			 ) as temps
+		)
+	</SqlDataItem>
+</SqlDataItems>

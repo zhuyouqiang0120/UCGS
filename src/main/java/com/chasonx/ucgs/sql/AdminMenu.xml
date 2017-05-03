@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="queryUserMenuByGuid">
+		select * from t_adminmenu where id in ( 
+		   select ftargetauthguid from (select ftargetauthguid from t_admin_auth where fuserguid = ? and ftype = ?) as mmmid 
+			UNION 
+			 select m.fparentid from t_adminmenu m where m.id in ( 
+				 select ftargetauthguid from ( select ftargetauthguid from t_admin_auth where fuserguid = ? and ftype = ? ) as mmmid 
+			 ) group by m.fparentid 
+		)
+	</SqlDataItem>
+	<SqlDataItem id="queryUserMenuByGroup">
+		select * from t_adminmenu where id in ( 
+		  	select fmenuid from ( 
+		  			select gg.fmenuid  from t_admingroup_group gg where gg.fadmingroupid =  
+		  	    ( select u.fadmingroup from t_adminuser u where u.id = ? )  
+		  	) as mmmid 
+		  	UNION 
+		  		select m.fparentid from t_adminmenu m where m.id in ( 
+		  			 select fmenuid from ( 
+		  				select gg.fmenuid  from t_admingroup_group gg where gg.fadmingroupid =  
+		  				( select u.fadmingroup from t_adminuser u where u.id = ? )  
+		  			) as mmmid 
+		  		) group by m.fparentid 
+		  )
+	</SqlDataItem>
+	<SqlDataItem id="queryComStr">
+		select fcompstr from t_adminmenugroup where fmenuid = (SELECT id FROM `t_adminmenu` where fmenurl = ?) and fadminguid = ?
+	</SqlDataItem>
+	<SqlDataItem id="queryComStrByGruop">
+		select fcompstr from t_admingroup_group where fadmingroupid = ( select fadmingroup from t_adminuser where fguid = ?) 
+					and fmenuid = (SELECT id FROM `t_adminmenu` where fmenurl = ?)
+	</SqlDataItem>
+	<SqlDataItem id="queryMenuForPermission">
+		select * from t_adminmenu where id in ( 	
+		select id from t_adminmenu where id in ( 
+		   #ID#
+		)
+		UNION 
+		  	select m.fparentid from t_adminmenu m where m.id in ( 
+		  	#ID#
+		) group by m.fparentid 
+)
+	</SqlDataItem>
+</SqlDataItems>

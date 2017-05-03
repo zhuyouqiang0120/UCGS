@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="queryUser">
+		select * from user where 1 = 1
+		<if test="state == 0">
+			and uuuid = 9
+		</if>
+		<if test="state == 1">
+			and id = 9
+		</if>
+	</SqlDataItem>
+	<SqlDataItem id="queryUser2">
+		select * from user where uid = {state} 
+	</SqlDataItem>
+	<SqlDataItem id="queryUser3">
+		select 
+		  u.id,
+			u.fadminname,
+		  (select count(id) from t_zesp_orderassign where fadminuserid = u.id) as orderCount,
+		  (select count(id) from t_zesp_orderprocess where forderid in (
+				select forderid from t_zesp_orderassign where fadminuserid = u.id
+		  )) as nodeCount,
+		  (select count(id) from t_zesp_orderprocess where ftrackperson = u.id ) as fnodeCount,
+		  (select sum(fmoney) from t_zesp_orders where id in (
+					select forderid from t_zesp_orderassign where fadminuserid = u.id
+		   )) as sumMoney
+		from t_zesp_adminuser u
+		INNER JOIN t_zesp_admingroup g ON u.fadmingroup = g.id
+		<if test="admingroup == null">
+			 where u.fadmingroup = {admingroup}
+		</if>
+	</SqlDataItem>
+	<SqlDataItem id="queryUser4">
+		select * from user4
+	</SqlDataItem>
+</SqlDataItems>

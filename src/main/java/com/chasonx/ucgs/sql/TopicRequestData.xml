@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="topicQuery">
+		select t.* from t_topic t
+		INNER JOIN t_topic_relate r on t.fguid = r.ftopicguid
+		where r.fcolguid in (
+			select fguid from t_column where fsiteguid in (
+				select fsiteguid from t_admingroup_site where fadmingroupid = ?
+			)
+		)
+	</SqlDataItem>
+	<SqlDataItem id="queryYearAndRegion">
+			SELECT fregion,LEFT(fyears,4) as fyears FROM `t_topic`
+
+		        where fguid in (
+		
+		             select ftopicguid from t_topic_relate where fcolguid in (
+		
+					 select fguid from t_column where fsiteguid = ? and fstate = 1
+		
+			 	 )
+		
+				)
+			and fclass = 1
+		GROUP BY fregion,fyears ORDER BY fyears DESC
+	</SqlDataItem>
+</SqlDataItems>

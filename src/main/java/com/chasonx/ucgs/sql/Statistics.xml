@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqlDataItems>
+	<SqlDataItem id="statisticsForWeek">
+		SELECT  count(id) as PVSize,count(DISTINCT fip) as IPSize,count(DISTINCT ftopicguid) PSize,
+		count(DISTINCT fsiteguid) as PSiteSize,fdate as PDate 
+		FROM `t_page_statistics` where ftype = 1  group by fdate order by id asc limit 0,7;
+	</SqlDataItem>
+	<SqlDataItem id="statisticsDevicBeforeValDay">
+		select count( fdevicetype) as value,fdevicetype as name from t_page_statistics where TO_DAYS(fdate) > TO_DAYS(?) and ftype = 1 GROUP BY fdevicetype 
+	ORDER BY id desc 
+	</SqlDataItem>
+	<SqlDataItem id="statisticsOSNameBeforeValDay">
+		select count(fosname) as `value`,fosname as `name` from t_page_statistics where TO_DAYS(fdate) > TO_DAYS(?) and ftype = 1 GROUP BY fosname ORDER BY id DESC
+	</SqlDataItem>
+	<SqlDataItem id="statisticsBrowserBeforValDay">
+		select count(fbrowser) as `value`,fbrowser as `name` from t_page_statistics where TO_DAYS(fdate) > TO_DAYS(?) and ftype = 1 GROUP BY fbrowser ORDER BY id DESC
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicLimit">
+		select count(p.ftopicguid) as TopicSize,p.ftopicguid as Guid,t.ftitle as Title,p.furl as Url
+		from t_page_statistics p INNER JOIN t_topic t ON t.fguid = p.ftopicguid
+		where p.ftopicguid is not null and p.ftopicguid != '' and p.ftype = 1 GROUP BY p.ftopicguid order by TopicSize DESC
+		limit 0,?
+	</SqlDataItem>
+	<SqlDataItem id="statisticsAllTopicData">
+	select count(ftopicguid) as PVSize,fdate as PDate from t_page_statistics where ftype = 1 GROUP BY fdate ORDER BY id
+	</SqlDataItem>
+	<SqlDataItem id="statisticsStartDate">
+		select fdate as StartVal from t_page_statistics where ftype = 1 order by TO_DAYS(fdate) limit 0,1
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicAttrByDay">
+	select count(DISTINCT fip) as IPSize,count(DISTINCT ftopicguid) as PSize from t_page_statistics where ftopicguid is not null and ftopicguid != ''
+	 and ftype = 1 and fdate = ?
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicLimitByDay">
+	select count(p.ftopicguid) as TopicSize,t.ftitle as Title,p.furl as Url,p.ftopicguid as Guid 
+	 from t_page_statistics p INNER JOIN t_topic t ON t.fguid = p.ftopicguid
+	where p.ftopicguid is not null and ftopicguid != '' and p.fdate = ? and p.ftype = 1  GROUP BY p.ftopicguid
+	ORDER BY TopicSize DESC limit 0,10
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicDeviceByDay"> 
+		select count( fdevicetype) as value,fdevicetype as name from t_page_statistics where fdate = ? and ftype = 1 GROUP BY fdevicetype ORDER BY id desc 
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicOSNameByDay">
+		select count(fosname) as `value`,fosname as `name` from t_page_statistics where fdate = ? and ftype = 1 GROUP BY fosname ORDER BY id DESC
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicBrowserByDay">
+		select count(fbrowser) as `value`,fbrowser as `name` from t_page_statistics where fdate = ? and ftype = 1 GROUP BY fbrowser ORDER BY id DESC
+	</SqlDataItem>
+	<SqlDataItem id="statisticsTopicTimeDetail">
+	select LEFT(ftime,2) as PTime,count(ftopicguid) as PSize from t_page_statistics where
+ 	ftopicguid is not null and ftopicguid != '' and fdate = ? and ftype = 1 GROUP BY PTime
+	</SqlDataItem>
+	<SqlDataItem id="statisticsColumn">
+		select count(p.fcolumnguid) as ColumnSize,p.fcolumnguid as CGuid,c.fservicename as CName
+		from t_page_statistics p INNER JOIN t_column c ON c.fguid = p.fcolumnguid
+		where p.fcolumnguid is not null and p.fcolumnguid != '' and p.ftype = 1 GROUP BY p.fcolumnguid ORDER BY ColumnSize DESC limit 0,30;
+	</SqlDataItem>
+	<SqlDataItem id="statisticsColumnDetail">
+		select count(fcolumnguid) as `value`,fdate as `name` from t_page_statistics where fcolumnguid = ? and ftype = 1 GROUP BY fdate ORDER BY TO_DAYS(fdate) ASC
+	</SqlDataItem>
+	<SqlDataItem id="siteStatistics">
+	select count(fsiteguid) as `value`,fsiteguid as guid,s.fsitename as `name`,p.fdate  as `date` from t_page_statistics p
+	INNER JOIN t_site s ON s.fguid = p.fsiteguid  where 1 = 1 and p.ftype = 1
+		<if test="siteGuid != null">
+			and p.fsiteguid = '{siteGuid}'
+			GROUP BY p.fdate ORDER BY `date` ASC;
+		</if>
+		<if test="siteGuid == null">
+			GROUP BY p.fsiteguid ORDER BY `value` DESC;
+		</if>
+	</SqlDataItem>
+	<SqlDataItem id="topicStatisticsByParam">
+		select count(p.ftopicguid) as TopicSize,p.ftopicguid as Guid,t.ftitle as Title,p.furl as Url
+			from t_page_statistics p INNER JOIN t_topic t ON t.fguid = p.ftopicguid
+		  where p.ftopicguid is not null and p.ftopicguid != '' and p.ftype = 1
+		<if test="columnGuid != null">
+			and p.fcolumnguid = '{columnGuid}' 
+		</if>	
+		<if test="siteGuid != null">
+			and p.fsiteguid = '{siteGuid}' 
+		</if>		 
+		GROUP BY p.ftopicguid order by TopicSize DESC limit 0,10
+	</SqlDataItem>
+	<SqlDataItem id="interfaceStatistics">
+		select count(id) as ISize,ftopicguid as IName,fdate as IDate from t_page_statistics where ftype = 2
+		<if test="iName != null">
+			and ftopicguid = '{iName}'
+			GROUP BY fdate ORDER BY ISize ASC
+		</if>
+		<if test="iName == null">
+			GROUP BY ftopicguid ORDER BY ISize ASC
+		</if>
+	</SqlDataItem>
+	<SqlDataItem id="ipCallerStatistics">
+		select count(fip) as IPSize,fip as IP,fbrowser as Browser,fbroserversion as BrowserVersion,fdevicetype as DeviceType
+		,fosname as OSname,fosfamily as OSfamily,felapsed as Elapsed from t_page_statistics where ftype = 2 
+		<if test="iName != null">
+		 	and ftopicguid = '{iName}'
+		</if>
+		<if test="iDate != null">
+			and fdate = '{iDate}' 
+		</if>
+		GROUP BY fip
+	</SqlDataItem>
+</SqlDataItems>

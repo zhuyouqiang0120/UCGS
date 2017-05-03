@@ -1,0 +1,55 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<title>{%$文章标题%}</title>
+<meta http-equiv="content-type" content="text/html; charset={%$页面字符集%}"/>
+<meta name="author" content="zens_cms"/>
+<meta name="description" content=""/>
+<meta name="page-view-size" content="1280*720"/>
+
+</head>
+
+<style type="text/css">
+body	{padding:0px;margin:0px;overflow:hidden}
+button,div	{position:absolute;border:0px dashed #c00}
+button:focus		{outline-color:#FFFF00;outline-width:4px;outline-style:solid}
+</style>
+
+
+
+<script type="text/javascript">
+</script>
+
+<body scroll="no" onload="CMS_PageLoad()">
+
+<div id="xTemp38708" name="xTemp38708"
+	 CMS_Class="CmsTemplate"
+	 style="left:0px;top:0px;width:1280px;height:720px;color:#ccc;background-color:#5F686D;background-image:;background-repeat:undefined;">
+
+<div id="xComp39518"
+	 CMS_Class="CmsComp_Image_BkgImage"
+	 style="width:1280px;height:720px;background-color:#001c38;background-image:url(/UCGS/files/upload/default_pagetemp.jpg);background-repeat:repeat;color:#ccc"></div>
+<button id="CMS_ContentPager_Prev"
+	 CMS_Class="CmsComp_Ctrl_PrevPage"
+	 style="left:984px;top:655px;width:120px;height:36px;font-size:26px;background-image:url(/UCGS/files/upload/default_prevpage.png);color:#000;z-index:61" onclick="if(CmsExt_Content)CmsExt_Content.Pager.pageTo('<')"></button>
+<button id="CMS_ContentPager_Next"
+	 CMS_Class="CmsComp_Ctrl_NextPage"
+	 style="left:1111px;top:655px;width:120px;height:36px;font-size:26px;background-image:url(/UCGS/files/upload/default_nextpage.png);color:#000;z-index:62" onclick="if(CmsExt_Content)CmsExt_Content.Pager.pageTo('>')"></button>
+<div id="xComp38211"
+	 CMS_Class="CmsComp_Text_Content" CMS_ContentWidth="889" CMS_ContentHeight="437" CMS_ContentDisplayMode="1"
+	 style="left:341px;top:187px;width:889px;height:437px;font-size:26px;color:#FFFFFF;z-index:3;line-height:32px;">{%$文章正文%}</div>
+<div id="xComp39983"
+	 CMS_Class="CmsComp_Text_Static"
+	 style="left:360px;top:70px;width:612px;height:39px;font-size:30px;color:#CCFF00;z-index:5"></div>
+<div id="xComp38757"
+	 CMS_Class="CmsComp_Col_Path"
+	 style="left:56px;top:127px;width:711px;height:30px;font-size:26px;color:#FFFFFF;z-index:3">{%$栏目路径-1%} > {%$当前栏目%}</div>
+<img id="xComp40144"
+	 CMS_Class="CmsComp_Image_Static"
+	 src="/UCGS/files/upload/default_banner.jpg" style="position:absolute;left:47px;top:187px;width:268px;height:450px;background-color:#001c38;color:#ccc;z-index:12"/>
+<div id="CmsComp_Ctrl_Pagination"
+	 CMS_Class="CmsComp_Ctrl_Pagination"
+	 style="left:770px;top:655px;width:121px;height:42px;font-size:24px;color:#FFFF00;z-index:13">0 / 0</div>
+</div>
+</body>
+</html>
