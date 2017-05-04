@@ -23,4 +23,6 @@ public class ApiConstant {
 
 	public static final String jsonpName = "jsoncallback";
 	public static final String tscalerPreviewUrl = "/UCGS/data/preview/";
+	
+	public static final String DDDDD_STRING = "";
 }
