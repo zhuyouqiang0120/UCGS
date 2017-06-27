@@ -459,6 +459,8 @@ var PDesigner = {
 				modal : true
 			});
 			
+			PDesigner.modifyEntity = PDesigner.modifyEntity || {};
+			
 			ChasonxDom.draw({
 				  id : 'saveTemplatePanel',
 				  item : [

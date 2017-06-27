@@ -32,10 +32,13 @@ public class Constant {
 	public static final String DATA_JSON_DESC = "UCGS SITE DATA FOR ";
 	public static final String DATA_JSON_DESC_TOPIC = "UCGS TOPIC DATA FOR ";
 	
-	public static final String MEDIA_CTRL_PATH = "ucmsMedia";
+	public static final String MEDIA_CTRL_PATH = "ucgsAssets";
 	public static final String MEDIA_CTRL_JSONNAME = "ZENS_TEMPLATE_AD";
 	public static final String MEDIA_CTRL_JSNAME = "ZENS_TEMPLATE_AD_CTRL.js";
+	public static final String MEDIA_CTRL_JSNAME_V2 = "activePageAD.plugin.js";
 	public static final String TEMPLATE_CTRL_JSNAME = "/res/plugs/media/TOPIC_CTRL.js";
+	public static final String TEMPLATE_CTRL_JSNAME_V2 = "/res/plugs/media/activePageAD.plugin.js";
+	
 	public static final String MEDIA_CTRL_JSPATH = "/res/plugs/media/" + MEDIA_CTRL_JSNAME;
 	public static final String MEDIA_CTRL_VERSION = "1.0";
 	public static final String MEDIA_CTRL_DESC = "ZENS-UCGS TEMPLATE MANAGER";
@@ -85,7 +88,9 @@ public class Constant {
 		GoUams,
 		Upgrade,
 		UDimension,
-		TopicExtendView
+		TopicExtendView,
+		AuditResouce,
+		PublishTemplate
 	};
 	/**
 	 * 权限 类型
@@ -128,4 +133,19 @@ public class Constant {
 		put(6, 60);
 		put(5, 0);
 	}};
+	/**
+	 * 模板类型
+	 * @author  Chasonx
+	 * @email   xzc@zensvision.com
+	 * @create  2017年5月17日下午10:05:07
+	 * @version 1.0
+	 */
+	public static interface TemplateType{
+		public static final int TSCaler = 0;
+		public static final int Custom = 1;
+	}
+	
+	public static interface MapsType{
+		public static final String Notice = "Notice";
+	}
 }

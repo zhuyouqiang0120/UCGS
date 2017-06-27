@@ -38,6 +38,9 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 *createTime : 161207
 *updateTime : 161209  161213
 *desc : 自定义tab选项卡插件，组合选项卡
+*
+*Chasonx.Tab(options);
+*
 *  options : {
 	 id : '',
 	 bHeight : 30,按钮高
@@ -49,7 +52,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 	     items : [{
 	 	 title : '', 标题
 		 html : '',  内容
-		 panelId  : '',  domID
+		 pannelId : '',  domID
 		 focusColor : '', 获取焦点时颜色
 		 blurColor : '', 失去焦点时颜色
 		 handler : function(e){  e : 当前点击的tab元素
@@ -80,7 +83,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 			btnFocus : 'z-index:102;font-weight:bold;',
 			btnBlur : 'z-index:90;',
 			btnFocusColor : '#f6f6f6',
-			btnBlurColor : '#848484'
+			btnBlurColor : '#e4e4e4'
 		},
 		cacheBtnRandom : [],
 		cachePanelRandom : [],
@@ -132,7 +135,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 				if(u.panelId) _panel = $_e(u.panelId);
 				if(_panel == undefined){
 					_panel = ChasonTools.createEle({type:'div',id : _panelId,css : _pcss});
-					_panel.innerText = u.html || '';
+					_panel.innerHTML = u.html || '';
 				}else{
 					_panelId = u.panelId;
 					_panel.setAttribute('style',_pcss);
@@ -162,15 +165,15 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 
 				    if(this.posi == 'bottom'){
 						css += 'margin-top:' + ($_e(this.target).offsetHeight - this.height - 1) + 'px;';
-						br = this.direct == 'left'?'0px 0px 28px 5px':'0px 0px 5px 28px';
+						br = this.direct == 'left'?'0px 0px 5px 5px':'0px 0px 5px 5px';
 				    }else{
-				    	br = this.direct == 'left'?'5px 28px 0px 0px':'28px 5px 0px 0px';
+				    	br = this.direct == 'left'?'5px 5px 0px 0px':'5px 5px 0px 0px';
 				    }  
 				}else{
 					css += 'top:' + (this.height * this.getOffset(_idx,'top')) + 'px;';
 					if(this.posi == 'right') css += 'margin-left:' + ($_e(this.target).offsetWidth - this.width - 1) + 'px;';
 					css += 'display:block;';
-					br = this.posi == 'left'?'28px 0px 0px 28px;':'0px 28px 28px 0px;';
+					br = this.posi == 'left'?'5px 0px 0px 5px;':'0px 5px 5px 0px;';
 				}
 				css += 'border-radius: '+ br +';-moz-border-radius: '+ br +';-webkit-border-radius: '+ br +';';
 			}else{

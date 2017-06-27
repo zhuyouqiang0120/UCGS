@@ -1,7 +1,7 @@
 
 var TopicAttr = {
 		classes : {
-			data : [{v : 0,t : '常规'},{v : 1, t : '视频'},{v : 2,t :'图片'}],
+			data : [{v : 0,t : '常规'},{v : 1, t : '视频'},{v : 2,t :'图片'},{v : 3, t : '链接'}],
 			getText : function(v){
 				var tt = '';
 				for(var i = 0;i < this.data.length;i++){

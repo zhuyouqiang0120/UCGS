@@ -140,12 +140,12 @@
 @-webkit-keyframes fadein	{from{opacity:0;} 	to{opacity:1;}}
 @-moz-keyframes fadein		{from{opacity:0;} 	to{opacity:1;}}
 @keyframes fadein			{from{opacity:0;} 	to{opacity:1;}}
-.loginPanelbgsize 		 {width:100%;height:100%;top:0px;left:0px;position:fixed;z-index:0;
-						  -moz-animation:fadein 0.5s ease-in;
-							-webkit-animation:fadein 0.5s ease-in;
-							-o-animation:fadein 0.5s ease-in;
-							-ms-animation:fadein 0.5s ease-in;
-							animation:fadein 0.5s ease-in;}
+.loginPanelbgsize 		    {width:100%;height:100%;top:0px;left:0px;position:fixed;z-index:0;
+						     -moz-animation:fadein 0.5s ease-in;
+							 -webkit-animation:fadein 0.5s ease-in;
+							 -o-animation:fadein 0.5s ease-in;
+							 -ms-animation:fadein 0.5s ease-in;
+							 animation:fadein 0.5s ease-in;}
 
 @-webkit-keyframes shake	{from{-webkit-transform:rotateY(0deg) scale(0.1,0.1);}
 							 to{-webkit-transform:rotateY(360deg) scale(1,1);}
@@ -423,7 +423,7 @@ colMainRight .tableTemp tr {height:40px;}
 							border-radius: 15px 15px 15px 15px;-webkit-border-radius: 15px 15px 15px 15px;-moz-border-radius: 15px 15px 15px 15px;}
 .etopicTableBox .pagePanelBox{margin-top:4px;height:120px;width:616px;overflow:auto;overflow-y:hidden;white-space: nowrap;position: relative;
 							display: inline-block;}
-.etopicTableBox .pageItem	{width:60px;height:80px;margin:10px 5px 10px 5px;border:1px solid black;box-shadow: 0px 0px 4px #000000;
+.etopicTableBox .pageItem	{width:60px;height:80px;margin:10px 5px 10px 5px;border:1px solid black;box-shadow: 0px 0px 4px #000000;color:#000;
 							-moz-box-shadow: 0px 0px 4px #000000;	-webkit-box-shadow: 0px 0px 4px #000000 ;display: inline-block;
 							background: url('default/pageart.png') no-repeat;text-align: center;vertical-align: middle;line-height:80px;cursor:pointer;}		
 .etopicTableBox .pageItem:hover{border:1px solid #F09;}
@@ -588,5 +588,15 @@ colMainRight .tableTemp tr {height:40px;}
 .sysStatisticsFocus				{position: absolute; top: 5%; background: #f6f6f6; left: 5%; z-index: 100;transition:1s;-moz-transition:1s;-webkit-transition:1s;}
 .statisticsShadowPanel			{position:absolute;width:100%;height:100%;background:#000;position: absolute;width: 100%; height: 100%; background: #000; opacity: 0; z-index: -1;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;}
 .statisticsShadowShow			{z-index:90;opacity : 0.6;}
+#centerPanel					{white-space: initial;}
+.templateUpload 				{width:80%;margin:0px auto;padding:10px;}
+.templateUploadState			{border: 1px solid #ccc; height: 120px; width: 150px; border-radius: 8px;background:#fff;}
+.templateUploadState b			{display: inline-block; width: 100%; text-align: center;  position: relative; top: 45px; font-size: 15px;}
 
+.defaultNotice					{width: 50%;  padding: 8px; border: 1px solid #464646; margin: 0px auto; color: #e89c25; border-radius: 5px;}
+.noticeItem 					{width: 95%;height:auto !important; margin: 0px auto; margin-top: 5px;}
+.noticeItem .title				{height: 40px;vertical-align: middle; line-height: 40px; background: #d0cecb; padding-left: 10px;  border-radius: 3px;
+    							 box-shadow: 0px 0px 5px #0e0e0e;font-size:15px;cursor:pointer;}
+.noticeItem .content			{background: #4a4a4a;  width: 95%;height:0px; margin: 0px auto;  padding: 0px; border-radius: 0px 0px 4px 4px; color: #c78620; transition:.5s;-webkit-transition:.5s;-moz-transition:.5s;
+								 overflow:hidden;}    							 
 

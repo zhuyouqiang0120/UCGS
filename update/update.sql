@@ -363,5 +363,53 @@ CREATE TABLE `t_page_statistics` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-------------------------------------------- 2017/5/5 -------------------------------------
+CREATE TABLE `t_pageresource` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `fguid` varchar(40) DEFAULT NULL,
+  `fdata` text DEFAULT NULL,
+  `fmediadata` text DEFAULT NULL,
+  `ftype` int(2) DEFAULT NULL,
+  `fresouceinit` int(2) DEFAULT NULL,
+  `fdelete` int(2) DEFAULT NULL,
+  `fprovider` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_pageresource_relate` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ftemplateguid` varchar(40) DEFAULT NULL,
+  `ftemplateresguid` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_pageplugingroup` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fname` varchar(50) DEFAULT NULL,
+  `ftitle` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_pageplugins` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ftitle` varchar(20) DEFAULT NULL,
+  `fpluginame` varchar(20) DEFAULT NULL,
+  `fstate` int(2) DEFAULT '0',
+  `fdevname` varchar(20) DEFAULT NULL,
+  `fdevguid` varchar(40) DEFAULT NULL,
+  `fcreatetime` varchar(40) DEFAULT NULL,
+  `fmodifytime` varchar(40) DEFAULT NULL,
+  `fsize` int(11) DEFAULT NULL,
+  `fversion` varchar(20) DEFAULT NULL,
+  `fremark` varchar(300) DEFAULT NULL,
+  `fextdata` text,
+  `fplugingroup` int(11) DEFAULT NULL,
+  `ficon` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+
+
+
+
 
 

@@ -187,7 +187,7 @@ Chasonx.ContextMenu = {
 *options{title,text,type,timeout}
 */
 Chasonx.Hint = {
-	options : {width:200,height:100,modal:false,isdialog:false,hor:20,timeout:3000},
+	options : {width:200,height:100,modal:false,isdialog:false,hor:20,timeout:5000},
 	css : {
 		sucs   : 'position:fixed;z-index:1024;width:260px;height:auto !important;min-height:50px;right:10px;opacity:0;top:0px;\
 			      -moz-border-radius: 5px; -webkit-border-radius: 5px;  border-radius:5px;moz-user-select: -moz-none;-moz-user-select: none;\
@@ -197,6 +197,7 @@ Chasonx.Hint = {
 	},
 	Success : function(options){
 		options = options || {};
+
 		this.options.hor = options.hor || this.options.hor;
 		this.options.timeout = options.timeout || this.options.timeout;
 		this.options.html = typeof(options) == "string"?options:options.text || 'success!';
@@ -210,7 +211,7 @@ Chasonx.Hint = {
 		this.show(this.options,'faild');
 	},
 	show : function(_option,type){
-		var statetxt  = type == 'success'?'√':'×',bg = type == "success"?'background:rgb(65, 63, 61);':'background:rgb(237, 102, 102);';
+		var statetxt  = type == 'success'?'√':'×',bg = type == "success"?'background:#2b93d2;':'background:rgb(237, 102, 102);';
 		var ele = ChasonTools.createEle({type:'div',css:this.css.sucs + bg});
 			ele.innerHTML = '<div style="'+ this.css.sta +'">'+ statetxt +'</div><div style="'+ this.css.text +'">'+ this.options.html +'</div>';
 		ChasonTools.AppendToBody(ele);
@@ -552,7 +553,7 @@ Chasonx.prototype = {
 				  -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;',
 		    mt = 'height:40px;background-color:#f7f6f6;border-bottom:1px solid #bbb;color:'+ this.attr.alertType[options.alertType] +';position:relative;',
 		    mx = 'vertical-align:middle;line-height:40px;width:'+ (options.width - 50) +'px;font-size:15px;font-weight:bold;padding-left:8px;overflow:hidden;',
-		    mc = 'display:block;height:'+ (options.isdialog?(options.height - 98):options.height - 38) +'px;width:'+ options.width +'px;overflow:auto;';
+		    mc = 'display:block;height:'+ (options.isdialog?(options.height - (options.cancel == true?98:0)):options.height - 38) +'px;width:'+ options.width +'px;overflow:auto;';
 		   
 		var _ele = ChasonTools.createEle({type:'div',css:mb}),
 			_title = ChasonTools.createEle({type:'div',css:mt}),
@@ -588,8 +589,9 @@ Chasonx.prototype = {
 				 _close.setAttribute('href','javascript:void(0)');
 				 _close.setAttribute('title',this.attr.close);		
 
-			     _ele.appendChild(_foot);
-			     if(options.cancel == true)  _title.appendChild(_close);
+			     if( options.cancel == true ) _ele.appendChild(_foot);
+			     _title.appendChild(_close);
+			     
 			     //if exist success function
 				if(typeof options.success == 'function'){
 					var	ok   = 'position:absolute;min-width:60px;width:auto !important;height:30px;padding:0px 4px;right:80px;top:15px;vertical-align:middle;line-height:30px;background-color:'+  this.attr.alertType[options.alertType] +';color:#FFF;border:none;cursor:pointer;' + this.attr.baseCss,

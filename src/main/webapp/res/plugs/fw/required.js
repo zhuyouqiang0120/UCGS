@@ -31,8 +31,8 @@ var FormData = {
 		 return result;
 	 },
 	 clearInput : function(id,typeOption){
-		 for(var i = 0;i < para.length;i ++){
-			 $.each($("#" + id).find(para[i]),function(j,k){
+		 for(var i = 0;i < typeOption.length;i ++){
+			 $.each($("#" + id).find(typeOption[i]),function(j,k){
 				 if($(this).attr('type') != 'button')
 					 $(this).val('');
 			 });

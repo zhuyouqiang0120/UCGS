@@ -14,6 +14,7 @@ import org.quartz.Job;
 
 import com.alibaba.druid.wall.WallFilter;
 import com.chasonx.tools.StringUtils;
+import com.chasonx.ucgs.api.ColumnRequestData;
 import com.chasonx.ucgs.api.DesignerTemplateData;
 import com.chasonx.ucgs.api.MediaRequestData;
 import com.chasonx.ucgs.api.PagePreviewData;
@@ -38,6 +39,7 @@ import com.chasonx.ucgs.controller.DimensionController;
 import com.chasonx.ucgs.controller.LoadController;
 import com.chasonx.ucgs.controller.LoginController;
 import com.chasonx.ucgs.controller.MainController;
+import com.chasonx.ucgs.controller.NoticeController;
 import com.chasonx.ucgs.controller.PageDesignerController;
 import com.chasonx.ucgs.controller.PageStatisticsController;
 import com.chasonx.ucgs.controller.ResourceController;
@@ -62,6 +64,8 @@ import com.chasonx.ucgs.entity.Area;
 import com.chasonx.ucgs.entity.BadWord;
 import com.chasonx.ucgs.entity.Column;
 import com.chasonx.ucgs.entity.PageDesigner;
+import com.chasonx.ucgs.entity.PageResource;
+import com.chasonx.ucgs.entity.PageResourceRelate;
 import com.chasonx.ucgs.entity.PageStatistics;
 import com.chasonx.ucgs.entity.PluginsGroup;
 import com.chasonx.ucgs.entity.PublishToDo;
@@ -82,6 +86,7 @@ import com.chasonx.ucgs.entity.ULog;
 import com.chasonx.ucgs.entity.ULogVersion;
 import com.chasonx.ucgs.interceptor.AdminUserInterceptor;
 import com.chasonx.ucgs.interceptor.MyExceptionInterceptor;
+import com.chasonx.ucgs.socket.MessServer;
 import com.chasonx.ucgs.sql.SqlPathEntity;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -157,6 +162,7 @@ public class Config extends JFinalConfig {
 		route.add("/main/unifyFX",UnifyFXController.class);
 		route.add("/main/load",LoadController.class);
 		route.add("/main/statistics",PageStatisticsController.class,"main/statistics");
+		route.add("/main/notice", NoticeController.class,"main/notice");
 		
 		route.add("/data/mr", MediaRequestData.class);
 		route.add("/data/topic",TopicRequestData.class);
@@ -164,11 +170,12 @@ public class Config extends JFinalConfig {
 		route.add("/data/uRequest",UnifyRequestData.class,"preview");
 		route.add("/data/auth",ValidateData.class);
 		route.add("/data/preview",PagePreviewData.class);
+		route.add("/data/column",ColumnRequestData.class);
 		route.add("/data/tscaler",DesignerTemplateData.class);
 		
 		route.add("/api/topic",TopicApi.class);
 		
-		route.add("/test",ParaTest.class);
+		route.add("/test",ParaTest.class,"/");
 		shiroRoutes = route;
 	}
 
@@ -224,6 +231,8 @@ public class Config extends JFinalConfig {
 		ar.addMapping("t_page_statistics", PageStatistics.class);
 		ar.addMapping("t_pageplugins", com.chasonx.ucgs.entity.Plugins.class);
 		ar.addMapping("t_pageplugingroup", PluginsGroup.class);
+		ar.addMapping("t_pageresource", PageResource.class);
+		ar.addMapping("t_pageresource_relate", PageResourceRelate.class);
 		
 		//shiro
 		ShiroPlugin shiroPlugin = new ShiroPlugin(shiroRoutes);
@@ -244,11 +253,20 @@ public class Config extends JFinalConfig {
 	public void configInterceptor(Interceptors me) {
 		me.addGlobalActionInterceptor(new AdminUserInterceptor());
 		me.addGlobalServiceInterceptor(new MyExceptionInterceptor());
-		me.add(new TxByMethods("save","update","delete"));
+		me.add(new TxByMethods("save","update","delete","modify"));
 		me.add(new TxByRegex("(.*save.*|.*update.*)"));
 		quartzInit();
 		ulogInit();
 		extendInit();
+		
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				MessServer messServer = new MessServer();
+//				messServer.start();
+//			}
+//		}).start();
+		
 	}
 
 	/* (non-Javadoc)

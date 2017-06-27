@@ -134,7 +134,7 @@ var ResDialog = {
 			 $("#videoGrade").val(vd.Grade);
 			 $("#fsource").val(vd.Provider);
 			 $("#fsummary").val(vd.Desc);
-			 $("#fthumbnail").val(SyncUrl.UAMS +  vd.PosterUrl);
+			 $("#fthumbnail").val(vd.PosterUrl);
 			 $("#fthumbnailPrewImg").attr('src',SyncUrl.UAMS + vd.PosterUrl);
 			 $("#videoMessUrl").val(SyncUrl.UAMS + vd.VideoUrl);
 			 $("#videoDetailJson").val(JSON.stringify(vd));

@@ -66,7 +66,7 @@ window.onload = function(){
 	
 	Chasonx.DragBox({
 		target : 'rightPanel',
-		lineColor : '#ADADAD',
+		lineColor : _GetBoxLineColor(),
 		items : [
 		         {id : 'dragLeft',width : '15' },
 		         {id : 'dragCenter',width : '15' },

@@ -286,7 +286,7 @@ window.onload = function(){
 	});
 	Chasonx.DragBox({
 		target : 'centerPanel',
-		lineColor : '#ADADAD',
+		lineColor : _GetBoxLineColor(),
 		items : [
 		         {id : 'centerDragLeft',width : '15' },
 		         {id : 'centerDragRight',width : '85' }

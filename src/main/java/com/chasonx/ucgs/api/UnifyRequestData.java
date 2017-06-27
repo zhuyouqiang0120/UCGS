@@ -22,6 +22,11 @@ import org.json.JSONObject;
 
 import com.chasonx.directory.FileUtil;
 import com.chasonx.tools.StringUtils;
+import com.chasonx.ucgs.annotation.Api;
+import com.chasonx.ucgs.annotation.ApiRemark;
+import com.chasonx.ucgs.annotation.ApiTitle;
+import com.chasonx.ucgs.annotation.ParaEntity;
+import com.chasonx.ucgs.annotation.Required;
 import com.chasonx.ucgs.common.ApiConstant;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.Constant.SiteBindType;
@@ -62,6 +67,19 @@ public class UnifyRequestData extends Controller {
 	private static final String ATTR_TOPIC = "Topics";
 	private static final String TotalRow = "TotalRow";
 	private static final String TotalPage = "TotalPage";
+	
+	
+	public void api(){
+		String result = "";
+		try {
+			result = Api.getInfo(UnifyRequestData.class, "/UCGS/data/uRequest/", "POST/GET","UCGS数据接口");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		renderHtml(result);
+	}
+	
 
 	/**
 	 * 统一JSON数据格式
@@ -69,6 +87,20 @@ public class UnifyRequestData extends Controller {
 	 * @createTime:2015-11-30 上午11:00:26 
 	 * @author: chason.x
 	 */
+	@ApiTitle("统一数据获取接口")
+	@ApiRemark("获取站点/栏目/主题数据")
+	@Required({
+		@ParaEntity(name = "aliasName",desc = "站点别名",mlen = 1,xlen = 100,type = "String"),
+		@ParaEntity(name = "markCode",desc = "站点标识",empty = true, type = "String"),
+		@ParaEntity(name = "colGuid",desc = "栏目Guid",empty = true,type = "String"),
+		@ParaEntity(name = "level",desc = "需要返回的栏目级数，以“ , ”号隔开如: 1,2,3 返回一、二三级栏目数据",empty = true,type = "String"),
+		@ParaEntity(name = "getTopic",desc = "是否获取主题数据",empty = true,type = "bool"),
+		@ParaEntity(name = "getPreview",desc = "主题数据是否包含预览地址",empty = true,type = "bool"),
+		@ParaEntity(name = "getPreviewType",desc = "预览类型 template/data",empty = true,type = "String"),
+		@ParaEntity(name = "tpageSize",desc = "主题数量",empty = true,type = "int"),
+		@ParaEntity(name = "tpageNumber",desc = "主题页码",empty = true,type = "int"),
+		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpDesc,empty = true,type = "String")
+	})
 	public void unifyJson(){
 		String cb = getPara(ApiConstant.jsonpName);   //回调函数 
 		String alias = getPara("aliasName"); //网站别名
@@ -254,7 +286,6 @@ public class UnifyRequestData extends Controller {
 							child.set("Remark", childList.get(c).getStr("fremark"));
 							childRecList.add(child);
 						}
-						
 					}
 					if(addChild){
 						if(!topicList.isEmpty() || hasChild){
@@ -323,7 +354,8 @@ public class UnifyRequestData extends Controller {
 		coListList.addAll(colGuid);
 		
 		//List<Record> topicList = null;
-		String sql = "select t.fguid as Id,t.ftitle as Name,t.fsummary as Summary,t.freleasetime as Releasetime,t.fthumbnail as Thumbnail,t.fpvsize as Pvsize,t.ftopsize as Topsize,t.fcollectsize as Collectsize,r.fcolguid as Colguid, " +
+		String sql = "select t.fguid as Id,t.ftitle as Name,t.fsummary as Summary,t.freleasetime as Releasetime," +
+					"CASE WHEN LOCATE('"+ Constant.IMG_CATCH_DIR +"' ,t.fthumbnail) > 0 THEN t.fthumbnail WHEN t.fthumbnail IS NOT NULL AND t.fthumbnail != '' AND LOCATE('"+ Constant.IMG_CATCH_DIR +"' ,t.fthumbnail) = 0 THEN  CONCAT('"+ Constant.IMG_CATCH_DIR +"' ,t.fthumbnail) ELSE '' END as Thumbnail,t.fpvsize as Pvsize,t.ftopsize as Topsize,t.fcollectsize as Collectsize,r.fcolguid as Colguid, " +
 			    "t.fclass as Class,t.fextdata as Extdata from t_topic_relate r INNER JOIN t_topic t on r.ftopicguid = t.fguid ";
 		
 		String whereCase = " and r.fdelete = 0 and t.fcheck = 1 ORDER BY t.ftop desc,r.fsortnum desc,t.id desc"; // t.fpvsize desc,t.fgrade desc,
@@ -378,7 +410,7 @@ public class UnifyRequestData extends Controller {
 							topicList.get(j).set("PreviewUrl", previewHost + TOPITC_PREVIEW_DATA + "?id=" + topicList.get(j).getStr("Id") + (StringUtils.hasText(callback)?("&jsoncallback=" + callback):"") );
 					}
 				}
-				topicList.get(j).remove("Extdata");
+				//topicList.get(j).remove("Extdata");
 				tList.add(topicList.get(j));
 			}
 		}
@@ -501,6 +533,9 @@ public class UnifyRequestData extends Controller {
 	 * @createTime:2015-11-30 下午5:23:40
 	 * @author: chason.x
 	 */
+	@ApiTitle("主题数据：json格式")
+	@ApiRemark("该接口以主题纯文本数据形式返回")
+	@Required(@ParaEntity(name = "id",desc = "主题Guid"))
 	public void topicData(){
 		String cb = getPara(ApiConstant.jsonpName); 
 		String guid = getPara("id");
@@ -512,8 +547,9 @@ public class UnifyRequestData extends Controller {
 		try{
 			if(StringUtils.hasText(guid)){
 				Record topic = Db.findFirst("select id as aid,fguid as Id,ftitle as Title,ftitlesec as Titlesec,fsummary as Summary,fsource as Source," +
-											"freleasetime as Releasetime,freleaseer as Releaseer,fthumbnail as Thumbnail,flable as Label, " +
-											"fpvsize as Pvsize,ftopsize as Topsize,fcollectsize as Collectsize,fclass as Class from t_topic where fguid = ?",guid);
+											"freleasetime as Releasetime,freleaseer as Releaseer," + 
+											"CASE WHEN LOCATE('"+ Constant.IMG_CATCH_DIR +"', fthumbnail) > 0 THEN fthumbnail WHEN  fthumbnail IS NOT NULL AND fthumbnail != '' AND LOCATE('"+ Constant.IMG_CATCH_DIR +"', fthumbnail) = 0 THEN  CONCAT('"+ Constant.IMG_CATCH_DIR +"' , fthumbnail) ELSE '' END  as Thumbnail,flable as Label, " +
+											"fpvsize as Pvsize,ftopsize as Topsize,fcollectsize as Collectsize,fclass as Class,fextdata as extdata from t_topic where fguid = ?",guid);
 				List<Record> contents = Db.find("SELECT fcontent as Content FROM `t_topic_content` where ftopicguid = ?",guid);
 				//Db.queryStr("select remotehost from t_config where filetype = ?",Constant.Config.TopicPreview.toString());
 				
@@ -528,11 +564,9 @@ public class UnifyRequestData extends Controller {
 						if(i > 0) parColStr += " > ";
 					}
 				}
-				
 				List<String> cont = new ArrayList<String>();
 				Pattern pat = Pattern.compile(Constant.IMG_SRC_REGEX);
 				Matcher mac = null;
-				
 				if(!contents.isEmpty()){
 					for(int i = 0,len = contents.size();i < len;i++){
 						mac = pat.matcher(contents.get(i).getStr("Content"));
@@ -544,6 +578,7 @@ public class UnifyRequestData extends Controller {
 						cont.add(contents.get(i).getStr("Content"));
 					}
 				}
+				
 				/*更新浏览量*/
 				Topic tp = new Topic();
 				tp.set("id", topic.getLong("aid"));
@@ -554,6 +589,7 @@ public class UnifyRequestData extends Controller {
 				topic.set("ParentColumnName", parColStr);
 				topic.set("contents", cont);
 				topic.remove("aid");
+				topic.remove("extdata");
 				data.set("Data", topic);
 				
 				///
@@ -579,6 +615,9 @@ public class UnifyRequestData extends Controller {
 	 * @createTime:2015-12-25 上午11:20:47
 	 * @author: chason.x
 	 */
+	@ApiTitle("主题预览")
+	@ApiRemark("该接口以主题预览的形式返回")
+	@Required(@ParaEntity(name = "id",desc = "主题Guid"))
 	public void topicPreview(){
 		String topicGuid = getPara("id");
 		StringBuffer sb = new StringBuffer(300);
@@ -618,7 +657,9 @@ public class UnifyRequestData extends Controller {
 					tempateHtml = tempateHtml.replaceAll(TopicConstant.TOPIC_TITLE, topic.getStr("ftitle"))
 					.replace(TopicConstant.TOPIC_CHARTSET, "UTF-8")
 					.replace(TopicConstant.TOPIC_CURRENT_COLUMN, currCol.getStr("fservicename"))
-					.replace(TopicConstant.TOPIC_PARENT_COLUMN, parColStr);
+					.replace(TopicConstant.TOPIC_PARENT_COLUMN, parColStr)
+					.replace(TopicConstant.TOPIC_SOURCE, topic.getStr("fsource"))
+					.replace(TopicConstant.TOPIC_EDIT_TIME, topic.getStr("freleasetime").substring(0, topic.getStr("freleasetime").indexOf(" ")));
 					
 					String topicCtrJsStr = CacheKit.get(Constant.CACHE_DEF_NAME, "topicPreviewCtrlJs");
 					if(!StringUtils.hasText(topicCtrJsStr)){
@@ -629,16 +670,17 @@ public class UnifyRequestData extends Controller {
 					/*图片处理*/
 					Matcher mac = null;
 					Pattern pat = Pattern.compile(Constant.BACKGROUND_IMAGE);
-					mac = pat.matcher(tempateHtml);
-					String bgImg = "";
-					/*背景图地址*/
-					while (mac.find()) {
-						bgImg = mac.group();
-						if(StringUtils.hasText(bgImg)){
-							bgImg = bgImg.replace("(", "").replace(")", "");
-							tempateHtml = tempateHtml.replace(bgImg, Constant.IMG_CATCH_DIR + bgImg);
-						}
-					}
+//					mac = pat.matcher(tempateHtml);
+//					String bgImg = "";
+//					/*背景图地址*/
+//					while (mac.find()) {
+//						bgImg = mac.group();
+//						if(StringUtils.hasText(bgImg)){
+//							bgImg = bgImg.replace("(", "").replace(")", "");
+//							tempateHtml = tempateHtml.replace(bgImg, Constant.IMG_CATCH_DIR + bgImg);
+//						}
+//					}
+					
 					/*广告图地址*/		
 					pat = Pattern.compile(Constant.IMG_SRC_REGEX);
 					mac = pat.matcher(tempateHtml);
@@ -696,6 +738,12 @@ public class UnifyRequestData extends Controller {
 	 * @createTime: 2016年4月26日 下午3:58:30
 	 * @author    : Chason.x
 	 */
+	@ApiTitle("获取自定义参数")
+	@ApiRemark("该接口主要对自定义数据获取")
+	@Required({
+		@ParaEntity(name = "guid",desc = "自定义参数绑定对象的guid"),
+		@ParaEntity(name = "key",desc = "自定义key值")
+	})
 	public void getCustomerMaps(){
 		String guid = getPara("guid");
 		String key = getPara("key");
@@ -731,6 +779,15 @@ public class UnifyRequestData extends Controller {
 	 * @createTime: 2016年4月27日 上午11:02:36
 	 * @author    : Chason.x
 	 */
+	@ApiTitle("设置自定义参数")
+	@ApiRemark("可将自定义数据绑定到任意对象上")
+	@Required({
+		@ParaEntity(name = "guid",desc = "绑定目标guid"),
+		@ParaEntity(name = "key",desc = "自定义key值"),
+		@ParaEntity(name = "value",desc = "自定义值"),
+		@ParaEntity(name = "id",desc = "更新时必传",type = "long"),
+		@ParaEntity(name = "type",desc = "操作类型(1:新增，2:更新",type = "int")
+	})
 	public void setCustomerMapsVaule(){
 		String cb = getPara(ApiConstant.jsonpName);
 		String guid = getPara("guid");

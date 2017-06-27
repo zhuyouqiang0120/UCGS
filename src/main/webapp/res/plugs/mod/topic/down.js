@@ -107,11 +107,11 @@ var ImageDown = {
 				if(this.images[i].tar != ''){
 					if(EtopicSet.pageData.length > 0){
 						for(var p = 0,plen = EtopicSet.pageData.length;p < plen;p++){
-							EtopicSet.pageData[p] = EtopicSet.pageData[p].replace(new RegExp(this.images[i].sour,'gi'),DefConfig.ROOT + this.images[i].tar);
+							EtopicSet.pageData[p] = EtopicSet.pageData[p].replace(new RegExp(this.images[i].sour,'gi'),DefConfig.Root + this.images[i].tar);
 						}
 					}
 					
-					contentEditor.html(contentEditor.html().replace(new RegExp(this.images[i].sour,'gi'),DefConfig.ROOT + this.images[i].tar));
+					contentEditor.html(contentEditor.html().replace(new RegExp(this.images[i].sour,'gi'),DefConfig.Root + this.images[i].tar));
 				}
 			}
 		}

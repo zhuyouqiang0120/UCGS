@@ -3,7 +3,7 @@
  * @desc 
  * @time
  */
-ChasonxUPDTools.plugins("${PLUGINGROUP}",{
+ChasonxTScaler.plugins("${PLUGINGROUP}",{
 	text   : '${PLUGINTITLE}',
 	classes: '${CLASSNAME}',
 	eleType: 'div',

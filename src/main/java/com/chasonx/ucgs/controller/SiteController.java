@@ -169,7 +169,7 @@ public class SiteController extends Controller {
 					if(siteGuids.isEmpty()) siteGuids = AdminAuthDao.getAuthFieldList("ftargetauthguid",loginRec.getStr("roleguid"),Constant.AuthTypes.site.toString(),null);
 					if(siteGuids.isEmpty()) siteGuids = SiteDao.getSiteGuidByCreater(loginRec.getStr("fguid"));
 					if(siteGuids.isEmpty()) siteGuids.add("0");
-						
+						 
 					whereSql += " and s.fguid in ("+ StringUtils.joinForList(siteGuids, ",") +") ";
 				}
 				

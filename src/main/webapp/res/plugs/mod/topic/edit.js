@@ -124,7 +124,7 @@ $(document).ready(function(){
 	
 	Chasonx.DragBox({
 		target : 'rightPanel',
-		lineColor : '#ADADAD',
+		lineColor : _GetBoxLineColor(),
 		items : [
 		         {id : 'DragLeftPanel',width : '10'},
 		         {id : 'DragCenterPanel' ,width : '10'},
@@ -345,7 +345,7 @@ var EtopicSet = {
 		},
 		selectMallimg : function(){
 			fileDialogHtml($("#siteItems").val(),function(ck){
-				var prewimgsrc = ck.parent().find('img').attr('src');
+				var prewimgsrc = ck.parent().find('img').attr('data');
 				$("#fthumbnail").val(prewimgsrc);
 				$("#fthumbnailPrewImg").attr('src',prewimgsrc);
 			});
@@ -377,20 +377,18 @@ var EtopicSet = {
 				formdata['fclass'] = ETOPIC_TYPE_VAL;
 				formdata['fgrade'] = $("#videoGrade").val();
 				formdata['type'] = T;
-				
+				formdata['siteGuid'] = $("#siteItems").val();
+				formdata['UCGSFORMDATAFILTER'] = $("#UCGSFORMDATAFILTER").val();
 				if(T == 2){
 					formdata['id'] = $("#_uepk").val();
 				}else{
 					formdata['colguid'] = this.columnData.guid;
 					formdata['fguid'] = $("#videoGuid").val();
-					formdata['siteGuid'] = $("#siteItems").val();
 					
 					if($("#siteItems option:selected").attr('data') == 'public' && $("#siteItems").val() == this.columnData.attributes.siteGuid)
 						formdata['topicType'] = 1;
 					else
 						formdata['topicType'] = 0;
-					
-					formdata['UCGSFORMDATAFILTER'] = $("#UCGSFORMDATAFILTER").val();
 				}
 				this.exec(DefConfig.Root + "/main/topic/videoTopicOperation", formdata , T);
 			}
@@ -412,8 +410,8 @@ var EtopicSet = {
 				formdata['templateId'] = $("#templateList").val();
 				formdata['colguid'] = this.columnData.guid;
 				formdata['UCGSFORMDATAFILTER'] = $("#UCGSFORMDATAFILTER").val();
+				formdata['siteGuid'] = $("#siteItems").val();
 				if(T == 1){
-					formdata['siteGuid'] = $("#siteItems").val();
 					if($("#siteItems option:selected").attr('data') == 'public' && $("#siteItems").val() == this.columnData.attributes.siteGuid)
 						formdata['topicType'] = 1;
 					else

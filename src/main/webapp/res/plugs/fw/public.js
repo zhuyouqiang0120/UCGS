@@ -160,6 +160,16 @@ function __loopObj(obj,tarObj){
 	}
 }
 
+function _GetSkinName(){
+	var skinName = ChasonTools.getCookie("UCGS_DEF_SKIN");
+	return skinName == null?"dark": skinName.substring(skinName.lastIndexOf("/") + 1,skinName.lastIndexOf("."));
+}
+
+function _GetBoxLineColor(){
+	if('lightblue' == _GetSkinName()) return '#e8e8e8';
+	else return '#545454';
+}
+
 function _DefSkinInit(){
 	var skin = ChasonTools.getCookie("UCGS_DEF_SKIN");
 	if(!isBlankString(skin)) skin = '/res/skin/css/m/dark.css';

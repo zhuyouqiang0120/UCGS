@@ -11,7 +11,7 @@ var FileList = {
 			Chasonx.Ajax({
 				 url:DefConfig.Root + '/main/resource/listData',
 				 PageNumber:0,
-				 PageSize:12,
+				 PageSize:10,
 				 data :{'siteGuid':this.siteGuid,'sType':$("#resourceType").val(),'del':del,'startTime':$("#startTime").val(),'endTime':$("#endTime").val()},
 				 success : function(d){	
 					 Chasonx.Page.init('pagePanel',d.totalRow,10,1,this,function(d){ FileList.drawHtml(d);});	
@@ -28,7 +28,7 @@ var FileList = {
 			var html = '';
 			if(d.list.length > 0){
 				$(".fileItemsPanel").html('');
-				var zoom,loadSize = 0;
+				var zoom;
 				var host = window.location.host;
 				$.each(d.list,function(i,u){
 					var img = new Image();
@@ -37,15 +37,15 @@ var FileList = {
 						
 						zoom = (Math.min(Math.min(120/img.width,1),Math.min(150/img.height,1))).toFixed(3);
 						html = '<div class="item"><img src="http://'+ host + DefConfig.Root + u.fpath +'" data="'+ DefConfig.Root + u.fpath +'"  width="'+ ~~(img.width*zoom) +'px" height="'+ ~~(img.height*zoom) + 'px" />\
-								<p>'+ u.fassetname +'</p>\
-								<p>'+ img.width + "*" + img.height +'</p>\
-								<p>'+ fileSizeForamt(u.fsize) +'</p>\
-								<p>'+ u.fremark +'</p>\
-								<p>'+ u.fuploadtime +'</p>\
+								<p style="width:'+ ~~(img.width*zoom) +'px;">'+ u.fassetname +'</p>\
+								<p  style="width:'+ ~~(img.width*zoom) +'px;">'+ img.width + "*" + img.height +'</p>\
+								<p  style="width:'+ ~~(img.width*zoom) +'px;">'+ fileSizeForamt(u.fsize) +'</p>\
+								<p  style="width:'+ ~~(img.width*zoom) +'px;">'+ u.fremark +'</p>\
+								<p  style="width:'+ ~~(img.width*zoom) +'px;">'+ u.fuploadtime +'</p>\
 								<input type="checkbox" value="'+ u.id +'" name="fileItem"/></div>';
 						$(".fileItemsPanel").append(html);
-						loadSize ++;
-						if(loadSize == d.list.length){
+						
+						if((i + 1) == d.list.length){
 							$(".fileItemsPanel").append('<div style="clear:both;"></div>');
 							FileList.setItemWidth();
 						}

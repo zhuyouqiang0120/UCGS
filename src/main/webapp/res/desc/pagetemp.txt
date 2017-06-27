@@ -13,6 +13,7 @@
 body	{padding:0px;margin:0px;overflow:hidden}
 button,div	{position:absolute;border:0px dashed #c00}
 button:focus		{outline-color:#FFFF00;outline-width:4px;outline-style:solid}
+.CmsComp_Text_Content  div {width:100%;height:100%;}
 </style>
 
 
@@ -35,7 +36,7 @@ button:focus		{outline-color:#FFFF00;outline-width:4px;outline-style:solid}
 <button id="CMS_ContentPager_Next"
 	 CMS_Class="CmsComp_Ctrl_NextPage"
 	 style="left:1111px;top:655px;width:120px;height:36px;font-size:26px;background-image:url(/UCGS/files/upload/default_nextpage.png);color:#000;z-index:62" onclick="if(CmsExt_Content)CmsExt_Content.Pager.pageTo('>')"></button>
-<div id="xComp38211"
+<div id="xComp38211" class="CmsComp_Text_Content"
 	 CMS_Class="CmsComp_Text_Content" CMS_ContentWidth="889" CMS_ContentHeight="437" CMS_ContentDisplayMode="1"
 	 style="left:341px;top:187px;width:889px;height:437px;font-size:26px;color:#FFFFFF;z-index:3;line-height:32px;">{%$文章正文%}</div>
 <div id="xComp39983"

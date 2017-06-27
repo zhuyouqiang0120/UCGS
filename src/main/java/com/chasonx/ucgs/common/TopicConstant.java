@@ -20,4 +20,6 @@ public class TopicConstant {
 	public static final String TOPIC_CONTENT = "{%$文章正文%}";
 	public static final String TOPIC_PARENT_COLUMN = "{%$栏目路径-1%}";
 	public static final String TOPIC_CURRENT_COLUMN = "{%$当前栏目%}";
+	public static final String TOPIC_SOURCE = "{%$内容来源%}";
+	public static final String TOPIC_EDIT_TIME = "{%$编辑时间%}";
 }

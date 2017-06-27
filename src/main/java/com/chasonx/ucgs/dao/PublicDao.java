@@ -109,7 +109,21 @@ public class PublicDao {
 		return null;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static  <T> T getModel(Class<? extends Model> classes,Record rec){
+		Model mod = null;
+		try {
+			mod = classes.newInstance();
+			return (T) mod.findFirst("select * from " + getTableName(classes) + getWhereSql(rec));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+	
 	public static String getWhereSql(Record rec){
+		if(rec == null) return "";
+		
 		String[] columns = rec.getColumnNames();
 		StringBuilder sb = new StringBuilder();
 		sb.append(" where 1 = 1 ");
@@ -120,4 +134,15 @@ public class PublicDao {
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
+	public static String convertUpdateSql(Class<? extends Model> classes,Record attr,Record where){
+		StringBuilder sb = new StringBuilder("update " + getTableName(classes) + " set ");
+		String[] atts = attr.getColumnNames();
+		for(int i = 0,len = atts.length;i < len;i++){
+			sb.append(atts[i] + "='"+ attr.getStr(atts[i]) +"'");
+			if(i < (len - 1)) sb.append(",");
+		}
+		sb.append(" " + getWhereSql(where));
+		return sb.toString();
+	}
 }

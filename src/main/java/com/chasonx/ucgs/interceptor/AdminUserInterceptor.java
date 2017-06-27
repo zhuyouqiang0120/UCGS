@@ -87,6 +87,11 @@ public class AdminUserInterceptor implements Interceptor {
 		}catch(Exception e){
 			e.printStackTrace();
 			Tools.writeLog(ai, e);
+			
+			Record ret = new Record()
+			.set("result", 500)
+			.set("msg", e.getMessage());
+			ai.getController().renderJson(ret);
 		}
 	}
 	

@@ -24,13 +24,13 @@ public @interface ParaEntity {
 	 /*参数名称*/
 	 String name() default "";
 	 /*参数最短长度*/
-	 int mlen() default -1;
+	 int mlen() default 0;
 	 /*最大长度*/
-	 int xlen() default -1;
+	 int xlen() default 0;
 	 /*提示信息*/
 	 String msg() default "";
 	 /*验证是否为空*/
-	 boolean empty() default true;
+	 boolean empty() default false;
 	 /*字段描述*/
 	 String desc() default "";
 	 /*类型*/

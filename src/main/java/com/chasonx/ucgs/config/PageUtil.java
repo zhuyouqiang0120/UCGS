@@ -91,5 +91,6 @@ public class PageUtil {
 	public static final String PAGE_STATISTICS = "page.ftl";
 	/**系统状态概览*/
 	public static final String SYSTEM_STATISTICS = "sys.ftl";
-	
+	/**公告管理*/
+	public static final String NOTICE_INDEX = "index.ftl";
 }

@@ -23,7 +23,7 @@ public class ParaTest extends Controller {
 	@Required({
 	  @ParaEntity(name="aaa",mlen=2,xlen=13),
 	  @ParaEntity(name="bbb",mlen=10,xlen=15),
-	  @ParaEntity(name = "ccc" ,mlen = 3,empty = false)
+	  @ParaEntity(name = "ccc" ,mlen = 3,empty = true)
 	 }) 
 	@Before(ParamInterceptor.class)
 	public void index(){
@@ -31,6 +31,7 @@ public class ParaTest extends Controller {
 	}
 	
 	public void test(){
-		renderText(getPara("param"));
+		render("test.ftl");
 	}
+	
 }

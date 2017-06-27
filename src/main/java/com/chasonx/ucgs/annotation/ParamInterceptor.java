@@ -15,11 +15,10 @@ package com.chasonx.ucgs.annotation;
 
 import java.lang.annotation.Annotation;
 
-import com.chasonx.tools.StringUtils;
-import com.chasonx.ucgs.common.Tools;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
+import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Record;
 
 /**
@@ -28,6 +27,8 @@ import com.jfinal.plugin.activerecord.Record;
  * @remark 
  */
 public class ParamInterceptor implements Interceptor {
+	
+	private static Logger log = Logger.getLogger(ParamInterceptor.class);
 	
 	/**
 	 * 验证表单数据
@@ -50,67 +51,79 @@ public class ParamInterceptor implements Interceptor {
 			ParaEntity p;
 			for(Annotation a : anno){
 				p = (ParaEntity) a;
-				if(StringUtils.hasText(p.name())){
+				if(Api.hasText(p.name())){
 					
 					fieldName = p.name();
 					_suffix = "参数 ["+ p.name() +"] 值";
 					
 					if(fieldName.indexOf("[]") != -1){
 						_vs = con.getParaValues(fieldName);
-						if(p.empty() && (_vs == null || _vs.length == 0)){
+						if(!p.empty() && (_vs == null || _vs.length == 0)){
 							require = true;
-							mess = StringUtils.hasText(p.msg())?p.msg():_suffix + " 为空！";
+							mess = Api.hasText(p.msg())?p.msg():_suffix + " 为空！";
 							break;
 						}else if(_vs != null){
 							if(p.mlen() != -1 && _vs.length < p.mlen()){
 								require = true;
-								mess = StringUtils.hasText(p.msg())?p.msg():_suffix + "长度不小于" + p.mlen() + " ！";
+								mess = Api.hasText(p.msg())?p.msg():_suffix + "长度不小于" + p.mlen() + " ！";
 								break;
 							}else if(p.xlen() != -1 && _vs.length > p.xlen()){
 								require = true;
-								mess = StringUtils.hasText(p.msg())?p.msg():_suffix + "长度不大于" + p.xlen() + " ！";
+								mess = Api.hasText(p.msg())?p.msg():_suffix + "长度不大于" + p.xlen() + " ！";
 								break;
 							}
 						}
 					}else{
 						_v = con.getPara(p.name());
-						if(_v.indexOf("\\\\u") != -1){
-							_v = StringUtils.deUnicode(_v);
+						if(Api.hasText(_v)){
+							_v = Api.deUnicode(_v);
 						}
-						if(p.empty() && !StringUtils.hasText(_v)){
+						if(!p.empty() && !Api.hasText(_v)){
 							require = true;
-							mess = StringUtils.hasText(p.msg())?p.msg():_suffix + " 为空！";
+							mess = Api.hasText(p.msg())?p.msg():_suffix + " 为空！";
 							break;
-						}else if(StringUtils.hasText(_v)){
-							if(p.mlen() != -1 && _v.trim().length() < p.mlen()){
+						}else if(Api.hasText(_v)){
+							if(p.mlen() != 0 && _v.trim().length() < p.mlen()){
 								require = true;
-								mess = StringUtils.hasText(p.msg())?p.msg():_suffix + "长度不能小于 " + p.mlen() + " 个字符！";
+								mess = Api.hasText(p.msg())?p.msg():_suffix + "长度不能小于 " + p.mlen() + " 个字符！";
 								break;
-							}else if(p.xlen() != -1 && _v.trim().length() > p.xlen()){
+							}else if(p.xlen() != 0 && _v.trim().length() > p.xlen()){
 								require = true;
-								mess =StringUtils.hasText(p.msg())?p.msg():_suffix + "长度大于 " + p.xlen() + " 个字符";
+								mess =Api.hasText(p.msg())?p.msg():_suffix + "长度大于 " + p.xlen() + " 个字符";
 								break;
 							}
 						}
 					}
 				}
 			}
+			
+			if(require){
+				Record result = new Record();
+				result.set("message", mess)
+				.set("fieldname", fieldName)
+				.set("action", actionName)
+				.set("method", methodName)
+				.set("result", 500);
+				con.renderJson(result);
+			}
+			else{
+				con.setAttr("_actionKey", actionName);
+				con.setAttr("_methodName", methodName);
+				inv.invoke();
+			}
+			
 		}catch(Exception e){
-			Tools.writeLog(inv, e);
+			writeLog(inv, e);
 		}
-		if(require){
-			Record result = new Record();
-			result.set("message", mess)
-			.set("fieldname", fieldName)
-			.set("action", actionName)
-			.set("method", methodName)
-			.set("code", 500);
-			con.renderJson(result);
-		}
-		else{
-			con.setAttr("_actionKey", actionName);
-			con.setAttr("_methodName", methodName);
-			inv.invoke();
-		}
+	}
+	
+	private static void writeLog(Invocation v,Exception e){
+		StringBuilder sb = new StringBuilder("\n ---------- Runtime Log  ----------- \n");
+		sb.append("Controller 	   : " + v.getController().getClass().getName() + "\n")
+		  .append("Method 		   : " + v.getMethodName() + "\n")
+		  .append("UrlPara         : " + v.getController().getPara() + "\n")
+		  .append("Exception Type  : " + e.getClass().getName() + "\n")
+		  .append("Exception Detail: " + e.getMessage());
+		log.error(sb.toString(),e);
 	}
 }

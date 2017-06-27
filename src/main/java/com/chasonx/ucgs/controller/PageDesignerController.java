@@ -9,7 +9,12 @@ package com.chasonx.ucgs.controller;
 
 
 import java.io.File;
+import java.util.List;
+
+import com.chasonx.directory.FileListUtil;
 import com.chasonx.directory.FileUtil;
+import com.chasonx.directory.RarUtil;
+import com.chasonx.entity.FileEntity;
 import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.tools.TokenUtil;
@@ -19,12 +24,15 @@ import com.chasonx.ucgs.annotation.Required;
 import com.chasonx.ucgs.common.Bean;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.SqlKit;
+import com.chasonx.ucgs.common.TemplateUtil;
 import com.chasonx.ucgs.common.Tools;
 import com.chasonx.ucgs.config.DHttpUtils;
 import com.chasonx.ucgs.config.PageUtil;
 import com.chasonx.ucgs.dao.PublicDao;
 import com.chasonx.ucgs.entity.PageDesigner;
+import com.chasonx.ucgs.entity.PageResource;
 import com.chasonx.ucgs.entity.Plugins;
+import com.chasonx.ucgs.entity.TConfig;
 import com.chasonx.ucgs.interceptor.Form;
 import com.chasonx.ucgs.interceptor.Para;
 import com.jfinal.aop.Before;
@@ -35,6 +43,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinal.plugin.ehcache.CacheKit;
+import com.jfinal.upload.UploadFile;
 
 /**
  * @author  Chason.x <zuocheng911@163.com>
@@ -145,7 +154,9 @@ public class PageDesignerController extends Controller {
 		Record query = new Record();
 		query.set("siteGuid", siteGuid)
 		.set("delete", delete)
+		.set("tempType", Constant.TemplateType.TSCaler)
 		.set("checked", checked);
+		
 		Page<Record> list = Db.paginate(pageNumber, pageSize, kit.loadSqlData("selectPageTemplateListField"), kit.loadSqlData("selectPageTemplateList", query));
 		renderJson(list);
 	}
@@ -246,4 +257,156 @@ public class PageDesignerController extends Controller {
 	private boolean checkPluginame(String pname){
 		return StringUtils.hasText(PublicDao.getFieldStr("fpluginame", " and fpluginame = '"+ pname +"'", Plugins.class));
 	}
+	
+	/**
+	 * 自定义模板上传
+	 * @author chasonx
+	 * @create 2017年5月17日 下午9:35:23
+	 * @update
+	 * @param  
+	 * @return void
+	 */
+	public void customTemplateUpload(){
+		boolean res= false;
+		try{
+			String basePath = PathKit.getWebRootPath();
+			String mainDir = "ctempfiles";
+			String date = DateFormatUtil.formatString("yyyyMMdd");
+			long st = System.nanoTime();
+			String savePath = File.separator + mainDir + File.separator + date + File.separator + st;
+			UploadFile file = getFile("filetemplateBrowserFile",basePath + File.separator + savePath + File.separator + "source");
+			
+			String siteGuid = getPara("tempSiteList");
+			String tempSiteName = getPara("tempSiteName");
+			String templateDesc = getPara("templateDesc");
+			siteGuid = StringUtils.hasText(siteGuid)?siteGuid:TokenUtil.getToken();
+			String adminGuid = DHttpUtils.getLoginUser(getRequest()).getStr("fguid");
+			
+			RarUtil.deCompress(basePath + File.separator + savePath + File.separator + "source" + File.separator + file.getFileName(),basePath + File.separator +  savePath + File.separator + "files");
+			List<FileEntity> files = FileListUtil.list(basePath + File.separator + savePath + File.separator + "files", "html");
+			for(int i = 0,len = files.size();i < len;i++){
+				PageDesigner pd = new PageDesigner();
+				pd.set("fguid", TokenUtil.getUUID())
+				.set("fsiteguid", siteGuid)
+				.set("fcustomsitename", tempSiteName)
+				.set("fadminguid", adminGuid)
+				.set("ftitle", files.get(i).getFileName())
+				.set("furl", savePath.replaceAll("\\\\", "/") + "/files/" + files.get(i).getFileName() )
+				.set("ftype", Constant.TemplateType.Custom)
+				.set("fmodifytime", date)
+				.set("fchecked", 2)
+				.set("fremark", templateDesc);
+				pd.save();
+			}
+			res = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		renderJson(res?1:0);
+	}
+	/**
+	 * 自定义模板列表
+	 * @author chasonx
+	 * @create 2017年5月18日 上午10:08:26
+	 * @update
+	 * @param  
+	 * @return void
+	 */
+	public void customTemplateFolder(){
+		int getType = getParaToInt("getType");
+		if(getType == 1){
+			renderJson(Db.find(kit.loadSqlData("selectCustomTemplateFolder")));
+		}else{
+			String siteGuid = getPara("siteGuid");
+			Integer pageNumber = getParaToInt("PageNumber");
+			Integer pageSize = getParaToInt("PageSize");
+			renderJson(Db.paginate(pageNumber, pageSize, kit.loadSqlData("selectCustomTemplateListField"), kit.loadSqlData("selectCustomTemplateList", new Record().set("siteGuid", siteGuid))));
+		}
+	}
+	
+	/**
+	 * 检测模板资源
+	 * @author chasonx
+	 * @create 2017年6月7日 下午1:48:55
+	 * @update
+	 * @param  
+	 * @return void
+	 */
+	public void checkTemplateResouceState(){
+		String[] tGuids = getParaValues("tGuids[]");
+		int res = 0;
+		if(tGuids != null){
+			PageResource resource;
+			String auditUrl = PublicDao.getFieldStr("localdir", " and filetype = '"+ Constant.Config.AuditResouce.toString() +"' " , TConfig.class);
+			for(int i = 0,len = tGuids.length;i < len;i++){
+				resource = PageResource.page.findFirst(kit.loadSqlData("selectTemplateRelateResouceEntity",new Record().set("tempGuid", tGuids[i])));
+				resource = TemplateUtil.checkResouceState(resource, auditUrl);
+				res += (resource.update()?1:0);
+			}
+		}
+		renderJson(res);
+	}
+	/**
+	 * 发布模板
+	 * @author chasonx
+	 * @create 2017年6月7日 下午1:49:29
+	 * @update
+	 * @param  
+	 * @return void
+	 */
+	public void publishTemplate(){
+		String[] tGuids = getParaValues("tGuids[]");
+		int res = 0;
+		String msg = "";
+		String xpackageUrl = "";
+		if(tGuids != null){
+			try{
+				String basePath = PathKit.getWebRootPath();
+				String tempPath = "";
+				String auditUrl = PublicDao.getFieldStr("localdir", " and filetype = '"+ Constant.Config.AuditResouce.toString() +"' " , TConfig.class);
+				xpackageUrl = PublicDao.getFieldStr("localdir", " and filetype = '"+ Constant.Config.PublishTemplate +"'", TConfig.class);
+				
+				List<PageDesigner> pages = PageDesigner.pDesigner.find("select * from " + PublicDao.getTableName(PageDesigner.class) + " where fguid in("+ StringUtils.join(tGuids, ",") +")");
+				if(!pages.isEmpty()){
+					PageDesigner pd;
+					PageResource pr;
+					String templateContent;
+					String confJsonName;
+					int jsIdx;
+					
+					for(int i = 0,len = pages.size();i < len;i++){
+						
+						pd = pages.get(i);
+						tempPath = pd.getStr("furl");
+						tempPath = tempPath.substring(0, tempPath.lastIndexOf("/") + 1);
+						
+						pr = PageResource.page.findFirst(kit.loadSqlData("selectTemplateRelateResouceEntity", new Record().set("tempGuid", pd.getStr("fguid"))));
+						
+						confJsonName = Constant.MEDIA_CTRL_PATH + "/" + pr.getStr("fguid") + ".json";
+						pr = TemplateUtil.downloadResouce(pr, auditUrl, basePath + tempPath + Constant.MEDIA_CTRL_PATH + "/" , Constant.MEDIA_CTRL_PATH + "/");
+						FileUtil.writeFile(basePath + tempPath + confJsonName,"{ \"data\" : [" + pr.getStr("fmediadata") + "] }",null);
+						
+						templateContent = FileUtil.readFile(basePath + pd.getStr("furl"), null) ;
+						jsIdx = templateContent.lastIndexOf("<ucgs-asset>");
+						if(jsIdx != -1)
+							templateContent = templateContent.substring(0, jsIdx);
+						
+						FileUtil.copyFile(new File(basePath + Constant.TEMPLATE_CTRL_JSNAME_V2),new File(basePath + tempPath + Constant.MEDIA_CTRL_JSNAME_V2) );
+						templateContent += "<ucgs-asset>\n<script src=\""+ Constant.MEDIA_CTRL_JSNAME_V2 +"\" type=\"text/javascript\"></script>";
+						templateContent  += "\n<script type=\"text/javascript\">$activePageADLoader.init('"+ confJsonName +"');</script>";
+						templateContent += "\n</ucgs-asset>";
+						
+						FileUtil.writeFile(basePath + pd.getStr("furl"), templateContent, null);
+					}
+					msg =  basePath + tempPath;
+				}
+			}catch(Exception e){
+				res = 500;
+				msg = e.getMessage();
+			}
+		}
+		
+		renderJson(new Record().set("result", res).set("path", msg).set("xpackager", xpackageUrl));
+	}
+	
 }

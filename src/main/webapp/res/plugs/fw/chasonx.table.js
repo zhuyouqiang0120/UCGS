@@ -78,7 +78,7 @@
 					 success : function(d){	
 						 if(typeof dataFilter == 'function') d = dataFilter(d);
 						 
- 						 Chasonx.Page.init('Page_' + _this.dataGridUid,d.totalRow,_this.pageSize,1,this,function(d){ _this.drawDataGrid(d); });
+ 						 Chasonx.Page.init('Page_' + _this.dataGridUid,d.totalRow,_this.pageSize,1,this,function(d){ _this.drawDataGrid(d,dataFilter); });
 						 _this.drawDataGrid(d);
 						 Chasonx.Wait.Hide();
 						 if(typeof fn == 'function') fn(d);
@@ -90,7 +90,8 @@
 				});
 				return this;
 			},
-			drawDataGrid : function(data){
+			drawDataGrid : function(data , dataFilter){
+				if(typeof dataFilter == 'function') data = dataFilter(data);
 				var line = '',_this = this,_temp,n,handler;
 				this.each(data.list,function(i,u){
 					line += '<tr class="dataGridTr" '+ (_this.check.name != ''?'onclick="TablesetTrFocus(this,\''+ _this.check.name +'\',\'CK_'+ _this.dataGridUid +'\')"':'') +'>';
@@ -132,6 +133,11 @@
 				});
 				if(data.list.length == 0) line = '<tr class="dataGridTr"><td colspan="'+ this.headSize +'" align="center">暂无数据</td></tr>';
 				this.$(this.dataGridUid).innerHTML = line;
+			},
+			unCheck : function(){
+				with(this){
+					$("CK_" + dataGridUid).checked = false;
+				}
 			},
 			each : function(data,callback){
 				if(!(data instanceof Array)) return;

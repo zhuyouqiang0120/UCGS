@@ -192,12 +192,18 @@ body					{background-color:#f6f6f6;}
     margin:0px auto;
     overflow: hidden;
     white-space: normal;
+    border-collapse:collapse;
+    border:none;
+    box-shadow: 0px 0px 4px #7b7b7b;
+    -moz-box-shadow: 0px 0px 4px #7b7b7b;
+    -webkit-box-shadow: 0px 0px 4px #7b7b7b;
 }
+.tableDefault  td {border:solid #e2e2e2 1px;}
 .tableDefault tr:nth-child(even) {
 	background : #efefef;
 }
 .trDefault				{
-	color:#49494a;  background: #c3c3c3; height:40px; font-weight:bold;
+	color:#49494a;  background: #f3f3f3; height:40px; font-weight:bold;
     text-shadow: 0px 0px 1px #dedede;-moz-text-shadow: 0px 0px 1px #dedede;-webkit-text-shadow: 0px 0px 1px #dedede;
 }
 .trDefault td{
@@ -255,4 +261,24 @@ body					{background-color:#f6f6f6;}
 .statisticsMenuItem 			{height: 28px; text-align: center; vertical-align: middle; line-height: 28px;background: #819dd4; color: #d8d8d8;cursor: pointer;transition:0.5s;-webkit-transition:0.5s;-moz-transition:0.5s;}
 .statisticsMenuItem:hover,.statisticsItemFocus{box-shadow: 0px 3px 2px #4968a9; -moz-box-shadow: 0px 3px 2px #4968a9; -webkit-box-shadow: 0px 3px 2px #4968a9; background: #bdbdbd; position: relative;color: #456fc1;}
 #statisticsLeft					{background : #cecece;}    					
+    									 
+/*plugins*/
+.tsPagePlugins 				    {height: 35px; vertical-align: middle; line-height: 35px; padding-left: 10px;position: relative;
+    							font-size: 18px; width: 90%;color: #ababab; margin-top: 5px; cursor:pointer;left : 5px;
+   								transition:.5s;-webkit-transition:.5s;-moz-transition:.5s;}
+.tsPagePlugins:hover,.tsPagePluginsFocus{background: #e6e6e6;left: 27px;z-index: 200;border-radius: 8px 0px 0px 8px;-moz-border-radius: 8px 0px 0px 8px;-webkit-border-radius: 8px 0px 0px 8px;color:#020202;}
+.plugInfo 						{font-size: 16px; color: #464646;border-bottom: 1px dotted #7d9a9c;margin:2px 0px;}
+.plugInfo label					{display:inline-block;width:15%;text-align:right;padding-right:8px;}
+    									 
+.customTempFolder 				{width:150px;height:150px;margin: 8px; background: #ececec; border-radius: 5px; box-shadow: 0px 0px 10px #888888;-moz-box-shadow: 0px 0px 10px #888888;-webkit-box-shadow: 0px 0px 10px #888888;
+								cursor:pointer;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;display:inline-block;position:relative;}
+.customTempFolder:hover			{background:#dedede; }	
+.customTempFolder:hover i		{color:#444;}	
+.customTempFolder div:nth-child(1){width:100%;height:100%;position: relative;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;left:0px;top:0px;}
+.customTempFolder i				{font-size: 60px; display: inline-block; width: 100%; text-align: center; color: #252525;}
+.customTempFolder p:nth-child(2){display: block; color: #1b1b1b; text-align: center; font-size: 18px;}
+.customTempFolder p:nth-child(3){padding: 8px; color: #656464;}
+.customTempFolderFocus			{background: #f6f6f6;z-index: 2000;border-radius: 5px; box-shadow: 0px 0px 10px #444;-moz-box-shadow: 0px 0px 10px #444;-webkit-box-shadow: 0px 0px 10px #444; }
+.customTempFolderFocus p		{color : #676767 !important;overflow:auto; overflow-x:hidden;}
+.customFocusClose				{position: absolute;right: 8px; top: 8px; font-size: 30px; cursor: default;}
     									 

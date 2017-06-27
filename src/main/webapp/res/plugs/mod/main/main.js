@@ -170,7 +170,7 @@
 		window.location.reload();
 	}
 	
-	window.onload = function(){
+	$(function(){
 		var _current_skin = ChasonTools.getCookie("UCGS_DEF_SKIN_TYPE");
 		Main.init(_current_skin);
 		UCGS.loadMenu();
@@ -252,5 +252,5 @@
 						//<span onclick="_setDefaultSkin(\'frostedGlass\')">毛玻璃'  + (_current_skin == 'frostedGlass'?'<b>√</b>':'') + '</span></div>';
 			Chasonx.Tips.Show({id:'ucgs_main_btn_changeskin',text:html,direction:'bottom',width:90,height:124});
 		});
-	};
+	});
 })(window,$);

@@ -136,6 +136,8 @@ var TopicSet = {
 						getAjaxData(DefConfig.Root + '/main/topic/topicdelete',data,function(d){
 							Chasonx.Hint.Success('操作成功');
 							TopicSet.loadTopic();
+							
+							TopicSet._table.unCheck();
 						});
 						
 						return true;
@@ -160,6 +162,8 @@ var TopicSet = {
 						getAjaxData(DefConfig.Root + '/main/topic/topicsettop',{'idStr':idStr,'top':state},function(d){
 							Chasonx.Hint.Success('主题状态已更改');
 							TopicSet.loadTopic();
+							
+							TopicSet._table.unCheck();
 						});
 						
 						return true;
@@ -382,7 +386,7 @@ window.onload = function(){
 	setTimeout(function(){
 		Chasonx.DragBox({
 			target : 'rightPanel',
-			lineColor : '#ADADAD',
+			lineColor : _GetBoxLineColor(),
 			items : [
 			         {id : 'draglistLeft',width : '10' },
 			         {id : 'dragListCenter',width : '15'},

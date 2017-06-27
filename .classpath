@@ -63,5 +63,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/fastjson/fastjson-1.2.32.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

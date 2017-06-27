@@ -183,7 +183,6 @@ body					{background-color:#5a5a5a;}
 .btnsmall 	   	{width:60px;height:20px;font-size:12px;padding: .1em 0.2em .1em;}
 
 .tableDefault			{
-	border: 1px  solid #464646;
     font-size: .9em;
    /* box-shadow:0px 0px 5px #333030;
 	-webkit-box-shadow:0px 0px 5px #333030;
@@ -196,12 +195,18 @@ body					{background-color:#5a5a5a;}
     margin:0px auto;
     overflow: hidden;
     white-space: normal;
+    border-collapse:collapse;
+    border:none;
+    box-shadow: 0px 0px 4px #000;
+    -moz-box-shadow: 0px 0px 4px #000;
+    -webkit-box-shadow: 0px 0px 4px #000;
 }
+.tableDefault  td {border:solid #424242 1px;}
 .tableDefault tr:nth-child(even) {
-	background : #b3b3b3;
+	background : #4c4c4c;
 }
 .trDefault				{
-	color:#b7b7b7;  background: #545454; height:40px; font-weight:bold;
+	color:#f6f6f6;  background: #373737; height:40px; font-weight:bold;
     text-shadow: 0px 0px 1px #404040;-moz-text-shadow: 0px 0px 1px #404040;-webkit-text-shadow: 0px 0px 1px #404040;
 }
 .trDefault td{
@@ -216,7 +221,7 @@ body					{background-color:#5a5a5a;}
 	text-align: center;
 }
 .dataGridTr			{
-	background: #929292;
+	background: #505050;
 	height:30px !important;
 	overflow:hidden;
 	color:#f6f6f6;
@@ -233,12 +238,13 @@ body					{background-color:#5a5a5a;}
     height:30px;
    }
 .dataGridTr:hover		{
-	background: #E8D2A7 !important;
+	background: #118048  !important;
 }
 .dataGridTr:hover .tdOverHide{height:auto !important;}
 
 .dataGridTrFocus 	 	{
-	background: #E8D2A7 !important;
+	background: #118048  !important;
+	color: #fff;
 }
 .dataGridTr td,.dataGridTrFocus td{
 	text-align: left;
@@ -263,11 +269,24 @@ body					{background-color:#5a5a5a;}
 
 /*plugins*/
 .tsPagePlugins 				    {height: 35px; vertical-align: middle; line-height: 35px; padding-left: 10px;position: relative;
-    							font-size: 18px; width: 90%;color: #dec89f; margin-top: 5px; cursor:pointer;left : 5px;
+    							font-size: 18px; width: 90%;color: #b5b5b5; margin-top: 5px; cursor:pointer;left : 5px;
    								text-shadow: 0px 0px 2px #565656;-moz-text-shadow: 0px 0px 2px #565656;-webkit-text-shadow: 0px 0px 2px #565656;
    								transition:.5s;-webkit-transition:.5s;-moz-transition:.5s;}
-.tsPagePlugins:hover,.tsPagePluginsFocus{background: #608082;left: 25px;z-index: 200;border-radius: 8px 0px 0px 8px;-moz-border-radius: 8px 0px 0px 8px;-webkit-border-radius: 8px 0px 0px 8px;}
-.plugInfo 						{font-size: 16px; color: #bdd1d2;border-bottom: 1px dotted #7d9a9c;margin:2px 0px;}
+.tsPagePlugins:hover,.tsPagePluginsFocus{background: #404040;left: 25px;z-index: 200;border-radius: 8px 0px 0px 8px;-moz-border-radius: 8px 0px 0px 8px;-webkit-border-radius: 8px 0px 0px 8px;}
+.plugInfo 						{font-size: 16px; color: #ffffff;border-bottom: 1px dotted #7d9a9c;margin:2px 0px;}
 .plugInfo label					{display:inline-block;width:15%;text-align:right;padding-right:8px;}
+
+
+.customTempFolder 				{width:150px;height:150px;margin: 8px; background: #545454; border-radius: 5px; box-shadow: 0px 0px 10px #171717;-moz-box-shadow: 0px 0px 10px #171717;-webkit-box-shadow: 0px 0px 10px #171717;
+								cursor:pointer;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;display:inline-block;position:relative;}
+.customTempFolder:hover			{background:#171717; box-shadow:0px 0px 10px #dedede;-moz-box-shadow:0px 0px 10px #dedede;-webkit-box-shadow:0px 0px 10px #dedede;}	
+.customTempFolder:hover i		{color:#444;}	
+.customTempFolder div:nth-child(1){width:100%;height:100%;position: relative;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;left:0px;top:0px;}
+.customTempFolder i				{font-size: 60px; display: inline-block; width: 100%; text-align: center; color: #252525;}
+.customTempFolder p:nth-child(2){display: block; color: #d8d8d8; text-align: center; font-size: 18px;}
+.customTempFolder p:nth-child(3){padding: 8px; color: #929292;}
+.customTempFolderFocus			{background: #545454;z-index: 2000;border-radius: 5px; box-shadow: 0px 0px 10px #444;-moz-box-shadow: 0px 0px 10px #444;-webkit-box-shadow: 0px 0px 10px #444; }
+.customTempFolderFocus p		{color : #c5c5c5 !important;overflow:auto; overflow-x:hidden;}
+.customFocusClose				{position: absolute;right: 8px; top: 8px; font-size: 30px; cursor: default;}
 
 

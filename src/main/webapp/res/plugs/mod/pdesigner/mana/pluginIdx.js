@@ -79,12 +79,31 @@ var TSPlugins = {
 };
 
 window.onload = function(){
+	
+	var skinName = _GetSkinName();
+	var fc,fcb,fb,fbb,_border,_tb;
+	if('lightblue' == skinName){
+		fc = '#4a4747';
+		fcb = '#525252';
+		fb = '#e6e6e6';
+		fbb = '#d8d7d7';
+		_border = false;
+		_tb = '#fff';
+	}else{
+		fc = '#f1f1f1';
+		fcb = '#b1b1b1';
+		fb = '#404040';
+		fbb = '#2f2f2f';
+		_border = '#717171';
+		_tb = '#757575';
+	}
+	
 	Chasonx.Frameset({
 		  main : 'mainPanel',
 	      window : {
 	          top : { id : 'topPanel', height : '70px',bgColor : false,border : false},
-	          left : { id : 'leftPanel',width : '20%',slide : false,bgColor : false,border : '#717171',title : '插件列表',titleBgColor : '#757575',color : '#b7b4b4'},
-	          right:{ id:'rightPanel', width : '80%' ,bgColor : false ,border : '#717171'}
+	          left : { id : 'leftPanel',width : '20%',slide : false,bgColor : false,border : _border,title : '插件列表',titleBgColor : _tb,color : '#b7b4b4'},
+	          right:{ id:'rightPanel', width : '80%' ,bgColor : false ,border : _border}
 	      }
 	});
 	
@@ -92,15 +111,15 @@ window.onload = function(){
 	   	id : 'rightPanel',
 	   	bHeight : 30,
 	   	bWidth : 150,
-	   	fontColor : '#f1f1f1',
-	   	fontBlurColor : '#b0d0d2',
+	   	fontColor : fc,
+	   	fontBlurColor : fcb,
 	   	itemGroup :[
 	   	      {  
 	   	    	  position : 'top|left',
 				  items :[{
 				   		title : '插件信息',
-				   		focusColor : '#608082',
-				   		blurColor : '#608082',
+				   		focusColor : fb,
+				   		blurColor : fbb,
 				   		panelId : 'pluginTab0',
 				   		handler : function(){
 				   			TSPlugins.setTabIdx(0);
@@ -108,8 +127,8 @@ window.onload = function(){
 				   	},
 				   	{	
 				   		title : '源码',
-				   		focusColor : '#556265',
-				   		blurColor : '#556265',
+				   		focusColor : fb,
+				   		blurColor : fbb,
 				   		panelId  : 'pluginTab1',
 				   		handler : function(){
 				   			TSPlugins.setTabIdx(1);
@@ -117,8 +136,8 @@ window.onload = function(){
 				   	},
 				   	{
 				   		title : 'API',
-				   		focusColor : '#45675f',
-				   		blurColor : '#45675f',
+				   		focusColor : fb,
+				   		blurColor : fbb,
 				   		panelId  : 'pluginTab2',
 				   		handler : function(){
 				   			TSPlugins.setTabIdx(2);

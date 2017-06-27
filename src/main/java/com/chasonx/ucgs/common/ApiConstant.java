@@ -22,5 +22,6 @@ package com.chasonx.ucgs.common;
 public class ApiConstant {
 
 	public static final String jsonpName = "jsoncallback";
+	public static final String jsonpDesc = "jsonp参数名";
 	public static final String tscalerPreviewUrl = "/UCGS/data/preview/";
 }

@@ -15,15 +15,21 @@ package com.chasonx.ucgs.api;
 
 import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.StringUtils;
+import com.chasonx.ucgs.annotation.Api;
+import com.chasonx.ucgs.annotation.ApiRemark;
+import com.chasonx.ucgs.annotation.ApiTitle;
 import com.chasonx.ucgs.annotation.ParaEntity;
 import com.chasonx.ucgs.annotation.ParamInterceptor;
 import com.chasonx.ucgs.annotation.Required;
 import com.chasonx.ucgs.common.ApiConstant;
+import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.HttpStateEntity;
 import com.chasonx.ucgs.common.PageViewConstant;
+import com.chasonx.ucgs.common.SystemConstant;
 import com.chasonx.ucgs.dao.ColumnDao;
 import com.chasonx.ucgs.dao.StatisticsDao;
 import com.chasonx.ucgs.dao.TopicDao;
+import com.chasonx.ucgs.dao.TopicOuterResourceFixed;
 import com.chasonx.ucgs.entity.Topic;
 import com.chasonx.ucgs.entity.TopicContent;
 import com.jfinal.aop.Before;
@@ -40,6 +46,17 @@ import com.jfinal.plugin.activerecord.tx.Tx;
  */
 public class TopicApi extends Controller {
 
+	public void api(){
+		String result = "";
+		try {
+			result = Api.getInfo(TopicApi.class, "/UCGS/api/topic", "POST/GET","UCGS主题注入接口");
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = e.getMessage();
+		}
+		renderHtml(result);
+	}
+	
 	/**
 	 * 注入主题数据
 	 * @author chasonx
@@ -48,21 +65,24 @@ public class TopicApi extends Controller {
 	 * @param  
 	 * @return void
 	 */
+	@ApiTitle("UCGS主题注入接口")
+	@ApiRemark("第三方接口注入主题资源")
 	@Required({
-		@ParaEntity(name = "topicId",xlen = 40),
-		@ParaEntity(name = "tcolmunId",xlen = 40),
-		@ParaEntity(name = "tsiteId",xlen = 40),
-		@ParaEntity(name = "title",xlen = 300),
-		@ParaEntity(name = "tsource",xlen = 100),
-		@ParaEntity(name = "tclass",xlen = 2),
-		@ParaEntity(name = "tcontent"),
-		@ParaEntity(name = "tinjecter",xlen = 40),
-		@ParaEntity(name = "thumbnail",xlen = 400,empty = false),
-		@ParaEntity(name = "tinjectTime",xlen = 40,empty = false),
-		@ParaEntity(name = "tlable",xlen = 200,empty = false),
-		@ParaEntity(name = "tsummary",xlen = 500,empty = false),
-		@ParaEntity(name = "tpvSize",xlen = 11,empty = false),
-		@ParaEntity(name = "titleSec",xlen = 200,empty = false)
+		@ParaEntity(name = "topicId",xlen = 40,desc = "主题Id"),
+		@ParaEntity(name = "tcolmunId",xlen = 40,desc = "栏目Guid"),
+		@ParaEntity(name = "tsiteId",xlen = 40,desc = "站点Guid"),
+		@ParaEntity(name = "title",xlen = 500,desc = "标题"),
+		@ParaEntity(name = "tsource",xlen = 100,desc = "来源"),
+		@ParaEntity(name = "tclass",xlen = 2,desc = "分类"),
+		@ParaEntity(name = "tcontent",desc = "内容"),
+		@ParaEntity(name = "tinjecter",xlen = 40,desc = "编辑人"),
+		@ParaEntity(name = "thumbnail",xlen = 400,empty = true,desc = "缩略图路径"),
+		@ParaEntity(name = "tinjectTime",xlen = 40,empty = true,desc = "注入时间"),
+		@ParaEntity(name = "tlable",xlen = 200,empty = true,desc = "标签"),
+		@ParaEntity(name = "tsummary",xlen = 500,empty = true,desc = "简介"),
+		@ParaEntity(name = "tpvSize",xlen = 11,empty = true,desc = "浏览量"),
+		@ParaEntity(name = "titleSec",xlen = 500,empty = true,desc = "二级标题"),
+		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpName,empty = true)
 	})
 	@Before(ParamInterceptor.class)
 	public void inject(){
@@ -84,7 +104,13 @@ public class TopicApi extends Controller {
 			String tcontent = getPara("tcontent");
 			String tinjecter = getPara("tinjecter");
 			String tinjectTime= getPara("tinjectTime");
+			String auditStatus = getPara("auditStatus"); //审核状态
 			
+			tcontent = StringUtils.deUnicode(tcontent);
+			tcontent = TopicOuterResourceFixed.filterOutResouceContent(tcontent, tsiteId, Constant.FILE_TYPE_IMAGE, tinjecter, "");
+			
+			if(StringUtils.hasText(fthumbnail) && fthumbnail.indexOf(SystemConstant.SYS_CODE) == -1 && fthumbnail.indexOf(Constant.IMG_CATCH_DIR) == -1)
+				fthumbnail = "/" + SystemConstant.SYS_CODE + TopicOuterResourceFixed.filterOutResouceStr(fthumbnail, tsiteId, Constant.FILE_TYPE_IMAGE, StringUtils.deUnicode(tinjecter), "");
 			
 			if(null == Topic.infomationDao.findFirst("select * from t_topic where fguid = ?",topicId)){
 				Topic t = new Topic();
@@ -94,19 +120,21 @@ public class TopicApi extends Controller {
 				.set("freleasetime", StringUtils.hasText(tinjectTime)?tinjectTime : DateFormatUtil.formatString(null))
 				.set("freleaseer", StringUtils.deUnicode(tinjecter)).set("fthumbnail", fthumbnail)
 				.set("flable", StringUtils.hasText(flable)?StringUtils.deUnicode(flable):null).set("fpvsize", StringUtils.hasText(fpvsize)?fpvsize:0);
-				
-	//			if(tclass == Constant.TOPIC_TYPE_VIDEO){
-	//				t.set("fextdata", tcontent);
-	//				t.save();
-	//			}else{
 				t.save();
+				
 				TopicContent topicCon = new TopicContent();
 				topicCon.set("ftopicguid",topicId)
-				.set("fcontent", StringUtils.deUnicode(tcontent))
+				.set("fcontent", tcontent)
 				.save();
-	//			}
+				
 				TopicDao.addTopicRelate(tcolumnId, topicId, null, 0, tsiteId, 0);
 				ColumnDao.changeCheckSize(tcolumnId, 1, 0,0);
+				
+				if(StringUtils.hasText(auditStatus) && auditStatus.equals("check") ){
+					TopicDao.updateTopicCheck(new String[]{topicId}, Constant.TOPIC_CHECK_SUCCESS);
+					TopicDao.modifyTopicForColumnAttrReSet("'" + topicId + "'", "check", false);
+				}
+				
 				he.setCode(200);
 				he.setResult("ok");
 			}else{
@@ -118,7 +146,7 @@ public class TopicApi extends Controller {
 		}catch(Exception e){
 			e.printStackTrace();
 			he.setCode(500);
-			he.setResult("exception");
+			he.setResult(e.getMessage());
 		}
 		
 		if(StringUtils.hasText(fn)) renderJavascript(fn + "("+ JsonKit.toJson(he) +")");
@@ -133,8 +161,11 @@ public class TopicApi extends Controller {
 	 * @param  
 	 * @return void
 	 */
+	@ApiTitle("主题下架")
+	@ApiRemark("下架后可在回收站恢复")
 	@Required({
-		@ParaEntity(name = "topicId")
+		@ParaEntity(name = "topicId",desc = "主题Guid"),
+		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpName,empty = true)
 	})
 	@Before({ParamInterceptor.class,Tx.class})
 	public void underFrame(){
@@ -170,8 +201,11 @@ public class TopicApi extends Controller {
 	 * @param  
 	 * @return void
 	 */
+	@ApiTitle("主题删除")
+	@ApiRemark("主题删除后不可恢复")
 	@Required({
-		@ParaEntity(name = "topicId")
+		@ParaEntity(name = "topicId",desc = "主题Guid"),
+		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpName,empty = true)
 	})
 	@Before({ParamInterceptor.class,Tx.class})
 	public void delete(){
@@ -183,7 +217,7 @@ public class TopicApi extends Controller {
 			String tidStr =  StringUtils.join(tids, ",");
 			int res = Db.update(" update t_topic_relate set fdelete = 1 where ftopicguid in (" + tidStr + ")");
 			if(res > 0){
-				 TopicDao.modifyTopicForColumnAttrReSet(tidStr, "recyle" ,false);
+				 TopicDao.modifyTopicForColumnAttrReSet(tidStr, "delete" ,false);
 			}
 			he.setCode(200);
 			he.setResult("ok");

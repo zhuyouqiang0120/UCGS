@@ -129,7 +129,7 @@ window.onload = function(){
 	setTimeout(function(){
 		Chasonx.DragBox({
 			target : 'rightPanel',
-			lineColor : '#ADADAD',
+			lineColor : _GetBoxLineColor(),
 			items : [
 			         {id : 'draglistLeft',width : '15' },
 			         {id : 'dragListCenter',width : '15'},

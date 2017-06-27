@@ -139,6 +139,7 @@ var MenuDialog = {
 		 chooseMenu : function(id,O,T){
 			 $("input[type='checkbox'][name='menuChild" + id +"']").attr('checked',O.checked).each(function(){
 				 $("input[type='checkbox'][name='menuChild"+ this.value +"']").attr('checked',this.checked);
+				 $("input[type='checkbox'][name='menuUseBtn"+ this.value +"']").attr('checked',this.checked);
 			 });
 			 if(T == true) this.thinkChoose(O);
 		 },
@@ -157,6 +158,7 @@ var MenuDialog = {
 			 
 			 if($("#" + _n)[0] != undefined)
 				 this.thinkChoose($("#" + _n)[0]);
+			 $("input[type='checkbox'][name='menuUseBtn"+ O.value +"']").attr('checked',O.checked);
 		 },
 		 showOrhide : function(id,O){
 			 if($("#" + id).css('display') == 'none'){

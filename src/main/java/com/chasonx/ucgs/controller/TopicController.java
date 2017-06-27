@@ -9,7 +9,6 @@
 package com.chasonx.ucgs.controller;
 
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.Map;
 
 import com.chasonx.directory.FileUtil;
 import com.chasonx.tools.DateFormatUtil;
-import com.chasonx.tools.Md5Util;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.tools.TokenUtil;
 import com.chasonx.ucgs.annotation.AnnPara;
@@ -31,8 +29,8 @@ import com.chasonx.ucgs.config.PageUtil;
 import com.chasonx.ucgs.dao.BadWordDao;
 import com.chasonx.ucgs.dao.ColumnDao;
 import com.chasonx.ucgs.dao.TopicDao;
+import com.chasonx.ucgs.dao.TopicOuterResourceFixed;
 import com.chasonx.ucgs.entity.Column;
-import com.chasonx.ucgs.entity.ResourceEntity;
 import com.chasonx.ucgs.entity.Template;
 import com.chasonx.ucgs.entity.Topic;
 import com.chasonx.ucgs.entity.TopicContent;
@@ -40,7 +38,6 @@ import com.chasonx.ucgs.entity.TopicRelate;
 import com.chasonx.ucgs.interceptor.Form;
 import com.chasonx.ucgs.interceptor.Para;
 import com.chasonx.ucgs.interceptor.SaveLog;
-import com.chasonx.upload.DownLoadFileUtil;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.interceptor.POST;
@@ -182,7 +179,7 @@ public class TopicController extends Controller {
 			
 			info.set("freleaseer", logRec.get("fadminname"));
 			info.set("freleasetime", DateFormatUtil.formatString(null));
-			if(!StringUtils.hasText(info.getStr("fguid")))	info.set("fguid", Tools.getGuid());
+			if(!StringUtils.hasText(info.getStr("fguid")))	 info.set("fguid", Tools.getGuid());
 			Long id = TopicDao.addTopic(info);
 			
 			if(id != null){
@@ -209,28 +206,30 @@ public class TopicController extends Controller {
 	public void textTopicOperation(){
 		Topic topic = Tools.recordConvertModel((Record)getAttr("RequestPara"), Topic.class);
 		String colGuid = getPara("colguid");
+		String siteGuid = getPara("siteGuid");
+		Record logRec = DHttpUtils.getLoginUser(getRequest());
+		
 		Integer tempId = getParaToInt("templateId");
 		int type = getParaToInt("type");
 		String[] contents = getParaValues("contents[]");
 		
 		boolean res = false;
-		if(contents != null && contents.length > 0)
+		if(contents != null && contents.length > 0){
+			contents = TopicOuterResourceFixed.filterOutResouceContent(contents, siteGuid, Constant.FILE_TYPE_IMAGE, logRec.getStr("fadminname"), logRec.getStr("fguid"));
 			contents = badWordReplace(contents,false);
+		}
 		topic = topicAttrFilter(topic);
 		
 		switch (type) {
 		case 1:
 			String guid = Tools.getGuid();
 			int topicType = getParaToInt("topicType");
-			String siteGuid = getPara("siteGuid");
-			
-			Record logRec = DHttpUtils.getLoginUser(getRequest());
-			
 			topic.set("fguid", guid);
 			topic.set("freleaseer", logRec.get("fadminname"));
 			topic.set("freleasetime", DateFormatUtil.formatString(null));
 			res = topic.save();
 			if(res){
+				
 				TopicDao.addTopicContent(contents, guid);
 				
 				if(topic.getLong("id") != null){
@@ -391,35 +390,16 @@ public class TopicController extends Controller {
 	public void downLinkImage(){
 		String imgUrl = getPara("imgUrl");
 		String siteGuid = getPara("siteGuid");
-		int type =  getParaToInt("ftype");
-		String fileName = System.currentTimeMillis() + imgUrl.substring(imgUrl.lastIndexOf("/") + 1, imgUrl.length());
+		Record loginUser = DHttpUtils.getLoginUser(getRequest());
+		
 		int res = 0;
 		try{
-			String localPath = PathKit.getWebRootPath() + "/files/upload/";
-			DownLoadFileUtil.getRemoteFile(imgUrl, localPath , fileName);
-			File file = new File(localPath + fileName);
-			if(file.exists() && file.length() <= Constant.POST_FILE_MAX_SIZE){
-				ResourceEntity entity = new ResourceEntity();
-				entity.set("fguid", Tools.getGuid());
-				entity.set("fassetname", fileName);
-				entity.set("fmd5code", Md5Util.md5File(file));
-				entity.set("fname", fileName);
-				entity.set("fsize", file.length());
-				entity.set("ftype",type);
-				entity.set("fsiteguid", siteGuid);
-				entity.set("fpath", "/files/upload/" + fileName);
-				entity.set("fuploadtime", DateFormatUtil.formatString(null));
-				entity.set("fuploader", DHttpUtils.getLoginUser(getRequest()).getStr("fadminname"));
-				entity.set("fadminguid",DHttpUtils.getLoginUser(getRequest()).getStr("fguid"));
-				res = entity.save()?1:0;
-			}else{
-				res = -1;
-				file.deleteOnExit();
-			}
+			imgUrl = TopicOuterResourceFixed.filterOutResouceStr(imgUrl, siteGuid, Constant.FILE_TYPE_IMAGE, loginUser.getStr("fadminname"), loginUser.getStr("fguid"));
+			res = 1;
 		}catch(Exception e){
 			res = 0;
 		}
-		renderJson("{\"local\":\"/files/upload/" + fileName + "\",\"result\":\""+ res +"\"}");
+		renderJson("{\"local\":\"" + imgUrl + "\",\"result\":\""+ res +"\"}");
 	}
 	
 	@AnnPara("查询主题模板列表")

@@ -3,12 +3,15 @@
 	<SqlDataItem id="selectPageTemplateListField">
 		select p.id,p.fguid,p.fsiteguid,p.fadminguid,p.ftitle,p.furl,p.fstate,p.flinkpageurl,p.fmodifytime,
 		p.fchecked,s.fsitename as sitename,u.fadminname as adminname,p.fwidth,p.fheight,
-		p.fdevicetype,p.fremark,p.fdevicedesc
+		p.fdevicetype,p.fremark,p.fdevicedesc,o.funcheckedcount as uncheckCount
 	</SqlDataItem>
 	<SqlDataItem id="selectPageTemplateList">
 		from t_pagedesigner p
 		INNER JOIN t_site s ON p.fsiteguid = s.fguid
-		INNER JOIN t_adminuser u ON p.fadminguid = u.fguid where 1 = 1
+		INNER JOIN t_adminuser u ON p.fadminguid = u.fguid
+		LEFT JOIN t_pageresource_relate r ON p.fguid = r.ftemplateguid
+		LEFT JOIN t_pageresource o ON o.fguid = r.ftemplateresguid
+		 where 1 = 1
 		<if test="siteGuid != null">
 			and p.fsiteguid = '{siteGuid}'
 		</if>
@@ -24,6 +27,48 @@
 		<if test="groupby != null">
 			{groupby}
 		</if>
+		<if test="tempType != null">
+		    and p.ftype = {tempType}
+		</if>
 		 order by p.id desc
+	</SqlDataItem>
+	<SqlDataItem id="selectPageTemplateResouceLibList">
+	    SELECT fguid as `key`,fdata as `data`,fmediadata as mediaData,ftype as dataType,fposition as position ,fprovider as provider FROM `t_pageresource` t
+	    <if test="templateGuid != null">
+	        inner join t_pageresource_relate r on t.fguid = r.ftemplateresguid
+	    </if>
+	    where 1 = 1
+	    <if test="dataType != null">
+	        and t.ftype = {dataType}
+	    </if>
+	    <if test="position != null">
+	        and t.fposition = '{position}'
+	    </if>
+	    <if test="templateGuid != null">
+	        and r.ftemplateguid = '{templateGuid}'
+	    </if>
+	    <if test="key != null">
+	        and t.fguid = '{key}'
+	    </if>
+	    order by t.id desc limit 0,10
+	</SqlDataItem>
+	<SqlDataItem id="selectCustomTemplateFolder">
+	    SELECT fsiteguid,fcustomsitename,fremark FROM `t_pagedesigner` where ftype = 1 GROUP BY fsiteguid ORDER BY id desc
+	</SqlDataItem>
+	<SqlDataItem id="selectCustomTemplateListField">
+	    SELECT p.*,s.funcheckedcount as uncheckCount 
+	</SqlDataItem>
+	<SqlDataItem id="selectCustomTemplateList">
+	    FROM t_pagedesigner p 
+	    LEFT JOIN t_pageresource_relate r ON p.fguid = r.ftemplateguid
+		LEFT JOIN t_pageresource s ON s.fguid = r.ftemplateresguid 
+		where p.ftype = 1 
+	    <if test="siteGuid != null">
+	       and  p.fsiteguid = '{siteGuid}'
+	    </if>
+	</SqlDataItem>
+	<SqlDataItem id="selectTemplateRelateResouceEntity">
+	    select s.* from t_pageresource s INNER JOIN t_pageresource_relate r 
+	    ON s.fguid = r.ftemplateresguid where r.ftemplateguid = '{tempGuid}' order by r.id desc limit 0,1
 	</SqlDataItem>
 </SqlDataItems>

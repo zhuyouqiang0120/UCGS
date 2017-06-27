@@ -41,12 +41,45 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <meta name="author" content="Chasonx">
 <title>模板列表</title>
 <#include "../../common/head.ftl">
-<script text="javascript/text" src="${basePath}/res/plugs/mod/pdesigner/mana/templateIdx.js"></script>
+<script text="javascript/text" src="${basePath}/res/plugs/lib/jquery.form.js"></script>
+<script text="javascript/text" src="${basePath}/res/plugs/fw/chasonx.tab.js"></script>
+<script type="text/javascript" src="${basePath}/main/load/jsLoader?_param=
+     mod/site/SitePub,mod/pdesigner/mana/templateIdx,fw/chasonx.simpleupload"></script>
 </head>
 <body>
 <div id="mainPanel">
 	<div id="topPanel"><@PermisstionBtnHtml /></div>
-	<div id="centerPanel"></div>
+	<div id="centerPanel">
+		<div id="templateListTab"></div>
+		<div id="customTemplateList"></div>
+		<div id="templateUploadTab">
+			<div class="tips"></div>
+			<div class="templateUpload" >
+				<div class="domPanelBox">
+					<domitem style="color:#bdbdbd">选择站点：</domitem>
+					<domitem><select class="inputText select" id="tempSiteList" onchange="PDesTemplate.siteSelectChange(this)"></select>
+					<input type="text" id="tempSiteName" class="inputText" req="true" style="position: relative; left: -50.5%;top:-1px; width: 42%; border: none;background:#f6f6f6;"/>
+					</domitem>
+				</div>
+				<div class="domPanelBox">
+					<domitem style="color:#bdbdbd">选择文件：</domitem>
+					<domitem><input type="text" id="templateFileVal" req="true" class="inputText textBrowse" readonly="readonly"/><input type="button" class="button browse" value="浏览" id="templateBrowserFile"/></domitem>
+				</div>
+				<div class="domPanelBox">
+					<domitem style="color:#bdbdbd">模板描述：</domitem>
+					<domitem><input id="templateDesc" type="text" req="true" class="inputText" /></domitem>
+				</div>
+				<div class="domPanelBox">
+					<domitem>&nbsp;</domitem>
+					<domitem><div class="templateUploadState"></div></domitem>
+				</div>
+				<div class="domPanelBox">
+					<domitem>&nbsp;</domitem>
+					<domitem><input type="button" id="templateStartUPload" class="button blue" value="开始上传"/></domitem>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 </body>
 </html>

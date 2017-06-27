@@ -55,7 +55,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		
 		Chasonx.DragBox({
 			target : 'rightPanel',
-			lineColor : '#ADADAD',
+			lineColor : _GetBoxLineColor(),
 			items : [
 			         {id : 'dragLeft',width : '15' },
 			         {id : 'dragRight',width : '85' }
