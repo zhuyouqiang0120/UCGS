@@ -90,7 +90,8 @@ public class Constant {
 		UDimension,
 		TopicExtendView,
 		AuditResouce,
-		PublishTemplate
+		PublishTemplate,
+		DataCacheTime
 	};
 	/**
 	 * 权限 类型

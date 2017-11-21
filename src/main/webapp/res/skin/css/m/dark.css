@@ -181,6 +181,7 @@ body					{background-color:#5a5a5a;}
 .browseOk	 	{height:32px;color:#f9b156;border-radius: 0px 8px 8px 0px !important;-moz-border-radius: 0px 8px 8px 0px !important;-webkit-border-radius: 0px 8px 8px 0px !important;}
 .btnround 		{border-radius:50% !important;-moz-border-radius:50% !important;-webkit-border-radius:50% !important;padding:.2em;min-width:1px !important;}
 .btnsmall 	   	{width:60px;height:20px;font-size:12px;padding: .1em 0.2em .1em;}
+.btndisable 	{color:#9B9B9B;background: #ccc;cursor: url("../default/no.png"),default;}
 
 .tableDefault			{
     font-size: .9em;

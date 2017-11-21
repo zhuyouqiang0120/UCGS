@@ -107,7 +107,7 @@ input[type="button"]{font-family: "微软雅黑","幼圆","宋体","黑体","Ari
 	height:20px;
 }
 .textReadyOnly {
-	background: #F2F2F2;
+	background: #d0d0d0;
 	cursor: url("default/no.png"),default;
 }
 .inputTextErr {
@@ -256,4 +256,3 @@ input[type="button"]{font-family: "微软雅黑","幼圆","宋体","黑体","Ari
 .totalDefault .tbtn select{
 	width:90px;padding:3px 0px 3px 0px;font-size:10px;height: 26px;border: 1px solid #ccc;cursor: pointer;background: #f7f7f7;color:#777575;
 }
-

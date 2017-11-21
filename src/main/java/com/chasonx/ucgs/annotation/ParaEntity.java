@@ -35,4 +35,6 @@ public @interface ParaEntity {
 	 String desc() default "";
 	 /*类型*/
 	 String type() default "String";
+	 /*类型*/
+	 Class<?> typeClass() default String.class;
 }

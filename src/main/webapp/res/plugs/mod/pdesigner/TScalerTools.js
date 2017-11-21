@@ -67,6 +67,7 @@
 		 	draw.appendChild(ele);
 		},
 		creatEle : function(){
+			
 			var _e = document.createElement(this.config.eleType),_eid = 'TsNo_' + (Math.random() + '').replace('.','');
 			if(this.config.id != undefined) _eid = this.config.id;
 			_e.setAttribute('id',_eid);
@@ -182,8 +183,11 @@
 						_PanelContros.slideDown();
 					}
 				});
-				
+			
+				$(".ConItem").die('mousedown');
 				$(".ConItem").live('mousedown',function(){
+					console.log(12);
+					
 					var _this = $(this);
 					Chasonx.FastMove(_this[0],$_this._drawPanelId,function(e){
 						e = e || window.event;
@@ -240,8 +244,11 @@
 		 },
 		 removeLiveCtrlItem : function(id){
 			 for(var i = 0,len = this.liveCtrlContainer.length;i < len;i++){
-				 if(this.liveCtrlContainer[i].config.id == id)
+				 if(this.liveCtrlContainer[i].config.id == id){
+					 if(this.liveCtrlContainer[i].config.type == 'Panel') this.setMainCtrlStatus = false;
 					 this.liveCtrlContainer.splice(i,1);
+					 break;
+				 }
 			 }
 		 },
 		 setLiveCtrl : function(_config,_left,_top){
@@ -678,6 +685,19 @@
 			},
 			recoverConfig : function(config){
 				UU.recoverConfig(config);
+			},
+			deleteCtrler : function(){
+				if(UU.currendFocusid == null) return ;
+				Chasonx.Alert({
+          		  html : '确定删除该控件吗？',
+          		  modal : true,
+          		  alertType : 'warning',
+          		  success : function(){
+          			  UU.removeLiveCtrlItem(UU.currendFocusid);
+          			  $("#" + UU.currendFocusid).remove();
+          			  return true;
+          		  }
+          	  });
 			},
 			clearDrawPanel : function(){
 				UU.clearDrawPanel();

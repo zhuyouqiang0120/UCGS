@@ -308,7 +308,7 @@
 		}
 	};
 	
-	win.onload = function(){
+	$(function(){
 		$("#statisticsLeft > .statisticsMenuItem").live('click',function(){
 			$("div[class='statisticsMenuItem statisticsItemFocus']").removeClass('statisticsItemFocus');
 			$(this).addClass('statisticsItemFocus');
@@ -330,10 +330,19 @@
 		});
 		
 		system();
-		setInterval(function(){
-			SSystem.getData();
-		},1000);
+		SSystem.getData();
+		
+		var _autoRefreshTime = null;
+		$("#autoRefresh").live('click',function(){
+			if($(this)[0].checked == true){
+				_autoRefreshTime = setInterval(function(){
+					SSystem.getData();
+				},1000);
+			}else if(_autoRefreshTime != null){
+				clearInterval(_autoRefreshTime);
+			}
+		});	
 		
 		$("#statisticsLeft > .statisticsMenuItem").eq(0).click();
-	};
+	});
 })(window,$);

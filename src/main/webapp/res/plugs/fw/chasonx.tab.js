@@ -36,7 +36,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 /**
 *author : chasonx
 *createTime : 161207
-*updateTime : 161209  161213
+*updateTime : 161209  161213 170728
 *desc : 自定义tab选项卡插件，组合选项卡
 *
 *Chasonx.Tab(options);
@@ -140,7 +140,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 					_panelId = u.panelId;
 					_panel.setAttribute('style',_pcss);
 					_append = false;
-				} 
+				}
 				_btn.innerText = u.title || '标题' + i;
 				
 				tPanel.appendChild(_btn);

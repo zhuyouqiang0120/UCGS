@@ -7,6 +7,11 @@
  */
 package com.chasonx.ucgs.api;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.annotation.Api;
 import com.chasonx.ucgs.annotation.ApiRemark;
@@ -15,7 +20,9 @@ import com.chasonx.ucgs.annotation.ParaEntity;
 import com.chasonx.ucgs.annotation.ParamInterceptor;
 import com.chasonx.ucgs.annotation.Required;
 import com.chasonx.ucgs.common.ApiConstant;
+import com.chasonx.ucgs.dao.AdminUserDao;
 import com.chasonx.ucgs.entity.AdminUser;
+import com.chasonx.ucgs.realm.MySessionDao;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.JsonKit;
@@ -62,5 +69,41 @@ public class ValidateData extends Controller {
 		Record res = new Record()
 		.set("result", (au != null?1:0));
 		renderJavascript(cb + "("+ JsonKit.toJson(res) +")");
+	}
+	
+	
+	public void singletonLogin(){
+		try{
+			String userName = getPara("authCode");
+			Record user = AdminUserDao.getUserEntity(userName);
+			if(user != null){
+				UsernamePasswordToken token = new UsernamePasswordToken(userName, user.getStr("fadminpwd"));
+				Subject shiroSubject = SecurityUtils.getSubject();
+				shiroSubject.login(token);
+				
+				AdminUser au = new AdminUser();
+				au.set("id", user.get("id"));
+				String logInSessionId = user.getStr("floginSessionId");
+				if(StringUtils.hasText(logInSessionId) && MySessionDao.sessionMap.containsKey(logInSessionId)){
+					MySessionDao.sessionMap.remove(logInSessionId);
+				}
+				logInSessionId = shiroSubject.getSession().getId().toString();
+				au.set("floginSessionId", logInSessionId);
+				user.set("floginSessionId", logInSessionId);
+				/*更新用户登录信息*/
+				au.update();
+				
+				Session logInUserSession  = SecurityUtils.getSubject().getSession();
+				logInUserSession.setAttribute("LOGINUSERS", user);
+				
+				redirect("/main");
+			}else{
+				renderHtml("<h3 style=\"text-align:center;\">验证未通过</h3>");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			renderHtml("<script type=\"text/javascript\">window.location.reload();</script>");
+		}
+		
 	}
 }

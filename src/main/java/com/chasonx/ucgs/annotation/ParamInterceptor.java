@@ -105,8 +105,7 @@ public class ParamInterceptor implements Interceptor {
 				.set("method", methodName)
 				.set("result", 500);
 				con.renderJson(result);
-			}
-			else{
+			}else{
 				con.setAttr("_actionKey", actionName);
 				con.setAttr("_methodName", methodName);
 				inv.invoke();

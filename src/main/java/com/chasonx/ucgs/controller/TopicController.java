@@ -131,12 +131,13 @@ public class TopicController extends Controller {
 		String idStr = getPara("idStr");
 		String colGuid = getPara("colGuid");
 		String[] idList = idStr.split(";");
-	
+		Integer check   = getParaToInt("check");
+		Integer oldCheck = getParaToInt("oldCheck");
+		
 		boolean res = false;
 		switch(type){
 		case 1:
-			Integer check   = getParaToInt("check");
-			Integer oldCheck = getParaToInt("oldCheck");
+			
 			res = TopicDao.updateTopicCheck(idList, check);
 			//ColumnDao.changeCheckSize(colGuid, idList.length, check,oldCheck);
 			TopicDao.modifyTopicForColumnAttrReSet(StringUtils.join(idList, ","), check == 2?"nocheck":"check",oldCheck == 1);
@@ -149,7 +150,7 @@ public class TopicController extends Controller {
 			else TopicDao.modifyTopicForColumnAttrReSet(idStrs, "recyle",false);  //ColumnDao.changeRecyleSize("+", colGuid,idList.length, true);
 			break;
 		case 3:
-			TopicDao.modifyTopicForColumnAttrReSet(StringUtils.join(idList, ","), "delete",false);
+			TopicDao.modifyTopicForColumnAttrReSet(StringUtils.join(idList, ","), "delete",oldCheck == 1);
 			res = TopicDao.deleteTopic(idList);
 			//ColumnDao.changeRecyleSize("-", colGuid, idList.length, true);
 			break;

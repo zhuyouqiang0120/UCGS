@@ -13,10 +13,13 @@ ChasonxTScaler.plugins("dataWidget",{
 		height: 400,
 		fontColor: 'ffffff'
 	},
+    customAttr : {
+		UCGS_Class : 'CmsComp_Text_Content',
+	},
 	append : function(){
 		var ele = this.creatEle();
 			ele.setAttribute('style',this.getStyle());
-			ele.innerHTML = 'Good Luck Every Day!';
+			ele.innerHTML = '{%$文章正文%}';
 		this.appendToDraw(ele);
 	}
 });

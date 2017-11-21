@@ -46,10 +46,10 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 *   updateTime : 2015/05/12 12:32 更新 Chasonx.Hint提示框样式
 *	updateTime : 2015/06/05 18:14 修改Dialog拖动体验问题，拖动时body不可选择
 *   updateTime : 2016/10/26 ajax增加支持数组参数
+*	updateTime : 2017/07/04 增加Chasonx.Hint.Footer();
 *	author	   : chason.x
 *	email      : zuocheng911@163.com
-*   remark     : work ChasonTools
-*
+*   remark     : work tools
 */
 
 function Chasonx(options){
@@ -193,7 +193,9 @@ Chasonx.Hint = {
 			      -moz-border-radius: 5px; -webkit-border-radius: 5px;  border-radius:5px;moz-user-select: -moz-none;-moz-user-select: none;\
 			     -o-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;',
 	    sta    : 'width:60px;height:48px;color:#f6f6f6;float:left;font-size:30px;text-align:center;vertical-align:middle;line-height:45px;font-weight:bold;',
-	    text   : 'width:180px;height:auto !important;min-height:20px;float:left;font-size:13px;color:#f6f6f6;position:relative;margin:15px 0px 10px 0px;'
+	    text   : 'width:180px;height:auto !important;min-height:20px;float:left;font-size:13px;color:#f6f6f6;position:relative;margin:15px 0px 10px 0px;',
+	    foot   : 'position:relative;display:inline-block;overflow:hidden; white-space: nowrap; box-shadow: 0px 0px 10px #545050;-moz-box-shadow: 0px 0px 10px #545050;-webkit-box-shadow: 0px 0px 10px #545050;padding:5px;',
+	    footBox: 'position:fixed;z-index:1024;bottom:0px;right:0px;width:auto !important;height:auto !important;'	
 	},
 	Success : function(options){
 		options = options || {};
@@ -210,6 +212,42 @@ Chasonx.Hint = {
 		this.options.html = typeof(options) == "string"?options:options.text || 'faild!';
 		this.show(this.options,'faild');
 	},
+	/**
+	*@options: {width:100,height : 100,color : '',bg : '',content : '',timeout : ''}
+	*/
+	_FOOT_PANEL : null,
+	Footer : function(_opt){
+		_opt = _opt || {};
+		var opt = {};
+		with(this){
+			opt.width = _opt.width || 245;
+			opt.height = _opt.height || 135;
+			opt.color = _opt.color || '#000000';
+			opt.bg = _opt.bg || '#f6f6f6';
+			opt.timeout = _opt.timeout || options.timeout;
+			opt.content = typeof(_opt) == "string"?_opt:_opt.content || 'show content';
+			var _css = [];
+			_css.push(css.foot);
+			_css.push('width:' + opt.width + 'px;');
+			_css.push('height:' + opt.height + 'px;');
+			_css.push('background-color:' + opt.bg + ';');
+			_css.push('color:' + opt.color + ' !important;');
+
+			if(_FOOT_PANEL == null){
+				var _fb = ChasonTools.createEle({type:'div',css : css.footBox});
+				ChasonTools.AppendToBody(_fb);
+				_FOOT_PANEL = _fb;
+			}
+
+			var _f = ChasonTools.createEle({type : 'div',css : _css.join('')});
+			_f.innerHTML = opt.content;
+			_FOOT_PANEL.appendChild(_f);
+			opt.ele = _f;
+
+			var handler =  new footHandler(_FOOT_PANEL);
+			handler.show(opt).hide(opt);
+		}
+	},
 	show : function(_option,type){
 		var statetxt  = type == 'success'?'√':'×',bg = type == "success"?'background:#2b93d2;':'background:rgb(237, 102, 102);';
 		var ele = ChasonTools.createEle({type:'div',css:this.css.sucs + bg});
@@ -218,8 +256,51 @@ Chasonx.Hint = {
 		var _chasonx = new Chasonx();
 		_chasonx.Show(ele,_option);
 		_chasonx.Hide(ele,_option);
+	},
+	footHandler : function(_Panel) {
+		return {
+			T : 0, B : 0,D : 30,
+		    show :  function(options){
+				with(this){
+					var timer,loop = function(){
+						options.ele.style.width = TwBounce.base(T,B,options.width,D) + 'px';
+						 T += 1;
+						 timer = setTimeout(function(){
+						 	loop(); 
+						 	if(T > D) clearTimeout(timer); 	
+						 },16);
+					};
+					loop();
+			    }
+			    return this;
+			},
+			hide : function(_opt){
+				with(this){
+					var  timer,loop = function(){
+						 _opt.ele.style.width = (_opt.width + TwBounce.base(T,B,-_opt.width,D)) + 'px';
+						 T += 1;
+						 
+						 timer = setTimeout(function(){
+						 	loop();
+						 	if(T > D){
+						 		clearTimeout(timer);
+						 		_Panel.removeChild(_opt.ele);
+						 	} 					 	
+						 },16);
+					};
+					setTimeout(function(){
+						T = 0;
+						B = 0;
+						D = 30;
+						loop();
+					},_opt.timeout);
+				}
+			}
+		};
 	}
 };
+
+
 
 /**
 *Wait Box
@@ -280,10 +361,11 @@ Chasonx.Tips = {
 		arrowBottom:'border-left:10px solid transparent;border-right:10px solid transparent;border-top:12px solid rgb(0,0,0); line-height:0px;width:0px;',
 		style   : {
 			tm : 'position:fixed;z-index:1024;opacity:0;',
-			ti : 'height:15px;text-align:right;',
+			ti : 'height:15px;',
 			conb: 'overflow:hidden;;background-color:#000;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;',
 			con: 'font-size:14px;color:#f6f6f6;padding:0px 5px 0px 5px;word-break:break-all;word-wrap : break-word;',
-			fo : 'width:100%;height:15px;position:relative;z-index:1025;overflow:hidden;'
+			fo : 'width:100%;height:15px;position:relative;z-index:1025;overflow:hidden;',
+			clo: 'cursor: pointer;text-decoration: none;top:-4px;right:1px;position:relative; color: #ffffff; display: inline-block; background: #923838; width: 15px; height: 15px; vertical-align: middle;line-height: 12px;border-radius: 8px;-moz-border-radius: 8px;-webkit-border-radius: 8px; text-align: center;'
 		}
 	},
 	Move : function(options){
@@ -311,7 +393,6 @@ Chasonx.Tips = {
 		options.arrow = options.arrow || null;
 
 		var _target = null;
-		
 		if(typeof(options.id) == 'string') _target = $e(options.id);
 		else if(typeof(options.id) == 'object') _target = options.id;
 		
@@ -319,7 +400,7 @@ Chasonx.Tips = {
 
 		var _tSize = ChasonTools.getObjectSize(_target);
 		var tip = ChasonTools.createEle({type:'div',css:this.attr.style.tm}),
-			title = ChasonTools.createEle({type:'div',css:this.attr.style.ti}),
+			title = ChasonTools.createEle({type:'div',css:this.attr.style.ti + (options.direction == 'left'?'text-align:left;':'text-align:right;')}),
 			conb  = ChasonTools.createEle({type:'div',css:this.attr.style.conb}),
 			con = ChasonTools.createEle({type:'div',css:this.attr.style.con});
 			foot = ChasonTools.createEle({type:'div',css:this.attr.style.fo});
@@ -393,6 +474,8 @@ Chasonx.Tips = {
 				conb.appendChild(title);
 				conb.appendChild(con);
 				tip.appendChild(foot);
+
+				_closeAlign = 'left';
 			}else{
 				foot.style.marginRight = '-1px';
 				foot.innerHTML = '<div style="'+ this.attr.arrowRight +'"></div>';
@@ -403,7 +486,7 @@ Chasonx.Tips = {
 			}
 		}
 		if(options.close){
-			var _cBtn = ChasonTools.createEle({type:'a',css:'cursor:pointer;text-decoration:none;color:#f09;'});
+			var _cBtn = ChasonTools.createEle({type:'a',css: this.attr.style.clo});
 			_cBtn.innerHTML = '×';
 			_cBtn.setAttribute('title','关闭');
 			title.appendChild(_cBtn);
@@ -553,7 +636,7 @@ Chasonx.prototype = {
 				  -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;',
 		    mt = 'height:40px;background-color:#f7f6f6;border-bottom:1px solid #bbb;color:'+ this.attr.alertType[options.alertType] +';position:relative;',
 		    mx = 'vertical-align:middle;line-height:40px;width:'+ (options.width - 50) +'px;font-size:15px;font-weight:bold;padding-left:8px;overflow:hidden;',
-		    mc = 'display:block;height:'+ (options.isdialog?(options.height - (options.cancel == true?98:0)):options.height - 38) +'px;width:'+ options.width +'px;overflow:auto;';
+		    mc = 'display:block;height:'+ (options.isdialog?(options.height - (options.cancel == true?98:0)):options.height - 38) +'px;width:'+ options.width +'px;overflow:auto;position:relative;';
 		   
 		var _ele = ChasonTools.createEle({type:'div',css:mb}),
 			_title = ChasonTools.createEle({type:'div',css:mt}),

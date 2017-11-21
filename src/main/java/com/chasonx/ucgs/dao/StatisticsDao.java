@@ -25,10 +25,8 @@ import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.UserAgentUtil;
 import com.chasonx.ucgs.entity.PageStatistics;
-import com.jfinal.kit.JsonKit;
-import com.jfinal.plugin.activerecord.Record;
+import com.chasonx.ucgs.entity.TQuartz;
 import com.jfinal.plugin.ehcache.CacheKit;
-
 import cz.mallat.uasparser.UserAgentInfo;
 
 
@@ -50,8 +48,12 @@ public class StatisticsDao {
 	 * @return boolean
 	 * @throws IOException 
 	 */
-	public static boolean cacheStatisticsData(HttpServletRequest req,String topicGuid,String siteGuid,String columnGuid,String area,long startTime,int type) throws IOException{
+	public static boolean cacheStatisticsData(HttpServletRequest req,String topicGuid,String siteGuid,String columnGuid,String title,long startTime,int type) throws IOException{
 		try{
+			String state = PublicDao.getFieldStr("fstate", " and ftype = 'PageView'", TQuartz.class);
+			//统计未开启
+			if(state.equals("0")) return false; 
+			
 			UserAgentInfo info = UserAgentUtil.getUAinfo(req.getHeader("User-Agent"));
 			String[] date = DateFormatUtil.formatString("yyyy-MM-dd HH:mm:ss").split(" ");
 			
@@ -59,7 +61,6 @@ public class StatisticsDao {
 			page.set("ftopicguid", topicGuid != null?topicGuid:"")
 			.set("fsiteguid", siteGuid != null?siteGuid:"")
 			.set("fcolumnguid", columnGuid != null?columnGuid:"")
-			.set("farea", area != null?area:"")
 			.set("fip", req.getRemoteAddr())
 			.set("ftype", type)
 			.set("fbrowser", StringUtils.hasText( info.getUaName())?info.getUaName().replace(StringUtils.hasText(info.getBrowserVersionInfo())?info.getBrowserVersionInfo():"", "").trim():"")
@@ -72,23 +73,23 @@ public class StatisticsDao {
 			.set("ftime", date[1])
 			.set("felapsed", System.currentTimeMillis() - startTime);
 			
-			Record ext = new Record();
-			ext.set("ip", req.getRemoteAddr())
-			.set("port", req.getRemotePort())
-			.set("uri", req.getRequestURI())
-			.set("url", req.getRequestURL())
-			.set("method", req.getMethod())
-			.set("contentlength", req.getContentLength())
-			.set("contentType", req.getContentType())
-			.set("cookie", req.getHeader("Cookie"))
-			.set("accept", req.getHeader("Accept"))
-			.set("accept-encoding", req.getHeader("Accept-Encoding"))
-			.set("accept-language", req.getHeader("Accept-Language"	))
-			.set("user-agent", req.getHeader("User-Agent"))
-			.set("request-time", (System.currentTimeMillis() - startTime))
-			.set("referer", req.getHeader("Referer"));
+//			Record ext = new Record();
+//			ext.set("ip", req.getRemoteAddr())
+//			.set("port", req.getRemotePort())
+//			.set("uri", req.getRequestURI())
+//			.set("url", req.getRequestURL())
+//			.set("method", req.getMethod())
+//			.set("contentlength", req.getContentLength())
+//			.set("contentType", req.getContentType())
+//			.set("cookie", req.getHeader("Cookie"))
+//			.set("accept", req.getHeader("Accept"))
+//			.set("accept-encoding", req.getHeader("Accept-Encoding"))
+//			.set("accept-language", req.getHeader("Accept-Language"	))
+//			.set("user-agent", req.getHeader("User-Agent"))
+//			.set("request-time", (System.currentTimeMillis() - startTime))
+//			.set("referer", req.getHeader("Referer"));
 			
-			page.set("fdata", JsonKit.toJson(ext));
+			page.set("fdata", title);
 			
 			List<PageStatistics> listPage = CacheKit.get(Constant.CACHE_PAGE_STATISTICS, Constant.CACHE_PAGE_STATISTICS + CURRENT_VERSION);
 			if(listPage == null) listPage = new ArrayList<PageStatistics>();

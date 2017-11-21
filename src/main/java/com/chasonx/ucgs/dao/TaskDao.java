@@ -7,9 +7,7 @@
  */
 package com.chasonx.ucgs.dao;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import com.alibaba.fastjson.JSONArray;
 import com.chasonx.tools.DataBaseUtil;
 import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.Des3;
@@ -91,11 +89,10 @@ public class TaskDao {
 		
 		String result = HttpUtil.UrlPostResponse(url, null, "Authenticator=" + authCode + "&TimeStamp=" + timeStamp);
 		if(StringUtils.hasText(result)){
-			JSONObject json = new JSONObject(result);
-			if(json.has("result") && json.getString("result").equals("1")){
+			com.alibaba.fastjson.JSONObject json = com.alibaba.fastjson.JSONObject.parseObject(result);
+			if(json.containsKey("result") && json.getString("result").equals("1")){
 				String data = Des3.decrypt(json.getString("data"), key, null);
-				JSONArray da = new JSONArray(data);
-				json.put("data", da);
+				json.put("data", JSONArray.parseArray(data));
 				Db.update("update t_quartz set fdata = ?,fresponsetime = ?,fmodifytime = ? where ftype = ?", json.toString() ,(System.currentTimeMillis() - start),DateFormatUtil.formatString(null),Constant.Config.GetDevice.toString());
 				return true;
 			}

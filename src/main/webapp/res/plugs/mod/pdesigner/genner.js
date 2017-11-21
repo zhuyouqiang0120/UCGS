@@ -15,16 +15,64 @@ var  Ghtml = {
 		pageSize : '',
 		style : '\n<style type="text/css">\
 			     \n body {margin:0px;padding:0px;overflow:hidden;font-family: "微软雅黑","幼圆","宋体","黑体",Arial}\
+				 \n ${css}\
 			     \n</style>',
-		html : function(callback,_title){
-			var Items = ChasonxTScaler.liveCtrlContainer();
-			if(Items.length == 0) return Chasonx.Hint.Faild('先设计一下吧');
-			UPDT.container = [];
-			UPDT.baseUrl = PDesigner.baseDataUrl + '?' + PDesigner.showPara();
+		script : '\n<script type="text/javascript">${javascript}</script>',	  
+		simpleHtml : function(callback,_title,_css,_javascript){
+			with(this){
+				var Items = ChasonxTScaler.liveCtrlContainer();
+				if(Items.length == 0) return Chasonx.Hint.Faild('先设计一下吧');
+				var pageW = 1280,pageH = 720;
+				for(var i = 0,len = Items.length;i < len;i++){
+					if(Items[i].config.type == 'Panel'){
+						pageW = Items[i].config.attr.width ;
+						pageH = Items[i].config.attr.height;
+						break;
+					}
+				}
+				
+				var sss = [];
+				sss.push(headStart);
+				sss.push('\n<meta name="page-view-size" content="'+ pageW +'*'+ pageH +'"/>');
+				sss.push(title.replace('${title}',(_title || '标题')));
+				sss.push(style.replace('${css}',(_css || '')));
+				sss.push(script.replace('${javascript}',(_javascript || '')));
+				sss.push(headEnd);
+				sss.push('\n<body scroll="no" onload="CMS_PageLoad()">\n' + HTMLFormat($("#PD_Designer").html()) + '\n</body>');
+				sss.push('\n</html>');
+				if(typeof callback == 'function') callback(sss.join(''));
+			}
+		},
+		html : function(callback,_title,_css,_javascript){
+			if(!this.putConfigToContainer()) return;
+		 	
 			this.str = '';
 			this.pageSize = '';
+			this.str = this.headStart + this.pageSize + (_title?this.title.replace('${title}',_title):'<title>模板页面</title>') + this.style.replace('${css}',(_css || ''))
+					 + this.script.replace('${javascript}',(_javascript || ''))
+					 + this.headEnd +  '\n<body onload="UPDT.init();">' + this.str + '\n</body></html>';
 			
-			var _panel,_Ctrl;
+			this.getJs();
+			var _jsload = setInterval(function(){
+				if(Ghtml.jsload != null) clearInterval(_jsload);
+				if(Ghtml.jsload == true){
+					if(typeof callback == 'function') callback(Ghtml.str);
+					else Ghtml.previewHtml();
+				}
+			},200);
+			
+		},
+		putConfigToContainer : function(){
+			var Items = ChasonxTScaler.liveCtrlContainer();
+			if(Items.length == 0){
+				Chasonx.Hint.Faild('先设计一下吧');
+				return false;
+			}
+			
+			UPDT.container = [];
+			UPDT.baseUrl = PDesigner.baseDataUrl + '?' + PDesigner.showPara();
+			
+			var _Ctrl;
 			for(var i = 0,len = Items.length;i < len;i++){
 					_Ctrl = new Object();
 					_Ctrl.config = CCopyObject(Items[i].config);
@@ -52,17 +100,7 @@ var  Ghtml = {
 					}
 					UPDT.container.push(_Ctrl);
 			}
-			
-			this.str = this.headStart + this.pageSize + (_title?this.title.replace('${title}',_title):'<title>模板页面</title>') + this.style + this.headEnd +  '\n<body onload="UPDT.init();">' + this.str + '\n</body></html>';
-			this.getJs();
-			
-			var _jsload = setInterval(function(){
-				if(Ghtml.jsload != null) clearInterval(_jsload);
-				if(Ghtml.jsload == true){
-					if(typeof callback == 'function') callback(Ghtml.str);
-					else Ghtml.previewHtml();
-				}
-			},200);
+			return true;
 		},
 		previewHtml : function(){
 			$.ajax({
@@ -113,6 +151,11 @@ var  Ghtml = {
 		},
 		getArrayToString : function(){
 			var _array = UPDT.container;
+			if(_array.length == 0){
+				if(!this.putConfigToContainer()) return;
+				_array =  UPDT.container;
+			}
+			
 			for(var i = 0,len = _array.length;i < len;i ++){
 				for(var c in _array[i]){
 					if(typeof _array[i][c] == 'function') _array[i][c] =  _array[i][c].toString();

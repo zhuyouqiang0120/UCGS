@@ -33,6 +33,7 @@ import com.chasonx.ucgs.entity.PageDesigner;
 import com.chasonx.ucgs.entity.PageResource;
 import com.chasonx.ucgs.entity.Plugins;
 import com.chasonx.ucgs.entity.TConfig;
+import com.chasonx.ucgs.entity.Template;
 import com.chasonx.ucgs.interceptor.Form;
 import com.chasonx.ucgs.interceptor.Para;
 import com.jfinal.aop.Before;
@@ -409,4 +410,19 @@ public class PageDesignerController extends Controller {
 		renderJson(new Record().set("result", res).set("path", msg).set("xpackager", xpackageUrl));
 	}
 	
+	public void saveTemplateToTopic(){
+		int type = getParaToInt("type");
+		boolean res = false;
+		Template template = Bean.getModel(getRequest(), Template.class);
+		if(type == 1){
+			template.set("fguid", TokenUtil.getUUID())
+			.set("fcreateguid", DHttpUtils.getLoginUser(getRequest()).getStr("fguid"))
+			.set("fcreatetime", DateFormatUtil.formatString(null));
+			res = template.save();
+		}else{
+			res = template.update();
+		}
+		
+		renderJson(res?1:0);
+	}
 }

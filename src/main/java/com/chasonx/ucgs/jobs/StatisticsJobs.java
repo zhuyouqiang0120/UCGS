@@ -20,13 +20,11 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.chasonx.tools.DateFormatUtil;
-import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.config.QuartzLog;
+import com.chasonx.ucgs.dao.RedisDao;
 import com.chasonx.ucgs.dao.StatisticsDao;
 import com.chasonx.ucgs.entity.PageStatistics;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.TableMapping;
 import com.jfinal.plugin.ehcache.CacheKit;
 
 /**
@@ -57,22 +55,29 @@ public class StatisticsJobs implements Job{
 			Integer currVer = StatisticsDao.CURRENT_VERSION;
 			StatisticsDao.CURRENT_VERSION += 1;
 			
-			StringBuilder sb = new StringBuilder(200);
-			sb.append("insert into " + TableMapping.me().getTable(PageStatistics.class).getName());
-			String[] attr = stistics.get(0).getAttrNames();
-			sb.append("("+ StringUtils.joinSimple(attr, ",") +") values");
-			int j = 0;
-			int jlen = 0;
-			for(int i = 0,len = stistics.size();i < len; i++){
-				sb.append("(");
-					for(j = 0,jlen = attr.length;j < jlen;j++){
-						sb.append("'"+ stistics.get(i).get(attr[j]) +"'");
-						if(j < (jlen - 1)) sb.append(",");
-					}
-				sb.append(")");
-				if(i < (len - 1)) sb.append(",");
+			try {
+				RedisDao.saveToRedis(stistics);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			Db.update(sb.toString());
+//			StringBuilder sb = new StringBuilder(200);
+//			sb.append("insert into " + TableMapping.me().getTable(PageStatistics.class).getName());
+//			String[] attr = stistics.get(0).getAttrNames();
+//			sb.append("("+ StringUtils.joinSimple(attr, ",") +") values");
+//			int j = 0;
+//			int jlen = 0;
+//			for(int i = 0,len = stistics.size();i < len; i++){
+//				sb.append("(");
+//					for(j = 0,jlen = attr.length;j < jlen;j++){
+//						sb.append("'"+ stistics.get(i).get(attr[j]) +"'");
+//						if(j < (jlen - 1)) sb.append(",");
+//					}
+//				sb.append(")");
+//				if(i < (len - 1)) sb.append(",");
+//			}
+//			Db.update(sb.toString());
+			
+			
 			CacheKit.remove(Constant.CACHE_PAGE_STATISTICS, Constant.CACHE_PAGE_STATISTICS + currVer);
 		}
 		QuartzLog.logger.info("Log Elapsed : " + (System.currentTimeMillis() - stratTime));

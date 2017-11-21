@@ -3,24 +3,9 @@ var ResDialog = {
 	  PageNumber : 0,
 	  PageSize : 12,
 	  Data : null,
+	  JSONP : 'UAMS_Callback',
 	  list : function(){
 		  Chasonx.Wait.Show('正在努力加载媒资列表，请稍后...');
-//		  $.ajax({
-//			 url : DefConfig.UAMS.getMediaList,
-//			 type : 'get',
-//			 dataType : 'jsonp',
-//			 data : {'PageNumber':pageNumber,'PageSize':this.PageSize,'title':title},
-//			 jsonp : 'UCMS_Callback',
-//			 success : function(d){
-//				 ResDialog.Data = d.list;
-//				 ResDialog.show(d);
-//				 Chasonx.Wait.Hide();
-//			 },
-//			 error : function(e){
-//				 Chasonx.Wait.Hide();
-//			 }
-//		  });
-		  
 		  new Chasonx({
 				 title : '资源列表',
 				 html : '<div style="text-align:center;"><input id="dialogVideoTitle" type="text" class="inputText"/><input type="button" class="button blue" value="查找" onclick="ResDialog.query()"/></div><div id="romateResItems">\
@@ -43,7 +28,7 @@ var ResDialog = {
 				 PageSize:this.PageSize,
 				 data :{'sifter':'number:State@1'},
 				 dataType : 'jsonp',
-				 jsonp : 'UCMS_Callback',
+				 jsonp : ResDialog.JSONP,
 				 before : function(op){
 					 op.PageNumber = Math.round((~~op.PageNumber + ~~op.PageSize)/~~op.PageSize);
 					 return op;
@@ -66,9 +51,9 @@ var ResDialog = {
 				 url:DefConfig.UAMS.getMediaList,
 				 PageNumber:this.PageNumber,
 				 PageSize:this.PageSize,
-				 data :{'title':$("#dialogVideoTitle").val()},
+				 data :{'sifter':'string:Title@' + $("#dialogVideoTitle").val()},
 				 dataType : 'jsonp',
-				 jsonp : 'UCMS_Callback',
+				 jsonp : ResDialog.JSONP,
 				 before : function(op){
 					 op.PageNumber = Math.round((~~op.PageNumber + ~~op.PageSize)/~~op.PageSize);
 					 return op;
@@ -86,13 +71,15 @@ var ResDialog = {
 				 }
 			});
 	  },
-	  update : function(guid){
+	  update : function(){
+		  var guid = $("#videoGuid").val();
+		  if(StrKit.isBlank(guid)) return Chasonx.Hint.Faild('缺少关键参数，不能更新');
 		  Chasonx.Wait.Show('正在更新影片信息，请稍后...');
 		  $.ajax({
 			 url :  DefConfig.UAMS.getMediaEntity,
 			 type : 'get',
 			 dataType : 'jsonp',
-			 jsonp : 'UCMS_Callback',
+			 jsonp : ResDialog.JSONP,
 			 data : {'GUID':guid},
 			 success : function(d){
 				 Chasonx.Wait.Hide();

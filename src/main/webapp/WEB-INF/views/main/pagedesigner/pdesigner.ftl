@@ -75,6 +75,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		<input type="button" class="button blue" value="新建模板" onclick="PDesigner.newPage()"/>
 		<input type="button" class="button green" value="保存为新模板" onclick="PDesigner.saveTemplate(1)"/>
 		<input type="button" class="button green" value="更新当前模板" onclick="PDesigner.saveTemplate(2)"/>
+		<input type="button" class="button green" value="保存为文章模板" onclick="PDesigner.modifyTopicTemplate(1)"/>
 		<input type="button" class="button green" value="预览效果" onclick="PDesigner.previewTemplate()"/>
 	</div>
 	<div id="PD_DataSorce" class="PD_DataSorce" onclick="PDesigner.loadDataSource()"><i class="icon-database"></i>主数据源：<b>未设置</b></div>

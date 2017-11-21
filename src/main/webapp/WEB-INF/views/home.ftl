@@ -92,8 +92,8 @@ $(document).ready(function(){
 	}
 
 	var skin_type =  ChasonTools.getCookie("UCGS_DEF_SKIN_TYPE");
-	var srcs = 'getCaptcha?type=1';
-	if(!isBlankString(skin_type)) skin = 'dark';
+	var srcs = '';
+	if(!isBlankString(skin_type)) skin_type = 'dark';
 	
 	if(skin_type == 'dark'){
 		 srcs = 'getCaptcha?type=1';

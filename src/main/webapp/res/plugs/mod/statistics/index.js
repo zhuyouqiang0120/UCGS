@@ -413,7 +413,7 @@
 		  draw : function(data,id,elapsed,L){
 			  var line = '<div><span>点击量</span><b>标题 Top '+ L +'</b> <font color="#949696">耗时：'+ elapsed +'ms</font></div>';
 			  $.each(data,function(i,u){
-				  line += '<div><span>'+ u.TopicSize +'</span><a href="'+ u.Url +'?id='+ u.Guid +'" target="_blank">'+ u.Title +'</a></div>';
+				  line += '<div><span>'+ u.TopicSize +'</span><a href="javascript:void(0)" >'+ u.Title +'</a></div>';
 			  });
 			  $("#" + id).html(line);
 		  },
@@ -430,9 +430,13 @@
 					 		本次检索耗时：' + d.Elapsed + ' ms </div>';
 				 $("#topicAttr").html(line);
 				 STopic.draw(d.TopList,'topicTopList',d.Elapsed,10);
-				 STopic.dataFilter(d.Device,'statisticsTopicDevice','设备访问统计','设备访问量');
-				 STopic.dataFilter(d.OSName,'statisticsTopicOSname','操作系统统计','操作系统访问量');
-				 STopic.dataFilter(d.Browser,'statisticsTopicBrowser','设备浏览器统计','浏览器访问量');
+				 new publicPie(d.Device.Data,d.Device.Legend,'statisticsTopicDevice','设备访问统计','设备访问量');
+				 new publicPie(d.OSName.Data,d.OSName.Legend,'statisticsTopicOSname','操作系统统计','操作系统访问量');
+				 new publicPie(d.Browser.Data,d.Browser.Legend,'statisticsTopicBrowser','设备浏览器统计','浏览器访问量');
+				 
+//				 STopic.dataFilter(d.Device,'statisticsTopicDevice','设备访问统计','设备访问量');
+//				 STopic.dataFilter(d.OSName,'statisticsTopicOSname','操作系统统计','操作系统访问量');
+//				 STopic.dataFilter(d.Browser,'statisticsTopicBrowser','设备浏览器统计','浏览器访问量');
 				 
 				 STopic.timeDetail(date);
 			  });
@@ -451,7 +455,7 @@
 	};
 	
 	function _getTopicLimitData(data,id,L){
-		getAjaxData(DefConfig.Root + '/main/statistics/topicLimitByParam',data,function(d){
+		getAjaxData(DefConfig.Root + '/main/statistics/topicLimitByParam/' + data,null,function(d){
 			STopic.draw(d.List,id,d.Elapsed,L);
 		});
 	}
@@ -464,14 +468,16 @@
 				  new colPubStatis(d.List,'columnLimit','栏目数据概览','耗时：' + d.Elapsed + 'ms','栏目点击量',function(param){
 					  var _data = SCol.getGuid(param.name);
 					  SCol.detail(_data);
-					  _getTopicLimitData({columnGuid : _data[0]},'topicTopListForColumn',10);
+					  _getTopicLimitData(_data[0],'topicTopListForColumn',10);
 				  });
 			  });
 		  },
 		  detail : function(_data){
-			  getAjaxData(DefConfig.Root + '/main/statistics/columnStatisticsDetail',{guid : _data[0]},function(d){
-				 new STopicDataFilter(d.List,'columnDetails',_data[1] + ' 访问统计','耗时：' + d.Elapsed + ' ms','栏目点击量',d.startVal);
-			  });
+			  scStatisticsDetail(_data[0],_data[1],'columnDetails',0);
+			  
+//			  getAjaxData(DefConfig.Root + '/main/statistics/scStatisticsDetail',{guid : _data[0],type : },function(d){
+//				 new STopicDataFilter(d.List,'columnDetails',_data[1] + ' 访问统计','耗时：' + d.Elapsed + ' ms','栏目点击量',d.startVal);
+//			  });
 		  },
 		  getGuid : function(name){
 			  var _guid = '';
@@ -492,14 +498,16 @@
 				 new colPubStatis(d.List,'siteStatistics','站点数据概览','耗时：' + d.Elapsed + 'ms','站点点击量',function(param){
 					 var _data = SSite.getGuid(param.name);
 					 SSite.detail(_data);
-					 _getTopicLimitData({siteGuid : _data[0]},'topicTopListForSite',10);
+					 _getTopicLimitData(_data[0],'topicTopListForSite',10);
 				 });
 			  });
 		  },
 		  detail : function(_data){
-			  getAjaxData(DefConfig.Root + '/main/statistics/siteStatistics',{guid : _data[0]},function(d){
-				  new STopicDataFilter(d.List,'siteDataDetails',_data[1] + ' 访问统计','耗时：' + d.Elapsed + ' ms','站点点击量',d.startVal);
-			  });
+			  scStatisticsDetail(_data[0],_data[1],'siteDataDetails',1);
+			  
+//			  getAjaxData(DefConfig.Root + '/main/statistics/siteStatistics',{guid : _data[0]},function(d){
+//				  new STopicDataFilter(d.List,'siteDataDetails',_data[1] + ' 访问统计','耗时：' + d.Elapsed + ' ms','站点点击量',d.startVal);
+//			  });
 		  },
 		  getGuid : function(name){
 			  var _guid = '';
@@ -519,40 +527,41 @@
 				SInter.currIname = null;
 				getAjaxData(DefConfig.Root + '/main/statistics/interStatistics',null,function(d){
 					 new colPubStatis(d.List,'interStatistics','接口访问概览','耗时：' + d.Elapsed + 'ms','接口访问量',function(param){
-						 SInter.currIname = param.name;
+//						 SInter.currIname = param.name;
 						 SInter.detail(param.name);
-						 SInter.ipCaller();
+						 SInter.ipCaller(param.name);
 					 });
 				});
 			},
 			detail : function(iname){
 				SInter.currIdate = null;
-				getAjaxData(DefConfig.Root + '/main/statistics/interStatistics',{iName : iname},function(d){
-					 new STopicDataFilter(d.List,'interDataDetails',iname + ' 访问统计','耗时：' + d.Elapsed + ' ms','接口访问量',d.startVal,function(name){
-						 SInter.currIdate = name;
-						 SInter.ipCaller();
-					 });
-				});
+				scStatisticsDetail(iname,iname,'interDataDetails',2);
+				
+//				getAjaxData(DefConfig.Root + '/main/statistics/interStatistics',{iName : iname},function(d){
+//					 new STopicDataFilter(d.List,'interDataDetails',iname + ' 访问统计','耗时：' + d.Elapsed + ' ms','接口访问量',d.startVal,function(name){
+//						 SInter.currIdate = name;
+//						 SInter.ipCaller();
+//					 });
+//				});
 			},
-			ipCaller : function(){
+			ipCaller : function(name){
 				ChasonTools.delayRun(function(){
-					getAjaxData(DefConfig.Root + "/main/statistics/ipCaller",{iName : SInter.currIname,iDate : SInter.currIdate},function(d){
+					getAjaxData(DefConfig.Root + "/main/statistics/ipCaller/" + name,null,function(d){
 						var line = '<div><span>访问次数</span>\
 										 <span style="width:150px;">IP</span>\
 										 <span style="width:150px;">浏览器</span>\
-										 <span style="width:150px;">浏览器版本</span>\
 										 <span style="width:150px;">设备类型</span>\
 										 <span style="width:150px;">操作系统</span>\
-										 <span style="width:150px;">系统平台</span>\
 										<font color="#949696">耗时：'+ d.Elapsed +'ms</font></div>';
+						
+						var _data;
 						$.each(d.List,function(i,u){
-							line += '<div><span>'+ u.IPSize +'</span>\
-									 <span style="width:150px;">'+ u.IP +'</span>\
-									 <span style="width:150px;">'+ u.Browser +'</span>\
-									 <span style="width:150px;">'+ u.BrowserVersion +'</span>\
-									 <span style="width:150px;">'+ u.DeviceType +'</span>\
-									 <span style="width:150px;">'+ u.OSname +'</span>\
-									 <span style="width:150px;">'+ u.OSfamily +'</span>\
+							line += '<div><span>'+ u.Size +'</span>\
+									 <span style="width:150px;">'+ u.IP +'</span>';
+							_data = JSON.parse(u.Data);
+							line += '<span style="width:150px;">'+ (_data.B || '') +'</span>\
+									 <span style="width:150px;">'+ (_data.D || '') +'</span>\
+									 <span style="width:150px;">'+ (_data.OS || '') +'</span>\
 									 </div>';
 						});
 						$("#callerDataDetails").html(line);
@@ -561,11 +570,16 @@
 			}
 	};
 
+	function scStatisticsDetail(_guid,_name,_id,type,fn){
+		 getAjaxData(DefConfig.Root + '/main/statistics/scStatisticsDetail',{guid : _guid,type : type},function(d){
+			 new STopicDataFilter(d.List,_id,_name + ' 访问统计','耗时：' + d.Elapsed + ' ms','栏目点击量',d.startVal,fn);
+		  });
+	}
 	
 	var statistics = [ {Url : '/main/statistics/dataCheckForWeek',Fn : 'SWeek'},
-	                   {Url : '/main/statistics/dataCheckForDevice',Fn : 'SDevice'},
-	                   {Url : '/main/statistics/dataCheckForOSType',Fn : 'SOSName'},
-	                   {Url : '/main/statistics/dataCheckForBrowser',Fn : 'SBrowser'}
+	                   //{Url : '/main/statistics/dataCheckForDevice',Fn : 'SDevice'},
+	                   //{Url : '/main/statistics/dataCheckForOSType',Fn : 'SOSName'},
+	                   //{Url : '/main/statistics/dataCheckForBrowser',Fn : 'SBrowser'}
 	                 ],
 	    _idx = 0;
 	var _delay = function(){
@@ -581,7 +595,16 @@
 	};
 	
 	
-	win.SWeek = function(d){ statisticsWeek(d) };
+	win.SWeek = function(d){ 
+		d.WeekData.Elapsed = d.Elapsed;
+		d.Device.Elapsed = d.Elapsed;
+		d.OSType.Elapsed = d.Elapsed;
+		d.Browser.Elapsed = d.Elapsed;
+		statisticsWeek(d.WeekData);
+		statisticsDevice(d.Device);
+		statisticsOsName(d.OSType);
+		statisticsBrowser(d.Browser);
+	};
 	win.SDevice = function(d){statisticsDevice(d); };
 	win.SOSName = function(d){statisticsOsName(d); }
 	win.SBrowser = function(d){statisticsBrowser(d); };

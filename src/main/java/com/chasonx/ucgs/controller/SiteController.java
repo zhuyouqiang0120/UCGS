@@ -146,12 +146,16 @@ public class SiteController extends Controller {
 		String sitename = getPara("siteName");
 		
 		try{
-			String wherext = "";
-			if(type != null) wherext += " and s.ftype = '"+ type +"'";
-			if(state != null) wherext += " and s.fstate = " + state;
-			if(StringUtils.hasText(sitename)) wherext += " and s.fsitename like '%"+ sitename +"%'";
+			StringBuilder sb = new StringBuilder();
+			String queryStr = "select s.*,u.fadminname,a.fname as areaname,(select fassetname from t_resource where s.ftempguid = fguid) as fassetname ";
+			String wherext = " where 1 = 1 ";
 			
-			String whereSql = "from t_site s INNER JOIN t_adminuser u on s.fcreaterguid = u.fguid LEFT JOIN t_area a on s.fareaguid = a.fguid  where s.fdelete = ? ";
+			if(type != null) wherext += " and ftype = '"+ type +"'";
+			if(state != null) wherext += " and fstate = " + state;
+			if(StringUtils.hasText(sitename)) wherext += " and fsitename like '%"+ sitename +"%'";
+			wherext += " order by id desc";
+			
+			String whereSql = " from t_site s INNER JOIN t_adminuser u on s.fcreaterguid = u.fguid LEFT JOIN t_area a on s.fareaguid = a.fguid  where s.fdelete = " + delete;
 			Record loginRec = DHttpUtils.getLoginUser(getRequest());
 			
 			List<String> areaGuidList = AdminAuthDao.getAuthFieldList("ftargetauthguid",loginRec.getStr("fguid"),Constant.AuthTypes.area.toString(),null);
@@ -164,25 +168,36 @@ public class SiteController extends Controller {
 //					if(StringUtils.hasText(areaguid)){
 //						whereSql += " and s.fareaguid = '"+ areaguid + "'";
 //					} 
+					sb.append("(" + queryStr ).append(whereSql + ")");
 				}else{
 					List<String> siteGuids = AdminAuthDao.getAuthFieldList("ftargetauthguid",loginRec.getStr("fguid"),Constant.AuthTypes.site.toString(),null);
 					if(siteGuids.isEmpty()) siteGuids = AdminAuthDao.getAuthFieldList("ftargetauthguid",loginRec.getStr("roleguid"),Constant.AuthTypes.site.toString(),null);
 					if(siteGuids.isEmpty()) siteGuids = SiteDao.getSiteGuidByCreater(loginRec.getStr("fguid"));
 					if(siteGuids.isEmpty()) siteGuids.add("0");
-						 
-					whereSql += " and s.fguid in ("+ StringUtils.joinForList(siteGuids, ",") +") ";
+					
+					sb.append("(")
+					.append(queryStr)
+					.append(whereSql)
+					.append(" and s.fguid in ("+ StringUtils.joinForList(siteGuids, ",") +") ")
+					.append(")");
 				}
 				
 				if(areaGuidList.isEmpty()) areaGuidList.add("0");
-				whereSql += " and s.fareaguid in ("+ Tools.joinForList(areaGuidList, ",") +")";
+				sb.append("union (")
+				.append(queryStr)
+				.append(whereSql)
+				.append(" and s.fareaguid in ("+ Tools.joinForList(areaGuidList, ",") +")")
+				.append(")");
+				
+			}else{
+				sb.append( queryStr ).append(whereSql);
 			}
+			
 			if(StringUtils.hasText(areaguid)){
-				whereSql += " and s.fareaguid = '"+ areaguid + "'";
+				wherext += " and fareaguid = '"+ areaguid + "'";
 			}
-			whereSql += wherext;
 			//whereSql += " or (s.fcreaterguid = '"+ loginRec.getStr("fguid") +"') ";
-			whereSql += " order by s.id desc";
-			renderJson(PublicDao.queryListForPage("select s.*,u.fadminname,a.fname as areaname,(select fassetname from t_resource where s.ftempguid = fguid) as fassetname ", whereSql, PageNumber, PageSize,delete));
+			renderJson(PublicDao.queryListForPage("select * ", " from ("+ sb.toString() +") as _temp " + wherext , PageNumber, PageSize));
 		}catch(Exception e){
 			e.printStackTrace();
 		}

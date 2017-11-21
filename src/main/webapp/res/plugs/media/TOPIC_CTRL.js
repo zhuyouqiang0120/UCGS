@@ -22,19 +22,13 @@ var ArtPage = {
 	 	 	ArtPage.currPagination();
 	 	 	if($CMS_Content_PageNum > 1){
 		 		ArtPage.showOrhide(ArtPage.nextID,1);
-		 		ArtPage.ele(ArtPage.nextID).focus();
+		 		ArtPage.byAttrName('UCGS_Class',ArtPage.nextID).focus();
 		 	}
 	 	 }
 	 },
 	 delayShowContent : function(){
 		var D = document.getElementsByTagName("div");
-		var _d = null; 
-		for(var i = 0,len = D.length; i < len;i ++){
-			if(D[i].getAttribute('CMS_Class') == 'CmsComp_Text_Content'){
-				_d = D[i];
-				break;
-			}
-		}
+		var _d = this.byAttrName('UCGS_Class','CmsComp_Text_Content'); 
 		var html = _d.innerHTML || '';
 		if( html.indexOf('&nbsp;&nbsp;&nbsp;&nbsp;') > 0 ){
 		    html = html.replace(/&nbsp;&nbsp;&nbsp;&nbsp;/g, '<span style="display:inline-block;width:53px;"></span>');
@@ -50,13 +44,13 @@ var ArtPage = {
 	 	if( ArtPage.currPage == $CMS_Content_PageNum && ArtPage.currPage == 1 ){
 
 	 	}else{
-	 		ArtPage.showOrhide('CMS_Content_' + (ArtPage.currPage - 1),0);
+	 		ArtPage.contentShowOrHide('CMS_Content_' + (ArtPage.currPage - 1),0);
 		 	if(type == '>')
 		 		ArtPage.currPage ++;
 		 	else
 		 		ArtPage.currPage --;
 		 	
-		 	ArtPage.showOrhide('CMS_Content_' + (ArtPage.currPage - 1),1);
+		 	ArtPage.contentShowOrHide('CMS_Content_' + (ArtPage.currPage - 1),1);
 		 	ArtPage.pageBtnState(type);
 		 	ArtPage.currPagination();
 	 	}
@@ -65,26 +59,40 @@ var ArtPage = {
 	 	if(ArtPage.currPage < $CMS_Content_PageNum && ArtPage.currPage > 1){
 	 		ArtPage.showOrhide(ArtPage.prevID,1);
 		 	ArtPage.showOrhide(ArtPage.nextID,1);
-		 	if(type == '>') ArtPage.ele(ArtPage.nextID).focus();
-		 	else ArtPage.ele(ArtPage.prevID).focus();
+		 	if(type == '>') ArtPage.byAttrName('UCGS_Class',ArtPage.nextID).focus();
+		 	else ArtPage.byAttrName('UCGS_Class',ArtPage.prevID).focus();
 	 	}else if(ArtPage.currPage == 1){
 	 		ArtPage.showOrhide(ArtPage.prevID,0);
 		 	ArtPage.showOrhide(ArtPage.nextID,1);
-		 	ArtPage.ele(ArtPage.nextID).focus();
+		 	ArtPage.byAttrName('UCGS_Class',ArtPage.nextID).focus();
 	 	}else if(ArtPage.currPage == $CMS_Content_PageNum){
 	 		ArtPage.showOrhide(ArtPage.prevID,1);
 		 	ArtPage.showOrhide(ArtPage.nextID,0);
-		 	ArtPage.ele(ArtPage.prevID).focus();
+		 	ArtPage.byAttrName('UCGS_Class',ArtPage.prevID).focus();
 	 	}
 	 },
 	 showOrhide : function(id, type){
-	 	ArtPage.ele(id).style.display = (type == 1?'block':'none');
+		 ArtPage.byAttrName('UCGS_Class',id).style.display = (type == 1?'block':'none');
+	 },
+	 contentShowOrHide : function(id,type){
+		 ArtPage.ele(id).style.display =  (type == 1?'block':'none');
 	 },
 	 currPagination : function(){
-	 	ArtPage.ele("CmsComp_Ctrl_Pagination").innerHTML =  ArtPage.currPage + '  / ' + $CMS_Content_PageNum ;
+		 ArtPage.byAttrName('UCGS_Class','CmsComp_Ctrl_Pagination').innerHTML = ArtPage.currPage + '  / ' + $CMS_Content_PageNum;
 	 },
 	 ele : function(id){
 	 	return document.getElementById(id);
+	 },
+	 byAttrName : function(attr,value){
+		 var D = document.all;
+		 var _d = null; 
+		 for(var i = 0,len = D.length; i < len;i ++){
+			if(D[i].getAttribute(attr) == value){
+				_d = D[i];
+				break;
+			}
+		 } 
+		 return _d;
 	 },
 	 handlerKeyBoard : function(){
 		 document.onkeydown = function(e){

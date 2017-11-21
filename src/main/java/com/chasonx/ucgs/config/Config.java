@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.quartz.Job;
-
 import com.alibaba.druid.wall.WallFilter;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.api.ColumnRequestData;
@@ -86,7 +85,6 @@ import com.chasonx.ucgs.entity.ULog;
 import com.chasonx.ucgs.entity.ULogVersion;
 import com.chasonx.ucgs.interceptor.AdminUserInterceptor;
 import com.chasonx.ucgs.interceptor.MyExceptionInterceptor;
-import com.chasonx.ucgs.socket.MessServer;
 import com.chasonx.ucgs.sql.SqlPathEntity;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -105,6 +103,7 @@ import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import com.jfinal.plugin.ehcache.CacheKit;
 import com.jfinal.plugin.ehcache.EhCachePlugin;
+import com.jfinal.plugin.redis.RedisPlugin;
 import com.jfinal.render.ViewType;
 
 /**
@@ -187,6 +186,7 @@ public class Config extends JFinalConfig {
 		//连接池 druid 开启sql防火墙
 		loadPropertyFile("variable/jdbc.properties");
 		DruidPlugin druidPlugin = new DruidPlugin(getProperty("jdbc.url"), getProperty("jdbc.username"), getProperty("jdbc.password"));
+		druidPlugin.set(50, 20, 150);
 		WallFilter wall = new WallFilter();
 		wall.setDbType("mysql");
 		druidPlugin.addFilter(wall);
@@ -237,8 +237,11 @@ public class Config extends JFinalConfig {
 		//shiro
 		ShiroPlugin shiroPlugin = new ShiroPlugin(shiroRoutes);
 		shiroPlugin.start();
-		plugins.add(shiroPlugin);
 		
+		RedisPlugin redis = new RedisPlugin(getProperty("redis.name"), getProperty("redis.host"), getPropertyToInt("redis.port"),0,getProperty("redis.pwd"),getPropertyToInt("redis.db"));
+		
+		plugins.add(redis);
+		plugins.add(shiroPlugin);
 		plugins.add(druidPlugin);
 		plugins.add(ar);
 		plugins.add(eheache);
@@ -258,15 +261,6 @@ public class Config extends JFinalConfig {
 		quartzInit();
 		ulogInit();
 		extendInit();
-		
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				MessServer messServer = new MessServer();
-//				messServer.start();
-//			}
-//		}).start();
-		
 	}
 
 	/* (non-Javadoc)

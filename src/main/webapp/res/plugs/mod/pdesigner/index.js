@@ -1,5 +1,5 @@
 
-window.onload = function(){
+$(document).ready(function(){
 	Chasonx.Frameset({
 	      window : {
 	          top : { id : 'PD_Top', height : '55px',border:false,bgColor : '#242526',color:'#f6f6f6'},
@@ -222,7 +222,13 @@ window.onload = function(){
 		var _Guid = StrKit.getSearchParam('guid');
 		PDesigner.reEdit(_Guid);
 	},1500);
-};
+	
+	$(document).keydown(function(){
+		var e = window.event;
+		if(e.keyCode == 8) ChasonxTScaler.deleteCtrler();
+	});
+	
+});
 
 function _modifyHref(_E){
 	$("#_SiteTemplateListPanel > div").removeClass('SiteTLP_Focus');
@@ -515,6 +521,52 @@ var PDesigner = {
 		},
 		showPreview : function(_guid){
 			window.open(DefConfig.Root + '/data/preview/' + _guid);
+		},
+		modifyTopicTemplate : function(T){
+			if(ChasonxTScaler.liveCtrlContainer().length == 0) return Chasonx.Hint.Faild('先设计一下吧');
+			var siteguid = PDesigner.getSite('fguid');
+			if(StrKit.isBlank(siteguid)) return Chasonx.Hint.Faild('请选择站点');
+			
+			var show = new Chasonx({
+				title : '保存文章模板',
+				html : '<div id="saveTopicTemplatePanel" style="height:100%;"></div>',
+				modal : true,
+				width : 600,height : 500,
+				okText : '保存',
+				success : function(){
+					Ghtml.simpleHtml(function(str){
+						var config =  Ghtml.getArrayToString();
+						
+						getAjaxData(DefConfig.Root + '/main/pdesigner/saveTemplateToTopic',{
+							type : T,
+							ftname : $("#customTitle").val(),
+							fsiteguid : siteguid,
+							fhtmldata : str,
+							frawdata : config
+						},function(d){
+							if(~~d > 0){
+								Chasonx.Hint.Success('保存成功');
+								show.Hide();
+							}else{
+								Chasonx.Hint.Faild('保存失败');
+							}
+						});
+						
+					},$("#customTitleChars").val(),$("#customCss").val(),$("#customJS").val());
+				}
+			});
+			
+			ChasonxDom.draw({
+				  id : 'saveTopicTemplatePanel',
+				  item : [
+				          {text : '&nbsp;',info :'&nbsp;'},
+				          {text : '&nbsp;',info : '注：保存文章模板时可以视情况增加一些额外的样式和脚本.'},
+				          {text : '模板名称:',name:'customTitle',type:'input'},
+				          {text : '标题占位符:',name:'customTitleChars',type:'input',value : '{%$文章标题%}'},
+				          {text : '自定义样式:',name:'customCss',type:'textarea',attr : ' rows="6" ' },
+				          {text : '自定义脚本:',name:'customJS',type:'textarea',attr : ' rows="6" ' }
+				      ]
+			});
 		},
 		getArrayToString : function(_array){
 			for(var i = 0,len = _array.length;i < len;i ++){

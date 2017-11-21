@@ -21,6 +21,6 @@ package com.chasonx.ucgs.common;
  */
 public class PageViewConstant {
 
-	public static final Integer PageViewType = 1;
-	public static final Integer InterFaceType = 2;
+	public static final Integer PageViewType = 1; //主题
+	public static final Integer InterFaceType = 2;  //接口
 }

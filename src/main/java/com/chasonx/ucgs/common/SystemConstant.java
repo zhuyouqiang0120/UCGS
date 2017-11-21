@@ -16,7 +16,7 @@ public class SystemConstant {
 
 	public static final String SYS_CODE = "UCGS";
 	public static final String SYS_NAME = "统一内容生产系统";
-	public static final String SYS_VERSION = "2.3.0 build20170315.1212";
+	public static final String SYS_VERSION = "2.3.1 build20171121.03";
 	public static final String SYS_AUTHOR = "Chason.x";
 	public static final String SYS_COMP_NAME = "上海仁视信息科技有限公司";
 	public static final String SYS_COMP_ENNAME = "Zensvision™ Information Technology Co., Ltd.";

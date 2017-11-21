@@ -209,6 +209,8 @@ public class UnifyRequestData extends Controller {
 			currColumn = getAllChildList(allColList, columnGuid, allChildList);
 			allColList.clear();
 			allColList.addAll(allChildList);
+			
+			container.set("CurrentColumnName", currColumn.getStr("fservicename"));
 		}
 		
 		/*筛选所有栏目*/
@@ -554,7 +556,7 @@ public class UnifyRequestData extends Controller {
 				//Db.queryStr("select remotehost from t_config where filetype = ?",Constant.Config.TopicPreview.toString());
 				
 				List<Column> col = Column.columnDao.findByCache(Constant.CACHE_DEF_NAME, "previewcoldata", "select * from t_column where fsiteguid = (  select fsiteguid from t_topic_relate where ftopicguid = ?)",guid);
-				Column currCol = Column.columnDao.findFirst("select c.fguid,c.fparentuid,c.fservicename from t_column c INNER JOIN t_topic_relate r ON r.fcolguid = c.fguid where r.ftopicguid = ?",guid);
+				Column currCol = Column.columnDao.findFirst("select c.fguid,c.fparentuid,c.fservicename,c.fsiteguid from t_column c INNER JOIN t_topic_relate r ON r.fcolguid = c.fguid where r.ftopicguid = ?",guid);
 				List<String> parentCol = new ArrayList<String>();
 				checkParentColName(col, currCol.getStr("fparentuid"), parentCol);
 				String parColStr = "";
@@ -589,11 +591,11 @@ public class UnifyRequestData extends Controller {
 				topic.set("ParentColumnName", parColStr);
 				topic.set("contents", cont);
 				topic.remove("aid");
-				topic.remove("extdata");
+				//topic.remove("extdata");
 				data.set("Data", topic);
 				
 				///
-				StatisticsDao.cacheStatisticsData(getRequest(), guid, currCol.getStr("fsiteguid") , currCol.getStr("fguid"), "", startTime, PageViewConstant.PageViewType);
+				StatisticsDao.cacheStatisticsData(getRequest(), guid, currCol.getStr("fsiteguid") , currCol.getStr("fguid"), topic.getStr("Title"), startTime, PageViewConstant.PageViewType);
 			}else{
 				data.set("Data", null);
 			}
@@ -711,7 +713,7 @@ public class UnifyRequestData extends Controller {
 				topic.update();
 				
 				//PageView 
-				StatisticsDao.cacheStatisticsData(getRequest(), topicGuid, currCol.getStr("fsiteguid") , currCol.getStr("fguid"), "", startTime, PageViewConstant.PageViewType);
+				StatisticsDao.cacheStatisticsData(getRequest(), topicGuid, currCol.getStr("fsiteguid") , currCol.getStr("fguid"), topic.getStr("ftitle"), startTime, PageViewConstant.PageViewType);
 			}
 			
 			///

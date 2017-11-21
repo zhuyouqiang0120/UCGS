@@ -45,22 +45,16 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <body >
 <div class="mainBox">
 	<div class="buttonBox" style="height:auto;">
-		<input type="button" <@permission p='E' func='WFlist.newWF()' /> value="新建"/>
-		<input type="button" <@permission p='E' func='' /> value="编辑"/>
-		<input type="button" <@permission p='D' func='' /> value="删除"/>
+		<@PermisstionBtnHtml />
 	</div>
 	<table class="tableDefault" width="99%" cellpadding="0" cellspacing="0" >
 		<tr class="trDefault">
 			<td width="5%"><input id="_selectAll" type="checkbox" title="反选/全选" onclick="_selectAll(this,'topicval')"/></td>
 			<td width="5%" >编号</td>
-			<td width="20%">标题</td>
-			<td width="8%">分类</td>
-			<td width="10%">文章来源</td>
-			<td width="10%">标签</td>
-			<td width="8%">浏览量</td>
-			<td width="10%">评分</td>
-			<td width="14%">发布时间</td>
-			<td width="10%">发布人</td>
+			<td width="20%">工作流名称</td>
+			<td width="10%">分类</td>
+			<td width="10%">标识</td>
+			<td width="50%">备注</td>
 		</tr>
 		<tbody id="topicData" class="tableData">
 		</tbody>

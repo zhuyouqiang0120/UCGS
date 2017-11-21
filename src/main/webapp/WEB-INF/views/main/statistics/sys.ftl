@@ -44,11 +44,24 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <script type="text/javascript" src="${basePath}/res/plugs/lib/echarts.js"></script>
 <script type="text/javascript" src="${basePath}/main/load/jsLoader?_param=
      mod/statistics/system,mod/statistics/sys"></script>
+     
+<style type="text/css">
+.sCheckbox		{ display: inline-block; width: 80px; height: 20px;background: #dddddd; position: relative;box-shadow: 0px 0px 5px #939090;
+   				  top: 5px; overflow: hidden; padding: 1px;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;}
+.sCheckbox label{ display: inline-block;   width: 100%; height: 20px;  text-align: right;  vertical-align: middle; line-height: 20px; position: relative; top: -6px;border-radius:10px;overflow:hidden;}
+.sCheckbox label i{display: inline-block; width: 20px; height: 20px; background: #e7eceb; border-radius: 10px;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;
+				  position:absolute;left : 0px;top:0px; box-shadow: 0px 0px 4px #504e4e;}
+.sCheckbox label em{display:inline-block;background: #3eb842; height: 20px; width: 0%;transition:.5s;-moz-transition:.5s;-webkit-transition:.5s;position:absolute;left:0px;top:0px;border-radius:10px;
+					box-shadow: 0px 0px 10px #0e6b19 inset;}				  
+.sCheckbox input{position:absolute;display:none;}
+.sCheckbox input[type="checkbox"]:checked + label i{left : 60px; }
+.sCheckbox input[type="checkbox"]:checked + label em{width : 100%; }
+</style>
 </head>
 <body>
 <div id="statisticsMain">
 	<div id="statisticsLeft">
-		<div class="statisticsMenuItem"><span class="icon-desktop_windows"></span> 概览</div>
+		<div class="statisticsMenuItem"><span class="icon-desktop_windows"></span> 概览 </div>
 		<div class="statisticsMenuItem"><span class="icon-multiline_chart"></span> CUP</div>
 		<div class="statisticsMenuItem"><span class="icon-sim_card_alert"></span> 内存</div>
 		<div class="statisticsMenuItem"><span class="icon-developer_board"></span> 交换区</div>
@@ -58,7 +71,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		<div class="statisticsShadowPanel"></div>
 		<div class="statisticsChartsPanel">
 			<div class="items" >
-				<div class="title"># 服务器信息概览(刷新间隔 1s)：</div>
+				<div class="title"># 服务器信息概览( <span title="开启自动刷新" class="sCheckbox"><input type="checkbox" id="autoRefresh"/><label for="autoRefresh"><em></em><i></i></label></span>  刷新间隔 1s)：</div>
 				<div class="statistics" id="serverOverview" style="height:500px;width:80%;margin:0px auto;">访问情况</div>
 			</div>
 			<div class="items" >

@@ -233,6 +233,7 @@
 		};
 		document.onkeyup = function(e){
 			e = e || window.event;
+			
 			if(keyCodes[32] && keyCodes[67]) DevPattern.codePad();
 			if(keyCodes[32] && keyCodes[68]) DevPattern.showPluginList();
 			if(keyCodes[32] && keyCodes[69]) DevPattern.help();

@@ -239,6 +239,7 @@ public class TopicDao {
 		List<String> cidList = Db.query("select DISTINCT fcolguid from t_topic_relate where ftopicguid in ("+ tidStrs +")");
 		
 		int checkSize = 0;
+		int recycleSize = 0;
 		int topicSize = 0;
 		
 		int clen = 0;
@@ -254,6 +255,7 @@ public class TopicDao {
 			for(cc = 0,clen = tcolIdList.size();cc < clen;cc ++){
 				if(tcolIdList.get(cc).getStr("fcolguid").equals(cidList.get(i))){
 					if(tcolIdList.get(cc).getInt("fcheck") == 1) checkSize ++;
+					else if(tcolIdList.get(cc).getInt("fdelete") == 1) recycleSize ++;
 					topicSize ++;
 				}
 			}
@@ -263,9 +265,11 @@ public class TopicDao {
 			}else if(type.equals("nocheck")){
 				sql += (beforeCheck?" ftopicsize=ftopicsize - " + topicSize + ",ftopicchecksize=ftopicchecksize + " + topicSize + " where ftopicsize - " + topicSize + " >= 0":" ftopicchecksize = ftopicchecksize where 1 = 1 ");
 			}else if(type.equals("delete")){
-				sql += " ftopicrecyclesize = ftopicrecyclesize - " + topicSize + " where ftopicrecyclesize - " + topicSize + " >= 0";
+				if(recycleSize > 0) sql += " ftopicrecyclesize = ftopicrecyclesize - " + topicSize + " where ftopicrecyclesize - " + topicSize + " >= 0";
+				else if(checkSize > 0) sql += " ftopicsize=ftopicsize - " + topicSize +  " where ftopicsize - " + topicSize + " >= 0";
+				else sql += " ftopicchecksize=ftopicchecksize - " + topicSize + " where ftopicchecksize - " + topicSize + " >= 0";
 			}else if(type.equals("recyle")){
-				sql += (checkSize > 0?" ftopicsize=ftopicsize - " + topicSize:" ftopicchecksize=ftopicchecksize - " + topicSize) + 
+				sql += (checkSize > 0?" ftopicsize=ftopicsize - " + topicSize : " ftopicchecksize=ftopicchecksize - " + topicSize) + 
 						",ftopicrecyclesize = ftopicrecyclesize + " + topicSize + " where (ftopicsize - " + topicSize + " >= 0 or " +
 						"ftopicchecksize - " + topicSize + " >= 0 ) ";
 			}else if(type.equals("recovery")){

@@ -383,7 +383,7 @@ var EtopicSet = {
 					formdata['id'] = $("#_uepk").val();
 				}else{
 					formdata['colguid'] = this.columnData.guid;
-					formdata['fguid'] = $("#videoGuid").val();
+					//formdata['fguid'] = $("#videoGuid").val(); 
 					
 					if($("#siteItems option:selected").attr('data') == 'public' && $("#siteItems").val() == this.columnData.attributes.siteGuid)
 						formdata['topicType'] = 1;

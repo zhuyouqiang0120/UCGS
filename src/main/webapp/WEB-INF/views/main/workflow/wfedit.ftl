@@ -58,12 +58,8 @@ body 			{background:#f6f6f6;}
 </head>
 <body >
 <div class="mainBox" style="width:100%;height:10%;">
-	<div class="buttonBox" style="height:auto;width:100%;border-bottom:3px solid #158CA7;">
-		<input type="button" <@permission p='R' func='Chasonx.WorkFlow.addItem(1)' /> value="添加步骤" />
-		<input type="button" <@permission p='R' func='Chasonx.WorkFlow.addItem(2)' /> value="添加动作" />
-		<input type="button" <@permission p='D' func='Chasonx.WorkFlow.removeItem()' /> value="删除节点" />
-		<input type="button" class="button gray"  value="关闭" />
-		<input type="button" <@permission p='E' func='' /> value="保存" />
+	<div class="buttonBox">
+		<@PermisstionBtnHtml />
 	</div>
 	<div class="wfcenter">
 		<canvas id="workflowCanvas" width="700" height="800"></canvas>

@@ -7,18 +7,21 @@
 */ 
 package com.chasonx.ucgs.controller;
 
+import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-
 import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.annotation.AnnPara;
 import com.chasonx.ucgs.common.SystemConstant;
 import com.chasonx.ucgs.config.PageUtil;
 import com.chasonx.ucgs.dao.AdminUserDao;
+import com.chasonx.ucgs.dao.PublicDao;
+import com.chasonx.ucgs.dao.RedisDao;
 import com.chasonx.ucgs.entity.AdminUser;
+import com.chasonx.ucgs.entity.PageStatistics;
 import com.chasonx.ucgs.interceptor.SaveLog;
 import com.chasonx.ucgs.realm.MySessionDao;
 import com.chasonx.ucgs.response.MyCaptcha;
@@ -79,9 +82,9 @@ public class LoginController extends Controller {
 		}else{
 			Record user = AdminUserDao.getUserEntity(username);
 			if(null == user){
-				mess = "用户不存在";
+				mess = "用户名或密码错误";
 			}else if(!pwd.equals(user.getStr("fadminpwd"))){
-				mess = "密码不正确";
+				mess = "用户名或密码错误";
 			}else if(user.getInt("fstate") != 0){
 				mess = "该账户已被冻结，无法登录";
 			}else if(user.getInt("fdimensionState") == 0){
@@ -126,8 +129,22 @@ public class LoginController extends Controller {
 	@AnnPara("用户登出")
 	@Before(SaveLog.class)
 	public void logout(){
-		//Subject subject = SecurityUtils.getSubject();
-		//subject.logout();
+		Subject subject = SecurityUtils.getSubject();
+		subject.logout();
 		redirect("/");
 	}
+	
+	public void mysqlSyncRedis(){
+		long st = System.currentTimeMillis();
+		List<PageStatistics> list = PublicDao.getList(PageStatistics.class, null);
+		try {
+			RedisDao.saveToRedis(list);
+			long ela = (System.currentTimeMillis() - st);
+			int s = 1000,h = 3600 * s,m = 60 * s;
+			renderText("Elapsed - " + ( ela / h) + " : " + (ela%h/m) + " : " + (ela%h%m/s) + "." + (ela%h%m%s) );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
