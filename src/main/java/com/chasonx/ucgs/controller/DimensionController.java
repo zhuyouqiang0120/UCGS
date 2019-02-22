@@ -48,6 +48,7 @@ public class DimensionController extends Controller {
 	public void index(){
 		render(PageUtil.ADMIN_DIMENSION);
 	}
+	 
 	
 	/**
 	 * 维度信息操作
