@@ -41,6 +41,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <meta name="author" content="chasonx">
 <title>欢迎使用UCGS统一内容生产软件 </title>
 <#include "common/head.ftl">
+<script type="text/javascript" src="${basePath}/res/plugs/fw/chasonx.s.tab.js"></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/main/main.js"></script>
 </head>
 <body >
@@ -49,7 +50,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 	<div id="ucgs_main_top">
 		<span class="ucgslogo"  title="统一内容生产系统"></span>
 		<ul id="ucgs_main_setting">
-			<li id="ucgs_main_btn_changeskin"><i class="icon-palette" ></i> 换肤</li>
+		<!--	<li id="ucgs_main_btn_changeskin"><i class="icon-palette" ></i> 换肤</li> -->
 			<li onclick="UCGS.updpwd()"><i class="icon-lock_outline" ></i>修改密码</li>
 			<li id="ucgs_main_btn_setting"><i class="icon-cog" ></i> 设置</li>
 			<li onclick="window.location.href = '${basePath}/logout';"><i class="icon-exit" ></i> 退出系统</li>
@@ -65,10 +66,14 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		<div id="ucgs_main_desc">上次登录时间：${(LOGINUSER.lastLoginTime)!}<b>|</b>登录总次数：${(LOGINUSER.logcount)!}<b>|</b>当前在线人数：${(OnlineSize)!}<b>|</b>您的请求IP：${(ReqeustAddr)!}</div>
 	</div>
 	<div id="ucgs_main_left">
-		<div class="ucgs_index">首&nbsp;&nbsp;&nbsp;页</div>
+	 <!--	<div class="ucgs_index">首&nbsp;&nbsp;&nbsp;页</div> -->
 		<div class="ucgs_menu_items"></div>
 	</div>
-	<div id="ucgs_main_right"><iframe id="ucgs_view_panel_0" src="main/desc" style="border:0px;" width="100%" height="100%" ></iframe></div>
+	<div id="ucgs_main_right">
+		<div id="ucgs_main_index">
+			 <iframe id="ucgs_view_panel_0" src="main/desc" style="border:0px;" width="100%" height="100%" ></iframe>
+		</div>
+	</div>
 	<div id="ucgs_main_bottom">Copyright© 2014-${(DateYear)!} Zensvision Information Technology Co., Ltd.  All Rights Reserved.</div>
 </div>
 </body>

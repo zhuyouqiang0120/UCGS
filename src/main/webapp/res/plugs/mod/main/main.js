@@ -5,8 +5,8 @@
 		dark : {
 			href : '/res/skin/css/m/dark.css',
 			conf : {
-				top : '#414042',left : '#6d6d6d',right:'#212121',bottom:'#808080',
-				borderRightColor : '#505050',borderBottomColor : '#636262'
+				top : '#191e27',left : '#202731',right:'#000000',bottom:'#202731',
+				borderRightColor : '#191e27',borderBottomColor : '#191e27'
 			}},
 		lightblue : {
 			href : '/res/skin/css/m/lightblue.css',
@@ -17,7 +17,7 @@
 		frostedGlass : {
 			href : '/res/skin/css/m/frostedGlass.css',
 			conf : {
-				top : false,left : false,right : '#e2e0c8',bottom : false,
+				top : false,left : '#151827',right : '#e2e0c8',bottom : false,
 				borderRightColor : false,borderBottomColor : false
 		}}
 	};
@@ -106,7 +106,7 @@
 		  updatePwd : function(){
 			  new Chasonx({
 				 title : '修改密码',
-				 html : '<div id="upwPanel"></div>',
+				 html : '<div id="upwPanel" class="global_bg_c"></div>',
 				 width:500,height:300,
 				 success : function(){
 					 var pwd = $("#newpwd2").val();
@@ -175,6 +175,23 @@
 		Main.init(_current_skin);
 		UCGS.loadMenu();
 		
+		var tabFocusBg = '#191e27',tabBlurBg = '#2b3244';
+		var stabs = Chasonx.STab({
+			 id  : 'ucgs_main_right',
+			 ffocusColor : '#f6f6f6',
+			 fblurColor : '#ccc',
+			 items : [
+			        {
+				       title : '首页',
+				       id : 'ucgs_main_index',
+				       focusColor : tabFocusBg,
+				       blurColor : tabBlurBg,
+				       css : 'overflow:hidden;'
+			 		}
+			       ]
+		});
+		
+		
 		var _progress,_progressTimer;
 		var progressHandler = function(){
 			_progress = $("#ucgs_progress");
@@ -196,35 +213,53 @@
 			var _menuPanel = $(".ucgs_menu_item" + _p.attr('data'));
 			_menuPanel.addClass('uucgsmenuFocus').css('height',(_menuPanel.find('p').size()*25 + _menuPanel.find('.ucgs_menugroup').size()*32) + 'px');
 		});
+		
+		var fid,framePanel,_currMe;
 		$(".ucgs_menu_items > .items > div > p").live('click',function(){
 			$(".ucgs_menuitem_focus").removeClass();			
 			$(this).addClass('ucgs_menuitem_focus');
 			
 			/**createView*/
-			var fid = $(this).attr('id'),framePanel = $("#" + CURRENT_VIEW_PANEL_ID + fid);
-			if(framePanel[0] == undefined && framePanel[0] == null){
-				$("#ucgs_progress").show().css('width','80%');
-				framePanel = document.createElement('iframe');
-				framePanel.setAttribute('id',CURRENT_VIEW_PANEL_ID + fid);
-				framePanel.setAttribute('src',$(this).attr('url'));
-				framePanel.setAttribute('width','100%');
-				framePanel.setAttribute('height','100%');
-				framePanel.setAttribute('style','border:0px');
-				$("#ucgs_main_right")[0].appendChild(framePanel);
-				framePanel.onload = function(){
-					progressHandler();
-					if(CURRENT_VIEW_PANEL_IDX != fid){
-						$("#" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).hide();
+			fid = $(this).attr('id'),framePanel = $("#" + CURRENT_VIEW_PANEL_ID + fid),_currMe = $(this);
+//			if(framePanel[0] == undefined && framePanel[0] == null){
+//				$("#ucgs_progress").show().css('width','80%');
+//				framePanel = document.createElement('iframe');
+//				framePanel.setAttribute('id',CURRENT_VIEW_PANEL_ID + fid);
+//				framePanel.setAttribute('src',$(this).attr('url'));
+//				framePanel.setAttribute('width','100%');
+//				framePanel.setAttribute('height','100%');
+//				framePanel.setAttribute('style','border:0px'); 
+//				$("#ucgs_main_right")[0].appendChild(framePanel);
+				
+				stabs.add({
+					title : _currMe.text(),
+					id : CURRENT_VIEW_PANEL_ID + fid,
+					close : true,
+					focusColor : tabFocusBg,
+				    blurColor : tabBlurBg,
+				    css : 'overflow:hidden;',
+					html : '<iframe id="_iframe_'+ CURRENT_VIEW_PANEL_ID + fid +'" src="'+ _currMe.attr('url') +'" style="width:100%;height:100%;border:0px;"></iframe>',
+					handler : function(){
 						CURRENT_VIEW_PANEL_IDX = fid;
 					}
-				};
-			}else{
-				framePanel.show();
-				if(CURRENT_VIEW_PANEL_IDX != fid){
-					$("#" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).hide();
-					CURRENT_VIEW_PANEL_IDX = fid;
-				}
-			}
+				});
+				stabs.setFocus(CURRENT_VIEW_PANEL_ID + fid);
+				CURRENT_VIEW_PANEL_IDX = fid;
+				
+//				framePanel.onload = function(){
+//					progressHandler();
+//					if(CURRENT_VIEW_PANEL_IDX != fid){
+//						$("#" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).hide();
+//						CURRENT_VIEW_PANEL_IDX = fid;
+//					}
+//				};
+//			}else{
+//				framePanel.show();
+//				if(CURRENT_VIEW_PANEL_IDX != fid){
+//					$("#" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).hide();
+//					CURRENT_VIEW_PANEL_IDX = fid;
+//				}
+//			}
 		});
 		
 		$(".ucgs_index").live('click',function(){
@@ -235,8 +270,8 @@
 		});
 		
 		$("#ucgs_btn_reflash").live('click',function(){
-			$("#ucgs_progress").show().css('width','80%');
-			$("#" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).attr('src',$("#" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).attr('src'));
+			//$("#ucgs_progress").show().css('width','80%');
+			$("#_iframe_" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).attr('src',$("#_iframe_" + CURRENT_VIEW_PANEL_ID + CURRENT_VIEW_PANEL_IDX).attr('src'));
 		});
 		$("#ucgs_btn_message,#ucgs_btn_todo,#ucgs_main_btn_setting").live('click',function(){
 			Chasonx.Alert({
@@ -248,8 +283,8 @@
 		$("#ucgs_main_btn_changeskin").live('click',function(){
 			var html = '<div class="ucgs_main_btn_skinitem">\
 						<span onclick="_setDefaultSkin(\'dark\')">太空灰'  + (_current_skin == 'dark'?'<b>√</b>':'') + '</span>\
-					    <span onclick="_setDefaultSkin(\'lightblue\')">海之蓝'  + (_current_skin == 'lightblue'?'<b>√</b>':'') + '</span>';
-						//<span onclick="_setDefaultSkin(\'frostedGlass\')">毛玻璃'  + (_current_skin == 'frostedGlass'?'<b>√</b>':'') + '</span></div>';
+					    <span onclick="_setDefaultSkin(\'lightblue\')">海之蓝'  + (_current_skin == 'lightblue'?'<b>√</b>':'') + '</span>\
+						<span onclick="_setDefaultSkin(\'frostedGlass\')">毛玻璃'  + (_current_skin == 'frostedGlass'?'<b>√</b>':'') + '</span></div>';
 			Chasonx.Tips.Show({id:'ucgs_main_btn_changeskin',text:html,direction:'bottom',width:90,height:124});
 		});
 	});

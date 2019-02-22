@@ -8,3 +8,4 @@
 *.war
 *.ear
 >>>>>>> branch 'master' of https://git.oschina.net/zoecer/ucgs.git
+/bin/

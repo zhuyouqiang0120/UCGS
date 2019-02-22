@@ -103,21 +103,25 @@ function fileNameSubstr(files){
 	return files.substring(files.indexOf('/'),files.length);
 }
 
-function getAjaxData(url,data,cb){
+function getAjaxData(url,data,fn,dataType,jsonpName){
 	data = data || {};
-	$.ajax({
-		url:url,
-		type:'post',
-	    dataType:'json',
-	    data:data,
-	    success:function(d){
-	    	if(typeof(cb) == "function") cb(d);
-	    },
-	    error:function(e){
-	    	if(typeof(cb) == "function") cb(e);
-	    	Chasonx.Hint.Faild(e.responseText);
-	    }
-	});
+	dataType = dataType || 'json';
+	var option = {
+			url : url,
+			data : data,
+			type : 'post',
+			dataType : (dataType || 'json'),
+			jsonp : (jsonpName || ''),
+			timeout : 10000,
+			success : function(d){
+				fn(d);
+			},
+			error : function(xhr,msg,e){
+				fn(e);
+				Chasonx.Hint.Faild(e);
+			}
+		};
+	$.ajax(option);
 }
 
 function RegexUrl(url){
@@ -167,7 +171,7 @@ function _GetSkinName(){
 
 function _GetBoxLineColor(){
 	if('lightblue' == _GetSkinName()) return '#e8e8e8';
-	else return '#545454';
+	else return '#151921';
 }
 
 function _DefSkinInit(){
@@ -179,6 +183,10 @@ function _DefSkinInit(){
 
 $(document).ready(function(){
 	_DefSkinInit();
+	
+	$(".dialog-back").live("click",function(){
+		Pane.closeFade();
+	});
 });
 
 /**
@@ -219,4 +227,26 @@ var UCGS_DAO = {
 			});
 		}
 };
- 
+
+var getDocAuthCode = function(fn){
+		getAjaxData(DefConfig.Root + '/main/doc/getAuthCode',null,function(d){
+			if(typeof fn == 'function') fn(d);
+		});
+};
+
+var Pane = {
+		mainId : null,
+		targetId : null,
+		openFade : function(mainId,targetId,fn){
+			 this.mainId = mainId;
+			 this.targetId = targetId;
+			 $("#" + mainId).addClass("global-scale");
+			 $("#" + targetId).addClass("global-fade-am");
+			 if(typeof(fn) == "function") fn();
+		},
+		closeFade : function(fn){
+			 $("#" + this.mainId).removeClass("global-scale");
+			 $("#" + this.targetId).removeClass("global-fade-am");
+			 if(typeof(fn) == 'function') fn();
+		}
+};

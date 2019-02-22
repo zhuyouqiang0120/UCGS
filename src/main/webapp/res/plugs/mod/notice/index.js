@@ -38,7 +38,7 @@
 		Chasonx.Frameset({
 			  main : 'mainPanel',
 		      window : {
-		          top : { id : 'topPanel', height : '70px',border:false,bgColor : false},
+		          top : { id : 'topPanel', height : '0px',border:false,bgColor : false},
 		          right:{ id:'centerPanel', width : '100%' ,bgColor : false,border : false}
 		      }
 		});

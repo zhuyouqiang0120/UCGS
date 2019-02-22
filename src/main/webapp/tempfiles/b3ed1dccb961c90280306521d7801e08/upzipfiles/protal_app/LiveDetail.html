@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>直播</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-title" content="BestTv" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="keywords" content="BestTv" />
+<meta name="description" content="BestTv" />
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="email=no">
+<!-- 强制全屏 Start-->
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes" />
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true" />
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application" />
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app" />
+<!--强制全屏 END-->
+<!--字体全局样式-->
+<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+<link rel="stylesheet" type="text/css" href="css/base.css" />
+<!--网页样式-->
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<script src="js/jquery.js"></script>
+<script src="js/common.js"></script>
+<script src="js/jquery.lazyload.js"></script>
+<script src="js/jquery.mousewheel.js"></script>
+<script src="js/jquery.jscrollpane.min.js"></script>
+<script src="js/scroll-startstop.events.jquery.js"></script>
+<script>
+$(document).ready(function(){
+	$(".btn-slide").click(function(){
+		$("#panel").slideToggle("slow");
+		$(this).toggleClass("active"); return false;
+	}); 
+});
+</script>
+</head>
+
+<body>
+<div class="Top">
+	<a href="javascript:history.go(-1);" class="fl"><i class="fa fa-angle-left fa-2x"></i></a>
+	<p>点 播</p>
+</div>
+<div class="Container">
+	<img src="image/11.jpg">
+	<div id="jp-container" class="jp-container">
+		<div class="ml20">
+			<div class="ChannelDetail">
+				<span><div class="slide"><a href="#" class="btn-slide"></a></div></span>
+				<div class="icon"><i class="fa fa-tv"></i></div>
+				<h2>CCTV-2 介绍</h2>
+				<div class="cb"></div>
+				<p id="panel">CCTV-2一个以经济节目为特色，以财经资讯节目为核心，生活服务节目为辅助的经济生活服务类频道</p>
+			</div>
+			<div class="ChannelList">
+				<a href="#"><p class="f16 fb">频道切换</p></a>
+				<a href="LiveDetail.html"><p>CCTV-1</p></a>
+				<a href="LiveDetail.html" class="Current"><span>正播</span><p>CCTV-2</p></a>
+				<a href="LiveDetail.html"><p>星尚频道</p></a>
+				<a href="LiveDetail.html"><p>第一财经</p></a>
+				<a href="LiveDetail.html"><p>湖南卫视</p></a>
+				<a href="LiveDetail.html"><p>浙江卫视</p></a>
+				<a href="LiveDetail.html"><p>东方卫视</p></a>
+				<a href="LiveDetail.html"><p>星尚频道</p></a>
+				<a href="LiveDetail.html"><p>第一财经</p></a>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function() {
+		
+			// the element we want to apply the jScrollPane
+			var $el					= $('#jp-container').jScrollPane({
+				verticalGutter 	: -16
+			}),
+					
+			// the extension functions and options 	
+				extensionPlugin 	= {
+					
+					extPluginOpts	: {
+						// speed for the fadeOut animation
+						mouseLeaveFadeSpeed	: 500,
+						// scrollbar fades out after hovertimeout_t milliseconds
+						hovertimeout_t		: 1000,
+						// if set to false, the scrollbar will be shown on mouseenter and hidden on mouseleave
+						// if set to true, the same will happen, but the scrollbar will be also hidden on mouseenter after "hovertimeout_t" ms
+						// also, it will be shown when we start to scroll and hidden when stopping
+						useTimeout			: true,
+						// the extension only applies for devices with width > deviceWidth
+						deviceWidth			: 980
+					},
+					hovertimeout	: null, // timeout to hide the scrollbar
+					isScrollbarHover: false,// true if the mouse is over the scrollbar
+					elementtimeout	: null,	// avoids showing the scrollbar when moving from inside the element to outside, passing over the scrollbar
+					isScrolling		: false,// true if scrolling
+					addHoverFunc	: function() {
+						
+						// run only if the window has a width bigger than deviceWidth
+						if( $(window).width() <= this.extPluginOpts.deviceWidth ) return false;
+						
+						var instance		= this;
+						
+						// functions to show / hide the scrollbar
+						$.fn.jspmouseenter 	= $.fn.show;
+						$.fn.jspmouseleave 	= $.fn.fadeOut;
+						
+						// hide the jScrollPane vertical bar
+						var $vBar			= this.getContentPane().siblings('.jspVerticalBar').hide();
+						
+						/*
+						 * mouseenter / mouseleave events on the main element
+						 * also scrollstart / scrollstop - @James Padolsey : http://james.padolsey.com/javascript/special-scroll-events-for-jquery/
+						 */
+						$el.bind('mouseenter.jsp',function() {
+							
+							// show the scrollbar
+							$vBar.stop( true, true ).jspmouseenter();
+							
+							if( !instance.extPluginOpts.useTimeout ) return false;
+							
+							// hide the scrollbar after hovertimeout_t ms
+							clearTimeout( instance.hovertimeout );
+							instance.hovertimeout 	= setTimeout(function() {
+								// if scrolling at the moment don't hide it
+								if( !instance.isScrolling )
+									$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
+							}, instance.extPluginOpts.hovertimeout_t );
+							
+							
+						}).bind('mouseleave.jsp',function() {
+							
+							// hide the scrollbar
+							if( !instance.extPluginOpts.useTimeout )
+								$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
+							else {
+							clearTimeout( instance.elementtimeout );
+							if( !instance.isScrolling )
+									$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
+							}
+							
+						});
+						
+						if( this.extPluginOpts.useTimeout ) {
+							
+							$el.bind('scrollstart.jsp', function() {
+							
+								// when scrolling show the scrollbar
+							clearTimeout( instance.hovertimeout );
+							instance.isScrolling	= true;
+							$vBar.stop( true, true ).jspmouseenter();
+							
+						}).bind('scrollstop.jsp', function() {
+							
+								// when stop scrolling hide the scrollbar (if not hovering it at the moment)
+							clearTimeout( instance.hovertimeout );
+							instance.isScrolling	= false;
+							instance.hovertimeout 	= setTimeout(function() {
+								if( !instance.isScrollbarHover )
+										$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
+								}, instance.extPluginOpts.hovertimeout_t );
+							
+						});
+						
+							// wrap the scrollbar
+							// we need this to be able to add the mouseenter / mouseleave events to the scrollbar
+						var $vBarWrapper	= $('<div/>').css({
+							position	: 'absolute',
+							left		: $vBar.css('left'),
+							top			: $vBar.css('top'),
+							right		: $vBar.css('right'),
+							bottom		: $vBar.css('bottom'),
+							width		: $vBar.width(),
+							height		: $vBar.height()
+						}).bind('mouseenter.jsp',function() {
+							
+							clearTimeout( instance.hovertimeout );
+							clearTimeout( instance.elementtimeout );
+							
+							instance.isScrollbarHover	= true;
+							
+								// show the scrollbar after 100 ms.
+								// avoids showing the scrollbar when moving from inside the element to outside, passing over the scrollbar								
+							instance.elementtimeout	= setTimeout(function() {
+								$vBar.stop( true, true ).jspmouseenter();
+							}, 100 );	
+							
+						}).bind('mouseleave.jsp',function() {
+							
+								// hide the scrollbar after hovertimeout_t
+							clearTimeout( instance.hovertimeout );
+							instance.isScrollbarHover	= false;
+							instance.hovertimeout = setTimeout(function() {
+									// if scrolling at the moment don't hide it
+								if( !instance.isScrolling )
+										$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
+								}, instance.extPluginOpts.hovertimeout_t );
+							
+						});
+						
+						$vBar.wrap( $vBarWrapper );
+						
+					}
+					
+					}
+					
+				},
+				
+				// the jScrollPane instance
+				jspapi 			= $el.data('jsp');
+				
+			// extend the jScollPane by merging	
+			$.extend( true, jspapi, extensionPlugin );
+			jspapi.addHoverFunc();
+		
+		});
+	</script>
+</div>
+<div class="Bottom">
+	<a href="index.html"><i class="fa fa-home fa-2x"></i><p>首页</p></a>
+	<a href="Live.html" class="Current"><i class="fa fa-toggle-right fa-2x"></i><p>直播</p></a>
+	<a href="Video.html"><i class="fa fa-video-camera fa-2x"></i><p>点播</p></a>
+	<a href="#"><i class="fa fa-wifi fa-2x"></i><p>我要上网</p></a>
+	<div class="cb"></div>
+</div>
+<div id="back-to-top"><a href="#top"><i class="fa fa-arrow-up fa-lg"></i></a></div>
+</body>
+</html>

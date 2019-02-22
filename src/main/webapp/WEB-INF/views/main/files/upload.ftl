@@ -40,6 +40,9 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>UCGS2.0统一内容管理系统 ZensVison </title>
 <#include "../../common/head.ftl">
+<style type="text/css">
+#dragRight				{background:transparent;}
+</style>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/admin/area.js"></script>
 <script type="text/javascript">
    window.onload = function(){
@@ -91,7 +94,7 @@ function _siteList(areaguid){
 			<p class="areaListTitle"><b>区域列表</b></p>
 			<div  id="areaList"></div>
 		</div>
-		<div id="dragRight">
+		<div id="dragRight" class="global_bg_c">
 			<div class="swfuploadPanel">
 				<span id="swfUploadButton">上传控件</span><input type="button" class="button blue" value="开始上传" onclick="startSwfUpload()"/>
 				<input type="button" class="button red" value="取消上传" onclick="stopSwfUpload()"/>（文件大小不超过3MB，支持格式：PNG,GIF,JPG）
@@ -99,7 +102,7 @@ function _siteList(areaguid){
 					<p><label>资源类型：</label><select id="ftype" class="inputText select"><option value="0">主题资源</option><option value="1">模版资源</option></select></p>
 					<p><label>所属网站：</label><select id="fileSite" class="inputText select"></select></p>
 					<p><label>资源描述：</label><textarea id="fremark" class="inputText" maxlength="50"></textarea></p>
-					<p><label>文件名称：</label><input type="checkbox" id="_newfilename"/>使用原文件名 <font size="2" color="red">(使用原文件名可能会覆盖相同文件名的文件)</font></p><Br>
+					<p><label>文件名称：</label><input type="checkbox" id="_newfilename"/>使用原文件名 <font size="2" color="#dea317">(使用原文件名可能会覆盖相同文件名的文件)</font></p><Br>
 				</div>
 				<div class="fileStats">待上传文件:<font>0</font>   上传成功:<font>0</font>   上传失败:<font>0</font><span id="uploadErrMsg"></span></div>
 				<div class="fileAttr"><span>文件名</span><span>文件大小</span><span>更新时间</span><span>备注</span><span>上传进度</span></div>

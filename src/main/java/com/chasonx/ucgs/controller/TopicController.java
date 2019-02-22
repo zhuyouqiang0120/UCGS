@@ -9,10 +9,10 @@
 package com.chasonx.ucgs.controller;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.net.MalformedURLException;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import com.chasonx.directory.FileUtil;
 import com.chasonx.tools.DateFormatUtil;
@@ -22,12 +22,15 @@ import com.chasonx.ucgs.annotation.AnnPara;
 import com.chasonx.ucgs.annotation.ParaEntity;
 import com.chasonx.ucgs.annotation.ParamInterceptor;
 import com.chasonx.ucgs.annotation.Required;
+import com.chasonx.ucgs.api.Ret;
+import com.chasonx.ucgs.common.CheckBadWords;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.Tools;
 import com.chasonx.ucgs.config.DHttpUtils;
 import com.chasonx.ucgs.config.PageUtil;
 import com.chasonx.ucgs.dao.BadWordDao;
 import com.chasonx.ucgs.dao.ColumnDao;
+import com.chasonx.ucgs.dao.IWorkflowDao;
 import com.chasonx.ucgs.dao.TopicDao;
 import com.chasonx.ucgs.dao.TopicOuterResourceFixed;
 import com.chasonx.ucgs.entity.Column;
@@ -45,6 +48,7 @@ import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import com.zens.xworkflow.entity.TaskEntity;
 
 /**
  * 资讯模块
@@ -53,10 +57,13 @@ import com.jfinal.plugin.activerecord.tx.Tx;
  * @remark
  */
 public class TopicController extends Controller {
+	
+	IWorkflowDao workflowDao = new IWorkflowDao();
 
 	@AnnPara("访问主题列表页面")
 	@Before(SaveLog.class)
 	public void index(){
+		System.out.println(12);
 		setAttr("PAGETYPE", 1);
 		render(PageUtil.TOPIC_LIST);
 	}
@@ -96,6 +103,7 @@ public class TopicController extends Controller {
 		}
 		createToken(Constant.FORMDATA_TOKEN_NAME, 300);
 		setAttr("TOPICALINFO",info);
+		setAttr("_LOGIN_GUID", DHttpUtils.getLoginUser(getRequest()).getStr("fguid"));
 		render(PageUtil.TOPIC_EDIT);
 	}
 	
@@ -168,7 +176,7 @@ public class TopicController extends Controller {
 		Topic info = Tools.recordConvertModel((Record)getAttr("RequestPara"), Topic.class);
 		int type = getParaToInt("type");
 		
-		info = topicAttrFilter(info);
+		info = topicAttrFilter(info , false);
 		boolean res = false;
 		switch(type){
 		case 1:
@@ -219,7 +227,7 @@ public class TopicController extends Controller {
 			contents = TopicOuterResourceFixed.filterOutResouceContent(contents, siteGuid, Constant.FILE_TYPE_IMAGE, logRec.getStr("fadminname"), logRec.getStr("fguid"));
 			contents = badWordReplace(contents,false);
 		}
-		topic = topicAttrFilter(topic);
+		topic = topicAttrFilter(topic  ,false);
 		
 		switch (type) {
 		case 1:
@@ -237,6 +245,8 @@ public class TopicController extends Controller {
 					res = TopicDao.addTopicRelate(colGuid, guid,logRec.getStr("fguid"),topicType,siteGuid,tempId);
 					ColumnDao.changeCheckSize(colGuid, 1, 0,0);
 				}
+				
+				startWorkFlow(guid, siteGuid);
 			}else{
 				 throw new RuntimeException();
 			}
@@ -258,14 +268,14 @@ public class TopicController extends Controller {
 		renderJson(res?getAttr(Constant.FORMDATA_TOKEN_NAME):0);
 	}
 	
-	private Topic topicAttrFilter(Topic t){
+	private Topic topicAttrFilter(Topic t,boolean ret){
 		String[] titleString = new String[4];
 		try{
 			titleString[0] = t.getStr("ftitle");
 			titleString[1] = t.getStr("ftitlesec");
 			titleString[2] = t.getStr("fsource");
 			titleString[3] = t.getStr("fsummary");
-			titleString = badWordReplace(titleString, false);
+			titleString = badWordReplace(titleString, ret);
 			
 			if(StringUtils.hasText(titleString[0])) t.set("ftitle", titleString[0]);
 			if(StringUtils.hasText(titleString[1])) t.set("ftitlesec", titleString[1]);
@@ -281,43 +291,77 @@ public class TopicController extends Controller {
 	@Before({Para.class,SaveLog.class})
 	public void badwordCheck(){
 		Topic topic = Tools.recordConvertModel((Record)getAttr("RequestPara"), Topic.class);
-		String[] contents = getParaValues("contents[]");
-		contents = badWordReplace(contents, true);
-		topic = topicAttrFilter(topic);
-		
-		Record ret = new Record().set("contentData", contents).set("topicData", topic);
+		Record ret = new Record();
+		try{
+			String[] contents = getParaValues("contents[]");
+			contents = badWordReplace(contents, true);
+			topic = topicAttrFilter(topic, true);
+			 ret.set("contentData", contents).set("topicData", topic);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		renderJson(ret);
 	}
 	
 	private String[] badWordReplace(String[] content,boolean ret){
-		
+	
 		List<Record> badWord = BadWordDao.getBadWordList(0);
-		Map<Integer, String> idxMap;
-		int start = 0;
-		String word;
-		for(int s = 0,slen = content.length;s < slen;s++){
-			if(content[s] != null){
-				idxMap = new HashMap<Integer, String>();
-				
-				for(int i = 0,len = badWord.size();i < len;i++){
-					
-					word = badWord.get(i).getStr("fword");
-					start = content[s].indexOf(word);
-					if(start >= 0){
-						idxMap.put(start,ret?word:changePattenForStr(word));
-					}
-				}
-				
-				String badword;
-				for(Iterator<Integer> ite = idxMap.keySet().iterator();ite.hasNext();){
-					badword = idxMap.get(ite.next().intValue()).toString();
-					if(ret){
-						content[s] = content[s].replaceAll(badword, "<span style='background:#f09;color:#ffffff;'>" + badword + "</span>");
-					}else{
-						content[s] = content[s].replaceAll(badword, "***");
-					}
-				}
+		Set<String> sensitiveWordSet = new HashSet<String>();
+		if(!badWord.isEmpty()){
+			for(int i = 0,len = badWord.size();i < len;i ++){
+				sensitiveWordSet.add(badWord.get(i).getStr("fword"));
 			}
+			
+			CheckBadWords.initBadWordContainer(sensitiveWordSet);
+		}
+		
+//		Map<Integer, String> idxMap;
+//		Set<String> wordSet = new HashSet<String>();
+//		int start = 0;
+//		String word;
+//		String badword;
+		for(int s = 0,slen = content.length;s < slen;s++){
+			if(content[s] == null){
+				continue;
+			}
+				
+			if(ret){
+				content[s] = CheckBadWords.replaceSensitive(content[s],  "      【","】       ");
+			}else{
+				content[s] = CheckBadWords.replaceSensitive(content[s], "***");
+			}
+//				idxMap = new HashMap<Integer, String>();
+//				
+//				for(int i = 0,len = badWord.size();i < len;i++){
+//					
+//					word = badWord.get(i).getStr("fword");
+//					start = content[s].indexOf(word);
+//					if(start >= 0){
+//						idxMap.put(start,ret ? word :  changePattenForStr(word));
+//					}
+//					wordSet.add(changePattenForStr(word));
+//				}
+			
+				
+//				for(Iterator<Integer> ite = idxMap.keySet().iterator();ite.hasNext();){
+//					badword = idxMap.get(ite.next().intValue()).toString();
+//					if(ret){
+//						content[s] = content[s].replaceAll(badword, "<span style='background:#f09;color:#ffffff;'>" + badword + "</span>");
+//					}else{
+//						content[s] = content[s].replaceAll(badword, "***");
+//					}
+//				}
+				
+//				Iterator<String> ite = wordSet.iterator();
+//				while(ite.hasNext()){
+//					badword = ite.next();
+//					if(ret){
+//						content[s] = content[s].replaceAll(badword, "<span style='background:#f09;color:#ffffff;'>" + badword + "</span>");
+//					}else{
+//						content[s] = content[s].replaceAll(badword, "***");
+//					}
+//				}
+//			}
 		}
 		return content;
 	}
@@ -672,6 +716,26 @@ public class TopicController extends Controller {
 		}
 		renderJson(res);
 	}
+	
+	/**
+	 * 获取登录用户待审核文章列表
+	 * @author chasonx
+	 * @create 2018年4月24日 下午3:55:04
+	 * @update
+	 */
+	public void pendingTopicList(){
+		String guid = DHttpUtils.getLoginUser(getRequest()).getStr("fguid");
+		int checkState = getParaToInt("checkState");
+		int pageSize = getParaToInt("PageSize");
+		int pageNumber = getParaToInt("PageNumber");
+		Ret ret = new Ret();
+		ret.setData(TopicDao.listPendingTopic(guid, pageSize, pageNumber,checkState));
+		if(ret.getData() != null){
+			ret.setResult(1);
+		}
+		renderJson(ret);
+	}
+	
 	/**
 	 * 
 	 * @Tag       : 删除文章页面模板 - 临时
@@ -683,4 +747,23 @@ public class TopicController extends Controller {
 		if(tid == null) renderJson(0);
 		renderJson(Template.temp.deleteById(tid)?1:0);
 	}
+	
+	private boolean startWorkFlow(String topicGuid,String siteGuid){
+		boolean res = false;
+		try {
+			TaskEntity taskEntity = workflowDao.checkExist(Constant.WorkFlow.TOPIC_CHECK.value(), siteGuid ,Constant.UCGS_ClientGuid );  //   WorkflowDao.getModelId(Constant.WorkFlow.TOPIC_CHECK.value(), siteGuid);
+			System.out.println(taskEntity.getGuid());
+			if(taskEntity != null){
+				res = workflowDao.start(taskEntity.getGuid(), topicGuid);
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+//		if(StringUtils.hasText(modelId)){
+//			res = WorkflowDao.startModelInstance(modelId, topicGuid);
+//		}
+		System.out.println("工作流启动状态：" + res);
+		return res;
+	}
+	
 }

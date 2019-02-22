@@ -1,37 +1,29 @@
-/*
-                                                  
+/*                                             
             .rrrsrssrsrrii;:.                     
            .8A&GG8898999999993S5s:                
            ;XGGGGG8889889999999999h.              
            ;XXXXXG888888889898888981              
            iXXXXXGGGG888888888889883.             
            rXXX&XXXXGGGGG88888898888;              
-           1&XXX&XXGGG8G88888G898898h     ,ih3889;
-           h&XXXXX&XGGG88GGGG8GG88889. ;h9X&A&&&H9  天 一 皇 不
-  .,:;;;;:,9&AAA&X&&GGXGGGGX&GGXXGG8838&A&XXXXX&B1  下 入 图 胜
-h5998888888&&AA&&&&&XXXGGXXXXXGGGGX&AA&&&X&&&&HBS   风 江 霸 人
-89993933338XXXGGXGGG8898888998GXABMMMBHAAAHBBBXs    云 湖 业 生
-9399333399888G888888888888GGXAM##M##MBBM#MHXS;      出 岁 谈 一
-9399998888G88888888888GGXXXX89GAHBBMBBA3hi,         我 月 笑 场
-89898888988899888GGXXXX&&&AG93S5S9HMH8S             辈 催 中 醉
-G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
-55399933S51s8XX&&X&X33398933S55h1s3X55;           
+           1&XXX&XXGGG8G88888G898898h     ,ih3889;     天下风云出我辈，一入江湖岁月催，
+           h&XXXXX&XGGG88GGGG8GG88889. ;h9X&A&&&H9     皇图霸业谈笑中，不胜人生一场醉。
+  .,:;;;;:,9&AAA&X&&GGXGGGGX&GGXXGG8838&A&XXXXX&B1     提剑跨骑挥鬼雨，白骨如山鸟惊飞，
+h5998888888&&AA&&&&&XXXGGXXXXXGGGGX&AA&&&X&&&&HBS      尘事如潮人如水，只叹江湖几人回。
+89993933338XXXGGXGGG8898888998GXABMMMBHAAAHBBBXs    
+9399333399888G888888888888GGXAM##M##MBBM#MHXS;     
+9399998888G88888888888GGXXXX89GAHBBMBBA3hi,        
+  9898888988899888GGXXXX&&&AG93S5S9HMH8S            
+ 	G8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              
+      33S51s8XX&&X&X33398933S55h1s3X55;           
             h8GGG8G9SS33333S5hhh1r983r            
             :39889955S533SS5h111ssGBG,            
              i39889S3333SS5h11ssi39s,             
               s999883333SS5h11si1Xs               
                h8GXXXGG8935h1srhXS1:              
-                1998893S555h113XShh1ri,.          
-           r5hr..s9999SS55hh3G8555h1h3hhi   .:;irs
-           3Gi,;;;s83S93S38G8S555hh1hSh3s     .,;r
-           3S:;;;i:13;SX&XG35SS55hh1h55s          
-           89ii;;i;;s3XXG933SSS555hhSSs           
-.         .XXiii;;;;iH#X989333SSSS5S3r            
-.         :&Xsii;;;i:GBX899993SSSS3S;             
-.         ;AAh;iii;;:XX389933SSSSS1,              
-          rHH9;ii;;;:8S;;13993SS5i                
-          sHH8;iii;;:3hi::;rsrii,                 
-,    .  ::5HH9,:::::,91;;.                        
+                1998893S555h113XSh
+                .s9999SS55hh3G855
+          		 3S93S38G8S555
+           		  :13;SX&XG                         
 */          						
 
 /**
@@ -47,6 +39,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 *	updateTime : 2015/06/05 18:14 修改Dialog拖动体验问题，拖动时body不可选择
 *   updateTime : 2016/10/26 ajax增加支持数组参数
 *	updateTime : 2017/07/04 增加Chasonx.Hint.Footer();
+*   updateTime : 2017/11/2  增加CopyObject方法
 *	author	   : chason.x
 *	email      : zuocheng911@163.com
 *   remark     : work tools
@@ -63,15 +56,15 @@ function Chasonx(options){
 Chasonx.Alert = function(options){
 
 	options = options || {};
-	options.width = options.width || 300;
-	options.height = options.height || 150;
+	options.width = options.width || 330;
+	options.height = options.height || 180;
 	options.html = options.html || '确定执行该操作吗？';
 	options.alertType = options.alertType || 'normal';
 	options.icon = options.icon || null;
 
 	if(typeof(options.alertType) == 'string'){
-		var leftstyle = 'float:left;width:80px;height:' + (options.height - 100) + 'px;text-align:center;vertical-align:middle;line-height:' + (options.height - 100) + 'px;font-size:40px;font-weight:bold;',
-		    rightstyle = 'float:left;width:' + (options.width - 80) + 'px;height:'+ (options.height - 100)/2 + 'px;padding-top:'+ (options.height - 105)/2 +'px;overflow:hidden;',
+		var leftstyle = 'width:80px;text-align:center;font-size:40px;font-weight:bold;position: relative;top: 50%;transform: translateY(-50%);display: inline-block;',
+		    rightstyle = 'width:' + (options.width - 100) + 'px;overflow:hidden;display: inline-block;position: absolute;top: 50%;transform: translateY(-50%);color : #f6f6f6;font-size : 16px;',
 		    leftHtml = '',
 		    rightHtml = '<div style="'+ rightstyle +'">'+ options.html +'</div>';
 		if(options.alertType == 'normal') leftHtml = '<div style="'+ leftstyle + 'color:#26A2E8;' + '">'+ (options.icon || '？') +'</div>';
@@ -97,7 +90,7 @@ Chasonx.ContextMenu = {
 					 -webkit-user-select:none;-ms-user-select:none;user-select:none;opacity:0;',
   			item : 'height:30px;vertical-align: middle;line-height: 30px;border:1px solid #4A4242;color:#0CBECD;cursor:default;',
   			itemhover : 'border:1px solid #14BED3;position: relative;z-index:10015;background-color:#5C5555',
-  			icon : 'width:18%;height:32px;float: left;border-right:1px solid #575556;position: relative;z-index:10000;',
+  			icon : 'width:18%;height:32px;float: left;border-right:1px solid #575556;position: relative;z-index:10000;text-align:center;',
   			text : 'width:78%;height:30px;vertical-align: middle;line-height: 30px;float: left;padding-left: 2%;overflow: hidden;',
   			hr 	 : 'width:78%;border-top: 1px solid #575556;position: relative;margin-left: 18%;z-index: 9999;'		
 		}
@@ -128,13 +121,12 @@ Chasonx.ContextMenu = {
 					items.setAttribute('id','_chasonxContextMenuPanel_' + options.id);
 
 					items.oncontextmenu = function(){return false;};
-
 					for(var i = 0,len = _items.length;i < len;i++){
 						if(_items[i].hr){
 							item = ChasonTools.createEle({type:'div',css:_this.attr.css.hr});
 						}else{
 							item = ChasonTools.createEle({type:'div',css:_this.attr.css.item});
-						 	item.innerHTML =  '<div style="'+ _this.attr.css.icon +'"></div><div style="'+ _this.attr.css.text +'">'+ _items[i].text +'</div>';
+						 	item.innerHTML =  '<div style="'+ _this.attr.css.icon +'">'+ (_items[i].icon || '') +'</div><div style="'+ _this.attr.css.text +'">'+ _items[i].text +'</div>';
 							ChasonTools.addEventHandler(item,'mouseover',function(){	
 								this.setAttribute('style', _this.attr.css.item + _this.attr.css.itemhover);
 							});
@@ -187,27 +179,26 @@ Chasonx.ContextMenu = {
 *options{title,text,type,timeout}
 */
 Chasonx.Hint = {
-	options : {width:200,height:100,modal:false,isdialog:false,hor:20,timeout:5000},
+	options : {width:200,height:100,modal:false,isdialog:false,hor:150,timeout:3000},
 	css : {
-		sucs   : 'position:fixed;z-index:1024;width:260px;height:auto !important;min-height:50px;right:10px;opacity:0;top:0px;\
-			      -moz-border-radius: 5px; -webkit-border-radius: 5px;  border-radius:5px;moz-user-select: -moz-none;-moz-user-select: none;\
-			     -o-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;',
-	    sta    : 'width:60px;height:48px;color:#f6f6f6;float:left;font-size:30px;text-align:center;vertical-align:middle;line-height:45px;font-weight:bold;',
-	    text   : 'width:180px;height:auto !important;min-height:20px;float:left;font-size:13px;color:#f6f6f6;position:relative;margin:15px 0px 10px 0px;',
+		sucs   : 'position:fixed;z-index:1024;width:260px;height:auto !important;right:40%;opacity:0;top:0px;padding: 30px;\
+			      border-radius:5px;user-select:none;',
+	    sta    : 'width:60px;height:48px;color:#fff;font-size:30px;text-align:center;font-weight:bold;position: absolute;  top: 50%; transform: translateY(-50%);  display: inline-block;',
+	    text   : 'width:200px;height:auto !important;font-size:18px;color:#FFF;position:relative;left : 60px;text-align:center;',
 	    foot   : 'position:relative;display:inline-block;overflow:hidden; white-space: nowrap; box-shadow: 0px 0px 10px #545050;-moz-box-shadow: 0px 0px 10px #545050;-webkit-box-shadow: 0px 0px 10px #545050;padding:5px;',
 	    footBox: 'position:fixed;z-index:1024;bottom:0px;right:0px;width:auto !important;height:auto !important;'	
 	},
 	Success : function(options){
 		options = options || {};
-
-		this.options.hor = options.hor || this.options.hor;
+		var height = ChasonTools.getWindowSize()[3] / 2;
+		this.options.hor =  100;//options.hor || (height > 150 ? height - 200 : height);
 		this.options.timeout = options.timeout || this.options.timeout;
 		this.options.html = typeof(options) == "string"?options:options.text || 'success!';
 		this.show(this.options,'success');
 	},
 	Faild : function(options){
-		options = options || {};
-		this.options.hor = options.hor || this.options.hor;
+		var height = ChasonTools.getWindowSize()[3] / 2;
+		this.options.hor = 100; //options.hor || (height > 200 ? height - 200 : height);
 		this.options.timeout = options.timeout || this.options.timeout;
 		this.options.html = typeof(options) == "string"?options:options.text || 'faild!';
 		this.show(this.options,'faild');
@@ -259,16 +250,16 @@ Chasonx.Hint = {
 	},
 	footHandler : function(_Panel) {
 		return {
-			T : 0, B : 0,D : 30,
+			T : 0, B : 0,D : 80,
 		    show :  function(options){
 				with(this){
 					var timer,loop = function(){
 						options.ele.style.width = TwBounce.base(T,B,options.width,D) + 'px';
-						 T += 1;
+						 T ++;
 						 timer = setTimeout(function(){
 						 	loop(); 
 						 	if(T > D) clearTimeout(timer); 	
-						 },16);
+						 },6);
 					};
 					loop();
 			    }
@@ -278,7 +269,7 @@ Chasonx.Hint = {
 				with(this){
 					var  timer,loop = function(){
 						 _opt.ele.style.width = (_opt.width + TwBounce.base(T,B,-_opt.width,D)) + 'px';
-						 T += 1;
+						 T ++;
 						 
 						 timer = setTimeout(function(){
 						 	loop();
@@ -286,12 +277,12 @@ Chasonx.Hint = {
 						 		clearTimeout(timer);
 						 		_Panel.removeChild(_opt.ele);
 						 	} 					 	
-						 },16);
+						 },6);
 					};
 					setTimeout(function(){
 						T = 0;
 						B = 0;
-						D = 30;
+						D = 80;
 						loop();
 					},_opt.timeout);
 				}
@@ -631,10 +622,10 @@ Chasonx.prototype = {
 		options.hor = options.hor || (bSize[3] > 100?(bSize[3] - options.height)/4:0);
 		options.ver = options.ver || (bSize[2] - options.width)/2;
 		
-		var mb = 'position:fixed;z-index:1024;width:'+ options.width +'px;height:'+ options.height +'px;border:1px solid #9E9C9C;opacity:0;background-color:#f7f6f6;left:'+ options.ver +'px;top:0px;\
-				  box-shadow:0px 0px 10px #848484;-moz-box-shadow:0px 0px 10px #848484;-webkit-box-shadow:0px 0px 10px #848484;overflow:hidden;\
+		var mb = 'position:fixed;z-index:1024;width:'+ options.width +'px;height:'+ options.height +'px;opacity:0;background-color:#3e506f;left:'+ options.ver +'px;top:0px;\
+				  box-shadow:4px 4px 10px #000;-moz-box-shadow:4px 4px 10px #000;-webkit-box-shadow:4px 4px 10px #000;overflow:hidden;\
 				  -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;',
-		    mt = 'height:40px;background-color:#f7f6f6;border-bottom:1px solid #bbb;color:'+ this.attr.alertType[options.alertType] +';position:relative;',
+		    mt = 'height:40px;background-color:#3e506f;border-bottom:1px solid #364765;color:'+ this.attr.alertType[options.alertType] +';position:relative;',
 		    mx = 'vertical-align:middle;line-height:40px;width:'+ (options.width - 50) +'px;font-size:15px;font-weight:bold;padding-left:8px;overflow:hidden;',
 		    mc = 'display:block;height:'+ (options.isdialog?(options.height - (options.cancel == true?98:0)):options.height - 38) +'px;width:'+ options.width +'px;overflow:auto;position:relative;';
 		   
@@ -660,9 +651,9 @@ Chasonx.prototype = {
 		
 		//isdialog box
 		if(options.isdialog){
-			var	 mf = 'display:block;height:60px;background-color:#f7f6f6;text-align:right;vertical-align:middle;line-height:60px;padding-right:10px;position:relative;',
+			var	 mf = 'display:block;height:60px;background-color:#3e506f;text-align:right;vertical-align:middle;line-height:60px;padding-right:10px;position:relative;',
 			     cancel = 'position:absolute;min-width:60px;width:auto !important;height:30px;right:15px;top:15px;vertical-align:middle;line-height:30px;background-color:#bbb9b9;color:#6d6d6d;border:none;cursor:pointer;' + this.attr.baseCss,
-			     close = 'position:absolute;text-decoration:none;font-weight:normal;right:10px;z-index:1025;top:10px;color:#000;';
+			     close = 'position:absolute;text-decoration:none;font-weight:normal;right:10px;z-index:1025;top:10px;color:#fff;';
 
 			     _foot = ChasonTools.createEle({type:'div',css:mf});
 			     _cancelBtn = ChasonTools.createEle({type:'button',css:cancel});
@@ -723,7 +714,7 @@ Chasonx.prototype = {
 	*options{ver,hor,modal}
 	*/
 	FadeIn : function(o,options){
-		var temp = 0,t = 0,b = 0,d = 30,opcity,timer = null;
+		var temp = 0,t = 0,b = 0,d = 80,opcity,timer = null;
 		var exec = function(){
 			if(o != null && typeof(o) == "object"){
 				temp = TwBounce.easeOutElastic(t,b,options.hor,d);
@@ -732,16 +723,16 @@ Chasonx.prototype = {
 				o.style.opacity = opcity ;
 			}
 			if(typeof(options.modal) == "object")  options.modal.style.opacity = TwBounce.base(t,b,40,d)/100;
-			t += 1;
+			t ++;
 			timer = setTimeout(function(){
 				exec();
 				if(t > d) clearTimeout(timer);
-			},20);
+			},6);
 		};
 		exec();
 	},
 	FadeOut : function(o,options,callBack){
-		var t = 0,b = 0,d = 20,timer = null,ex = false,exm = false;
+		var t = 0,b = 0,d = 80,timer = null,ex = false,exm = false;
 		var exec = function(){
 			if(o.style.opacity == 1) ex = true;
 			if(ex) o.style.opacity = 1 + TwBounce.base(t,b,-100,d)/100;
@@ -749,14 +740,14 @@ Chasonx.prototype = {
 				if(options.modal.style.opacity == 0.4) exm = true;
 				if(exm) options.modal.style.opacity = 0.4 + TwBounce.base(t,b,-40,d)/100;
 			}
-			t += 1;
+			t ++;
 			timer = setTimeout(function(){
 				exec();
 				if(t > d){
 					clearTimeout(timer);
 					if(typeof(callBack) == 'function') callBack();
 				}
-			},20);
+			},6);
 		};
 		exec();
 	},
@@ -1247,7 +1238,22 @@ var ChasonTools = {
     	if(_Bw.chrome) return "CHROME";
     	if(_Bw.opera) return "OPERA";
     	if(_Bw.safari) return "SAFARI";
-	 }
+	 },
+	 CopyObject : function(obj){
+		var nb = new Object();
+		var __loopObj = function(obj,tarObj){
+			for(var f in obj){
+				if(typeof obj[f] == 'object'){
+					tarObj[f] = new Object();
+					__loopObj(obj[f],tarObj[f]);
+				}else{
+					tarObj[f] = obj[f];
+				}
+			}
+		};
+		__loopObj(obj,nb);
+		return nb;
+	}
 };
 
 var TwBounce = {

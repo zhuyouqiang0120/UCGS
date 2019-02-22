@@ -256,8 +256,8 @@ window.onload = function(){
 	}else{
 		fc = '#969696';
 		fcb = '#a7a7a7';
-		fb = '#383737';
-		fbb = '#464646';
+		fb = '#191e27';
+		fbb = '#2c3950';
 	}
 	
 	Chasonx.Frameset({

@@ -122,9 +122,9 @@ window.onload = function(){
 		</div>
 		<div id="dragCenter">
 			<P class="areaListTitle"><b>角色列表</b>
-				<input type="button" class="button blue" onclick="AdminGroup.addGroup(1)" style="width:50px;height:20px;font-size:12px;" value="新建"/>
-				<input type="button" class="button green" onclick="AdminGroup.addGroup(2)"  style="width:50px;height:20px;font-size:12px;" value="编辑"/>
-				<input type="button" class="button red" onclick="AdminGroup.delGroup()"  style="width:50px;height:20px;font-size:12px;" value="删 除" />
+				<input type="button" class="button blue btnsmall" onclick="AdminGroup.addGroup(1)"  value="新建"/>
+				<input type="button" class="button green btnsmall" onclick="AdminGroup.addGroup(2)"   value="编辑"/>
+				<input type="button" class="button red btnsmall" onclick="AdminGroup.delGroup()"   value="删 除" />
 			</p>
 			<div id="rolePanel" class="areaPanel" style="height:40%;"></div>
 			<P  class="areaListTitle"><b>账户列表</b></p>
@@ -136,8 +136,8 @@ window.onload = function(){
 					<input type="radio" id="tabBtn1" name="permission" checked/><label id="_tipsPanel1" for="tabBtn1" onclick="menuSetting()" >菜单权限</label>
 					<div id="tab-content1" class="roleTabPanel" >
 						<div class="_roleBtnPanel">
-							<input type="button" class="button blue" onclick="AdminGroup.comSet.saveMenu(1)" style="width:60px;height:25px;font-size:12px;" value="保存权限"/>
-							<input type="button" class="button red" onclick="AdminGroup.comSet.saveMenu(2)" style="width:60px;height:25px;font-size:12px;" value="解除权限"/>
+							<input type="button" class="button blue btninsmall" onclick="AdminGroup.comSet.saveMenu(1)"  value="保存权限"/>
+							<input type="button" class="button red btninsmall" onclick="AdminGroup.comSet.saveMenu(2)"  value="解除权限"/>
 						</div>
 						<div id="roleMenuPanel"></div>
 					</div>

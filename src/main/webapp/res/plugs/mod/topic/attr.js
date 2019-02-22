@@ -1,7 +1,7 @@
 
 var TopicAttr = {
 		classes : {
-			data : [{v : 0,t : '常规'},{v : 1, t : '视频'},{v : 2,t :'图片'},{v : 3, t : '链接'}],
+			data : [{v : 0,t : '常规'},{v : 1, t : '视频'},{v : 2,t :'图片'},{v : 3, t : '链接'},{v : 4,t : '文档'}],
 			getText : function(v){
 				var tt = '';
 				for(var i = 0;i < this.data.length;i++){
@@ -34,6 +34,7 @@ var TopicAttr = {
 		page : {
 			data : [
 			        {v : '',t : '默认'},
+			        {v : '1920*1080',t : '1920*1080'},
 			        {v : '1280*720',t : '1280*720'},
 			        {v : '480*800',t : '480*800'}
 			       ]

@@ -81,29 +81,26 @@ var TSPlugins = {
 window.onload = function(){
 	
 	var skinName = _GetSkinName();
-	var fc,fcb,fb,fbb,_border,_tb;
+	var fc,fcb,fb,fbb;
+	
 	if('lightblue' == skinName){
 		fc = '#4a4747';
 		fcb = '#525252';
-		fb = '#e6e6e6';
-		fbb = '#d8d7d7';
-		_border = false;
-		_tb = '#fff';
+		fb = '#191e27';
+		fbb = '#2b3244';
 	}else{
 		fc = '#f1f1f1';
 		fcb = '#b1b1b1';
-		fb = '#404040';
-		fbb = '#2f2f2f';
-		_border = '#717171';
-		_tb = '#757575';
+		fb = '#2e394e';
+		fbb = '#222835';
 	}
 	
 	Chasonx.Frameset({
 		  main : 'mainPanel',
 	      window : {
 	          top : { id : 'topPanel', height : '70px',bgColor : false,border : false},
-	          left : { id : 'leftPanel',width : '20%',slide : false,bgColor : false,border : _border,title : '插件列表',titleBgColor : _tb,color : '#b7b4b4'},
-	          right:{ id:'rightPanel', width : '80%' ,bgColor : false ,border : _border}
+	          left : { id : 'leftPanel',width : '20%',slide : false,bgColor : false,border : false,title : '插件列表',titleBgColor : false,color : '#b7b4b4'},
+	          right:{ id:'rightPanel', width : '80%' ,bgColor : false ,border : false}
 	      }
 	});
 	

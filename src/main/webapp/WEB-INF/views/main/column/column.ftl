@@ -43,6 +43,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <link rel="stylesheet" type="text/css" href="${basePath}/res/plugs/lib/jqeasy/themes/default/easyui.css"/>
 <link rel="stylesheet" type="text/css" href="${basePath }/res/plugs/lib/jqeasy/themes/icon.css"/>
 <script type="text/javascript" src="${basePath}/res/plugs/lib/jqeasy/jquery.easyui.min.js" ></script>
+<script type="text/javascript" src="${basePath}/res/plugs/lib/datepicker/WdatePicker.js"></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/column/formatTreeData.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/column/scolumn.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/column/colist.js" ></script>
@@ -81,7 +82,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 			</div>
 		</div>
 		<div id="dragRight">
-		<div  class="colMainRight" style="width:100%;left:0px;right:0px;top:0px;bottom:0px;overflow:hidden;">
+		<div  class="colMainRight" style="width:100%;left:0px;right:0px;top:0px;bottom:0px;">
 			<ul class="buttonTabBox" >
 				<li ><input type="radio" id="tabBtn2200" name="tabBtn2200" checked /><label style="padding: 5px 10px; font-size: 16px;" for="tabBtn2200">基本信息</label>
 				<div id="tab-content2200" class="tabItems">

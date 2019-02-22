@@ -340,7 +340,7 @@
 /*column*/
 .colMainRight				{width:85%;position:absolute;top:0px;bottom:0px;right:0px;}
 colMainRight .tableTemp tr {height:40px;}
-.colMainRight .tableTemp .tdTitle{text-align: right;}
+.colMainRight .tableTemp .tdTitle{text-align: right;color:#919191;}
 .colType 					{}
 
 #bindImagePanel 			{width:60%;height:auto !important;min-height:20px;white-space: normal;}
@@ -599,4 +599,3 @@ colMainRight .tableTemp tr {height:40px;}
     							 box-shadow: 0px 0px 5px #0e0e0e;font-size:15px;cursor:pointer;}
 .noticeItem .content			{background: #4a4a4a;  width: 95%;height:0px; margin: 0px auto;  padding: 0px; border-radius: 0px 0px 4px 4px; color: #c78620; transition:.5s;-webkit-transition:.5s;-moz-transition:.5s;
 								 overflow:hidden;}    							 
-

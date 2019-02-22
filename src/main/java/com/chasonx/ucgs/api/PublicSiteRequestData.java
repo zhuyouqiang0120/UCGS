@@ -135,7 +135,7 @@ public class PublicSiteRequestData extends Controller {
 			if(!currLevelFlag.isEmpty()) levelFlag = currLevelFlag.get(0);
 		}
 		
-		allColList.addAll(ColumnDao.getRelationColumn(allColList, false));
+		allColList.addAll(ColumnDao.getRelationColumn(allColList, false , null));
 		
 		int i;
 		int ilen;

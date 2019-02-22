@@ -93,4 +93,10 @@ public class PageUtil {
 	public static final String SYSTEM_STATISTICS = "sys.ftl";
 	/**公告管理*/
 	public static final String NOTICE_INDEX = "index.ftl";
+	/**文档管理*/
+	public static final String DOC_INDEX = "doc.ftl";
+	/**标签管理*/
+	public static final String LABEL_INDX = "label.ftl";
+	/**缓存服务器管理*/
+	public static final String CACHE_SERVER_INDEX = "cache_server.ftl";
 }

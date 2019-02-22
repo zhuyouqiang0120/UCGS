@@ -9,16 +9,20 @@ package com.chasonx.ucgs.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.quartz.Job;
+
 import com.alibaba.druid.wall.WallFilter;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.api.ColumnRequestData;
 import com.chasonx.ucgs.api.DesignerTemplateData;
+import com.chasonx.ucgs.api.FullSiteData;
 import com.chasonx.ucgs.api.MediaRequestData;
 import com.chasonx.ucgs.api.PagePreviewData;
 import com.chasonx.ucgs.api.ParaTest;
 import com.chasonx.ucgs.api.PublicSiteRequestData;
+import com.chasonx.ucgs.api.SystemUserData;
 import com.chasonx.ucgs.api.TopicApi;
 import com.chasonx.ucgs.api.TopicRequestData;
 import com.chasonx.ucgs.api.UnifyRequestData;
@@ -35,6 +39,8 @@ import com.chasonx.ucgs.controller.ColumnController;
 import com.chasonx.ucgs.controller.ConfigController;
 import com.chasonx.ucgs.controller.DatabaseController;
 import com.chasonx.ucgs.controller.DimensionController;
+import com.chasonx.ucgs.controller.DocController;
+import com.chasonx.ucgs.controller.LabelController;
 import com.chasonx.ucgs.controller.LoadController;
 import com.chasonx.ucgs.controller.LoginController;
 import com.chasonx.ucgs.controller.MainController;
@@ -71,7 +77,9 @@ import com.chasonx.ucgs.entity.PublishToDo;
 import com.chasonx.ucgs.entity.ResourceEntity;
 import com.chasonx.ucgs.entity.Site;
 import com.chasonx.ucgs.entity.SitePublish;
+import com.chasonx.ucgs.entity.TCacheServer;
 import com.chasonx.ucgs.entity.TConfig;
+import com.chasonx.ucgs.entity.TLabel;
 import com.chasonx.ucgs.entity.TMaps;
 import com.chasonx.ucgs.entity.TQuartz;
 import com.chasonx.ucgs.entity.Template;
@@ -162,6 +170,8 @@ public class Config extends JFinalConfig {
 		route.add("/main/load",LoadController.class);
 		route.add("/main/statistics",PageStatisticsController.class,"main/statistics");
 		route.add("/main/notice", NoticeController.class,"main/notice");
+		route.add("/main/doc" , DocController.class , "main/doc");
+		route.add("/main/label", LabelController.class,"main/topic");
 		
 		route.add("/data/mr", MediaRequestData.class);
 		route.add("/data/topic",TopicRequestData.class);
@@ -171,7 +181,8 @@ public class Config extends JFinalConfig {
 		route.add("/data/preview",PagePreviewData.class);
 		route.add("/data/column",ColumnRequestData.class);
 		route.add("/data/tscaler",DesignerTemplateData.class);
-		
+		route.add("/data/find", FullSiteData.class,"preview");
+		route.add("/data/user",SystemUserData.class);
 		route.add("/api/topic",TopicApi.class);
 		
 		route.add("/test",ParaTest.class,"/");
@@ -233,6 +244,8 @@ public class Config extends JFinalConfig {
 		ar.addMapping("t_pageplugingroup", PluginsGroup.class);
 		ar.addMapping("t_pageresource", PageResource.class);
 		ar.addMapping("t_pageresource_relate", PageResourceRelate.class);
+		ar.addMapping("t_label", TLabel.class);
+		ar.addMapping("t_cache_server", TCacheServer.class);
 		
 		//shiro
 		ShiroPlugin shiroPlugin = new ShiroPlugin(shiroRoutes);
@@ -326,5 +339,19 @@ public class Config extends JFinalConfig {
 	public void extendInit(){
 		String topicExt = CacheKit.get(Constant.CACHE_DEF_NAME, Constant.Config.TopicExtendView.toString());
 		if(!StringUtils.hasText(topicExt)) CacheKit.put(Constant.CACHE_DEF_NAME, Constant.Config.TopicExtendView.toString(), "START");
+		
+		List<TConfig> listConfig = TConfig.config.find("select * from t_config where cache = ?",Constant.UPDATE_CONFIG_CACHE);
+		List<TCacheServer> serverList = TCacheServer.cacheServer.find("select guid,server_host,server_ip from t_cache_server where cache_state = " + Constant.CACHE_SERVER_STATE_UNFREEZE);
+		if(!listConfig.isEmpty()){
+			for(int i = 0,len = listConfig.size();i < len;i++){
+				CacheKit.put(Constant.CACHE_DEF_NAME, listConfig.get(i).getStr("filetype"), listConfig.get(i));
+			}
+		}
+		if(!serverList.isEmpty()){
+			CopyOnWriteArrayList<TCacheServer> copyServer = new CopyOnWriteArrayList<TCacheServer>();
+			copyServer.addAll(serverList);
+			CacheKit.put(Constant.CACHE_DEF_NAME, Constant.Config.ResourceCacheServers.toString(),copyServer);
+		}
 	}
+	
 }

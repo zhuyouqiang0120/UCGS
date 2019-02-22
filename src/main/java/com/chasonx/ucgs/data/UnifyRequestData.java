@@ -143,7 +143,7 @@ public class UnifyRequestData extends Controller {
 		}
 		
 		/*筛选所有栏目*/
-		allColList.addAll(ColumnDao.getRelationColumn(allColList, false));
+		allColList.addAll(ColumnDao.getRelationColumn(allColList, false , null));
 		
 		/*筛选所有主题*/
 		List<Record> topicList = new ArrayList<Record>();

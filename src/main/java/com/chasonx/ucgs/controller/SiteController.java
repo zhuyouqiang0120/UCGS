@@ -35,6 +35,7 @@ import com.chasonx.ucgs.dao.TopicDao;
 import com.chasonx.ucgs.entity.Column;
 import com.chasonx.ucgs.entity.ResourceEntity;
 import com.chasonx.ucgs.entity.Site;
+import com.chasonx.ucgs.entity.TLabel;
 import com.chasonx.ucgs.entity.Template;
 import com.chasonx.ucgs.entity.Topic;
 import com.chasonx.ucgs.entity.TopicContent;
@@ -147,15 +148,14 @@ public class SiteController extends Controller {
 		
 		try{
 			StringBuilder sb = new StringBuilder();
-			String queryStr = "select s.*,u.fadminname,a.fname as areaname,(select fassetname from t_resource where s.ftempguid = fguid) as fassetname ";
+			String queryStr = "select s.*,u.fadminname,a.fname as areaname,(select fassetname from t_resource where s.ftempguid = fguid) as fassetname ,c.server_name ";
 			String wherext = " where 1 = 1 ";
 			
 			if(type != null) wherext += " and ftype = '"+ type +"'";
 			if(state != null) wherext += " and fstate = " + state;
 			if(StringUtils.hasText(sitename)) wherext += " and fsitename like '%"+ sitename +"%'";
-			wherext += " order by id desc";
 			
-			String whereSql = " from t_site s INNER JOIN t_adminuser u on s.fcreaterguid = u.fguid LEFT JOIN t_area a on s.fareaguid = a.fguid  where s.fdelete = " + delete;
+			String whereSql = " from t_site s LEFT JOIN t_cache_server c ON s.fcache_server_guid = c.guid INNER JOIN t_adminuser u on s.fcreaterguid = u.fguid LEFT JOIN t_area a on s.fareaguid = a.fguid  where s.fdelete = " + delete;
 			Record loginRec = DHttpUtils.getLoginUser(getRequest());
 			
 			List<String> areaGuidList = AdminAuthDao.getAuthFieldList("ftargetauthguid",loginRec.getStr("fguid"),Constant.AuthTypes.area.toString(),null);
@@ -197,7 +197,7 @@ public class SiteController extends Controller {
 				wherext += " and fareaguid = '"+ areaguid + "'";
 			}
 			//whereSql += " or (s.fcreaterguid = '"+ loginRec.getStr("fguid") +"') ";
-			renderJson(PublicDao.queryListForPage("select * ", " from ("+ sb.toString() +") as _temp " + wherext , PageNumber, PageSize));
+			renderJson(PublicDao.queryListForPage("select * ", " from ("+ sb.toString() +") as _temp " + wherext + " order by id desc" , PageNumber, PageSize));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -242,6 +242,7 @@ public class SiteController extends Controller {
 		List<TopicContent> tContent = null;
 		List<ResourceEntity> resourceEntity = null;
 		List<Template> templates = null;
+		List<TLabel> tlabels = null;
 		boolean allColumn = true;
 		
 		if(null != colIdStr && colIdStr.length > 0){
@@ -263,6 +264,8 @@ public class SiteController extends Controller {
 				tContent = TopicDao.getAllTopicContentByColumnGuidList(colGuidList);
 				templates = TopicDao.getTemplateListByColumnGuidList(colGuidList);
 			}
+			
+			tlabels = PublicDao.getList(TLabel.class, new Record().set("fsiteGuid", siteGuid));
 		}
 		if(StringUtils.hasText(res) && res.equals("true")){
 			resourceEntity = ResourceEntity.res.find("select * from t_resource where fsiteguid = ? ",siteGuid);
@@ -278,7 +281,8 @@ public class SiteController extends Controller {
 		.set("Template", templates)
 		.set("Topic", tEntity)
 		.set("TopicContent", tContent)
-		.set("Resource", resourceEntity);
+		.set("Resource", resourceEntity)
+		.set("Labels", tlabels);
 		try {
 			filePath = "SiteData_" + site.getStr("fsitealias") + "_" + DateFormatUtil.formatString("yyyyMMddHHmmss") + ".ucgs";;
 			FileUtil.enSerializeObject(seria,  basePath + "/files/export/" + siteGuid + "/" + filePath);
@@ -318,16 +322,18 @@ public class SiteController extends Controller {
 			List<TopicContent> tContent = deSeria.get("TopicContent");
 			List<ResourceEntity> resourceEntity = deSeria.get("Resource");
 			List<Template> templates = deSeria.get("Template");
+			List<TLabel> labels = deSeria.get("Labels");
 			
 			boolean allColumn = deSeria.getBoolean("AllColumn");
 			
-			if(checkSiteExist(site,columns,relate,tEntity,tContent,resourceEntity,templates,allColumn)){
+			if(checkSiteExist(site,columns,relate,tEntity,tContent,resourceEntity,templates,labels,allColumn)){
 				importSeriaModel(columns);
 				importSeriaModel(relate);
 				importSeriaModel(tEntity);
 				importSeriaModel(tContent);
 				importSeriaModel(resourceEntity);
 				importSeriaModel(templates);
+				importSeriaModel(labels);
 				result = 1;
 			}
 		}catch(Exception e){
@@ -358,8 +364,9 @@ public class SiteController extends Controller {
 	}
 	
 	public boolean checkSiteExist(Site site,List<Column> columns,List<TopicRelate> relate,List<Topic> tEntity
-			,List<TopicContent> tContent,List<ResourceEntity> resourceEntity,List<Template> templates,boolean allColumn){
+			,List<TopicContent> tContent,List<ResourceEntity> resourceEntity,List<Template> templates,List<TLabel> labs,boolean allColumn){
 		try{
+			site.set("fcreaterguid", DHttpUtils.getLoginUser(getRequest()).getStr("fguid"));
 			String siteGuid = site.getStr("fguid");
 			Site _cksite = Site.siteDao.findFirst("select * from t_site where fguid = ?",siteGuid);
 			if(null == _cksite){
@@ -388,6 +395,7 @@ public class SiteController extends Controller {
 				}
 				TopicDao.delTemplateByIdList(tIdList);
 			}
+			Db.update("delete from " + PublicDao.getTableName(TLabel.class) + " where fsiteGuid = ?",siteGuid);
 			
 		}catch(Exception e){
 			e.printStackTrace();

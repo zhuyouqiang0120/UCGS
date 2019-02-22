@@ -92,7 +92,7 @@
 			},
 			drawDataGrid : function(data , dataFilter){
 				if(typeof dataFilter == 'function') data = dataFilter(data);
-				var line = '',_this = this,_temp,n,handler;
+				var line = '',_this = this,_temp,n,handler,_attrs;
 				this.each(data.list,function(i,u){
 					line += '<tr class="dataGridTr" '+ (_this.check.name != ''?'onclick="TablesetTrFocus(this,\''+ _this.check.name +'\',\'CK_'+ _this.dataGridUid +'\')"':'') +'>';
 					if(_this.check.name != ''){
@@ -108,8 +108,8 @@
 							line += '<td ';
 							for(var sb in k.attr){
 								if(k.attr[sb].indexOf('#') != -1){
-									k.attr[sb] = k.attr[sb].split("#");
-									line += sb + '="' + k.attr[sb][0] + u[k.attr[sb][1]] + '" ';
+									_attrs = k.attr[sb].split("#");
+									line += sb + '="' + _attrs[0] + u[_attrs[1]] + '" ';
 								}else{
 									line += sb + '="'+ k.attr[sb] +'" ';
 								}

@@ -65,6 +65,7 @@ public class TopicDao {
 			if(StringUtils.hasText(content[i]))
 				bitchSql.add("insert into t_topic_content(ftopicguid,fcontent) values('"+ topicGuid +"','"+ content[i].replaceAll("'", "\\\\\'").replaceAll("\"", "\\\\\"") +"')");
 		}
+		if(bitchSql.isEmpty()) return false;
 		return Db.batch(bitchSql, bitchSql.size()).length > 0?true:false;
 	}
 	
@@ -79,13 +80,13 @@ public class TopicDao {
 		} 
 		
 		String select = "SELECT t.id,t.fguid,t.ftitle,t.fsummary,t.fsource,t.fclass,t.freleasetime,t.freleaseer,t.fthumbnail," +
-						"t.flable,t.fpvsize,t.ftopsize,t.fcollectsize,t.fregion,t.fyears,t.fgrade,t.ftop,r.id as rid ";
+						"t.flabel,t.fpvsize,t.ftopsize,t.fcollectsize,t.fregion,t.fyears,t.fgrade,t.ftop,r.id as rid ";
 		
 		String sql = " FROM `t_topic_relate` r INNER JOIN t_topic t on r.ftopicguid = t.fguid where r.fcolguid = ? and r.fdelete = ? ";
 		if(check != null) sql += " and t.fcheck = " + check;
 			   sql += where;
 	    
-			   sql += " order by t.ftop desc,r.fsortnum desc,id desc "; //t.fpvsize desc,t.fgrade desc,
+			   sql += " order by t.ftop desc,r.fsortnum desc,t.freleasetime desc "; //t.fpvsize desc,t.fgrade desc,
 			   
 		return Db.paginate(start, limit, select, sql,colGuid,delete);
 	}
@@ -289,7 +290,6 @@ public class TopicDao {
 	public static List<TopicRelate> getAllTopicRelateByColumnGuidList(List<String> list){
 		String sql = kit.loadSqlData("selectTopicRelateByColumnGuidList");
 		sql = sql.replace("?",  StringUtils.joinForList(list, ","));
-		System.out.println("---->" + sql);
 		return TopicRelate.infomationRelateDao.find(sql);
 	}
 	
@@ -351,5 +351,20 @@ public class TopicDao {
 	
 	public static int delTemplateByIdList(List<Integer> list){
 		return Db.update("delete from t_template where id in ("+ StringUtils.joinForList(list, ",") +")");
+	}
+	
+	public static List<Topic> getCheckTopicListByGuids(List<String> topicGuidList){
+		if(null == topicGuidList || topicGuidList.isEmpty()){
+			return null;
+		}
+		return Topic.infomationDao.find("select * from t_topic where fguid in ("+ StringUtils.joinForList(topicGuidList, ",") +")");
+	}
+	
+	public static Page<Topic> listPendingTopic(String userGuid,int pageSize,int pageNumber,int checkState){
+		return Topic.infomationDao.paginate(pageNumber, pageSize, "select t.* ", "from t_topic t INNER JOIN t_topic_relate r ON t.fguid = r.ftopicguid where r.fadminuserguid = ? and t.fcheck = ? order by t.id desc",userGuid,checkState);
+	}
+	
+	public static long getTopicSizeByCreaterGuid(int checkSate,String createrGuid){
+		return Db.queryLong("SELECT count(t.id) FROM t_topic t INNER JOIN t_topic_relate r ON t.fguid = r.ftopicguid WHERE t.fcheck = ? and t.fdelete = 0 and r.fadminuserguid = ?", checkSate, createrGuid);
 	}
 }

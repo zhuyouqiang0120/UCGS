@@ -175,7 +175,7 @@ var TopicSet = {
 			this.choose(function(item){
 				new Chasonx({
 					title : '主题属性设置',
-					html : '<div id="topicAttrEdit"></div>',
+					html : '<div id="topicAttrEdit" class="global_bg_c" style="height:100%"></div>',
 					width:400,height:400,
 					modal: true,
 					success : function(){
@@ -195,7 +195,7 @@ var TopicSet = {
 					 id : 'topicAttrEdit',
 					  item : [
 					      {text:'&nbsp;',type:'br',info:'&nbsp;'},
-					      {text:'标题:',info : $("#td_title_" + item.val()).html()},
+					      {text:'标题:',type : 'input' , attr : ' readonly = "readonly" ',value :  $("#td_title_" + item.val()).html()},
 					      {text:'来源:',name:'fsource',attr:' req = "true"',type:'input',value : (D.fsource || '')},
 					      {text:'评分:',name:'fgrade',type:'input',value : (D.fgrade || '')},
 					      {text:'收藏数:',name:'fcollectsize',type:'input',value : (D.fcollectsize || '')},
@@ -235,7 +235,7 @@ var TopicSet = {
 				var RelationPanel = new Chasonx({
 					 title : '主题' + ss + ( target == 'topic'?'--将对选中的主题进行' + ss:'--将对选中栏目下的所有主题进行' + ss),
 					 html  : '<div id="relationBox">\
-						 		<div id="relationLeft"><div id="relationAreaList" style="overflow:auto;height:100%;"></div></div><div id="relationRight">\
+						 		<div id="relationLeft"><div id="relationAreaList" class="global_bg_c" style="overflow:auto;height:100%;"></div></div><div id="relationRight">\
 						 		<div style="overflow:auto;height:100%;"><p style="text-align:center;">\
 						 			<input type="button" class="button blue" style="width:60px;height:25px;font-size:12px;padding: .3em 0.5em .3em;" onclick="TopicSet.relation.siteList()"  value="全部网站"/>\
 						 		        网站:<select id="relationSiteItems" class="inputText select" style="width:150px;"></select>\
@@ -437,7 +437,7 @@ window.onload = function(){
 		       {name : "ftitle",text:"标题",width:'20%',attr:{"id":"td_title_#id"},handler: function(v,u){return v + (u.ftop === 1?'<font color="red">[置顶]</font>':'');}},
 		       {name : "fclass",text:"分类",width:"8%",handler : function(v){ return  TopicAttr.classes.getText(v);}},
 		       {name : "fsource",text:"文章来源",width:"10%"},
-		       {name : "fregion|fyears",text:"标签",width:"10%",handler : function(v){ return getString(v); }},
+		       {name : "flabel",text:"标签",width:"10%",handler : function(v){ return getString(v); }},
 		       {name : "fpvsize",text:"浏览量",width:"8%" ,handler : function(v){ return getString(v);}},
 		       {name : "fgrade",text:"评分",width:"10%",handler : function(v){ return getString(v); }},
 		       {name : "freleasetime",text:"发布时间",width:"14%"},

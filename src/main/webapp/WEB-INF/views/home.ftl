@@ -67,7 +67,7 @@ body  {
 <script type="text/javascript" src="${basePath}/res/plugs/lib/canvas-particle.js"></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/login/index.js"></script>
 </head>
-<body >
+<body class="global_bg_c">
 <div class="ucgs_loginPanel" >
 	<div class="logBox logBoxShake">
 		<div class="logTop"><i></i></div>

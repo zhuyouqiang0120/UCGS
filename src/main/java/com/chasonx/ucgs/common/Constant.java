@@ -40,6 +40,7 @@ public class Constant {
 	public static final String TEMPLATE_CTRL_JSNAME_V2 = "/res/plugs/media/activePageAD.plugin.js";
 	
 	public static final String MEDIA_CTRL_JSPATH = "/res/plugs/media/" + MEDIA_CTRL_JSNAME;
+	public static final String DEFAULT_TEMPLATE_PATH = "/res/desc/pagetemp.txt";
 	public static final String MEDIA_CTRL_VERSION = "1.0";
 	public static final String MEDIA_CTRL_DESC = "ZENS-UCGS TEMPLATE MANAGER";
 	
@@ -62,15 +63,24 @@ public class Constant {
 	public static final int ADMIN_ROLE_TYPE = 1;
 	public static final int ADMINGROUP_ROLE_TYPE = 2;
 	
+	public static final int UPDATE_CONFIG_CACHE = 1;
+	
 	public static final String CACHE_DEF_NAME = "UCMSDATACHCACHE";
 	public static final String CACHE_LOG_NAME = "UOPERATIONLOGCACHE";
 	public static final String CACHE_QUARTZ_NAME = "UCGSQUARTZS";
 	public static final String CACHE_PAGE_STATISTICS = "UCGSPAGEACCESSHISTORY";
+	public static final String CACHE_DEFAULT_TEMPLATE = "DEFAULT_TEMPLATE";
 	
-	public static final String TOPCI_CONTENT_REGEX = "\\s*[!@#$%^&*￥、\\/,~+-]*";
+	public static final String TOPCI_CONTENT_REGEX = "\\s*[！。，？、!@#$%^&*￥、\\/,~+-]*";
 	
+	/**
+	 * 文章内容img标签正则替换
+	 */
 	public static final String IMG_SRC_REGEX = "<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
-	public static final String BACKGROUND_IMAGE = "[background-image:url(][^(]+[)]";
+	/**
+	 * 文章内容模板背景图正则替换
+	 */
+	public static final String BACKGROUND_IMAGE_REGEX = "background-image\\s*[:]\\s*url\\s*[(]([^(][^)]+)[)]";
 	
 	public static final String IMG_CATCH_DIR = "/media/imgcache";
 	
@@ -91,7 +101,12 @@ public class Constant {
 		TopicExtendView,
 		AuditResouce,
 		PublishTemplate,
-		DataCacheTime
+		DataCacheTime,
+		DocFactory,
+		NewTopicMarkDate,
+		ImageCacheServer,
+		WorkFlowServer,
+		ResourceCacheServers
 	};
 	/**
 	 * 权限 类型
@@ -113,6 +128,20 @@ public class Constant {
 		site,
 		/*菜单*/
 		menu
+	}
+	
+	public static enum WorkFlow{
+		RESOURCE_CHECK("101"),
+		TOPIC_CHECK("100");
+		
+		String key;
+		private WorkFlow(String _key) {
+			key = _key;
+		}
+		
+		public String value(){
+			return key;
+		}
 	}
 	
 	/**
@@ -149,4 +178,12 @@ public class Constant {
 	public static interface MapsType{
 		public static final String Notice = "Notice";
 	}
+	
+	public static String Thumb_HTTP_Prefix = "http://";
+	public static String Thumb_HTTPs_Prefix = "https://";
+	
+	public static int CACHE_SERVER_STATE_FREEZE = 0;
+	public static int CACHE_SERVER_STATE_UNFREEZE = 1;
+	
+	public static int WORKFLOW_NODE_STATE_FINISHED = 208;
 }

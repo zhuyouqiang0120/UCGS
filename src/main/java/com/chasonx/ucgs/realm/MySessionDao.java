@@ -85,4 +85,12 @@ public class MySessionDao extends AbstractSessionDAO {
 		return sessionMap.get(sessionId);
 	}
 
+	public static void deleteSessionId(String sessionId){
+		try{
+			if(sessionId != null && sessionMap.containsKey(sessionId))
+				sessionMap.remove(sessionId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 }

@@ -120,4 +120,9 @@ public class AdminUserDao {
 	public static int updateDimensionState(String dimensionGuid,int state){
 		return Db.update("update t_adminuser set fdimensionState = ? where fdimensionGuid = ?",state,dimensionGuid);
 	}
+	
+	public static List<Record> getAdminUserList(){
+		String sql = "select fguid as guid,fadminname as name from t_adminuser where fstate = 0";
+		return Db.find(sql);
+	}
 }

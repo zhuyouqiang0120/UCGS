@@ -69,8 +69,8 @@ var AdminUser = {
 			var winSize = ChasonTools.getWindowSize();
 			var _w = winSize[2]*0.6,_h = winSize[3]*0.4;
 			 new Chasonx({title:(type == 1?'新增':'编辑') + '系统用户',width:_w,height:_h,
-				 html:'<div id="adminUserPanel" class="adminUserPanel"></div>\
-					   <div class="adminUserPanel" style="width:60%;"><b>'+ (this.dimensionNode.value || '未设置机构') +'</b> 角色：\
+				 html:'<div id="adminUserPanel" class="adminUserPanel global_bg_c"></div>\
+					   <div class="adminUserPanel global_bg_c" style="width:60%;"><b>'+ (this.dimensionNode.value || '未设置机构') +'</b> 角色：\
 					   <div id="userRolePanel"></div></div>',
 				 modal:true,
 				 success:function(){
@@ -158,9 +158,9 @@ var AdminUser = {
 		updPwd : function(){
 			var _ad = $("input[type='checkbox'][name='admin']:checked");
 			if(_ad.size() > 0){
-				var html = '<br><br><table id="upwdEditer"  border="0" width="100%" cellpadding="0" cellspacing="0">\
+				var html = '<table id="upwdEditer" class="global_bg_c" border="0" width="100%" height="100%" cellpadding="0" cellspacing="0">\
 					<tr><td width="25%" align="right">密		码：</td><td><input id="fpassword"  maxlength="20" type="password" onblur="AdminUser.validate(this,1)" class="inputText" />(5-20位字母开头密码)</td></tr>\
-					<tr><td width="25%" align="right">确认密码：</td><td><input id="fpassword2"  maxlength="20" type="password" class="inputText" onblur="AdminUser.checkpwd()"/></td></tr>\
+					<tr><td width="25%" align="right" style="vertical-align:top">确认密码：</td><td  style="vertical-align:top"><input id="fpassword2"  maxlength="20" type="password" class="inputText" onblur="AdminUser.checkpwd()"/></td></tr>\
 					</table>';
 				var upwd = new Chasonx({
 					 width:500,height:260,

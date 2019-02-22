@@ -177,8 +177,10 @@ $(document).ready(function(){
 	
 	$("#PD_Designer").live('click',function(e){
 		e = e || window.event;
-		if(e.target.id == this.id)
+		if(e.target.id == this.id){
 			$('.ChasonxP_Focus').removeClass('ChasonxP_Focus');
+			ChasonxTScaler.setCurrentFocusidEmplty();
+		}
 	});
 	
 	$("#_ChasonxAttr-mainDraw").live('change',function(){
@@ -313,12 +315,15 @@ var PDesigner = {
 		},
 		setDataPara : function(obj,B){
 			var iv = B?$(obj).next():null,v;
+			
+			//console.log(iv.val());
 			if(B == true){
 				if(iv == null || iv.val() == '') return;
 				else v = iv.val();
 			}else{
 				v = true;
 			}
+			
 			var add = true,_idx;
 			for(var i = 0,len = this.mainPara.length;i < len;i++){
 				if(this.mainPara[i].P == obj.value){
@@ -354,7 +359,7 @@ var PDesigner = {
 				html  : '<div id="dataSourcePanel"><div class="top"></div><div class="left"></div>\
 					     <div class="right"><div id="ChooseDataSourcePanel">\
 						 <font>提示：当前展示的数据仅供参考.</font>\
-					     <p><label for="colGuid_Ck">栏目标识符：</label><input id="colGuid_Ck" onclick="PDesigner.setDataPara(this,true)" type="checkbox" value="colGuid" '+ this.getPvalue('colGuid') +'/></p>\
+					     <p><label for="colGuid_Ck">栏目标识符：</label><input id="colGuid_Ck" onclick="PDesigner.setDataPara(this,true)" type="checkbox" value="colGuid" '+ this.getPvalue('colGuid') +'/><input type="text" /></p>\
 						 <p><label for="colLevel_Ck">栏目级数：</label><input id="colLevel_Ck" onclick="PDesigner.setDataPara(this,true)" type="checkbox" value="level" /><input type="text" onkeyup="if(window.event.keyCode == 8) return this.value = this.value.substring(0,(this.value.length > 0)?this.value.length - 1:0);; if(!RegexNumbber(this.value)){ this.value = this.value.replace(/[^0-9,]*/gi,\'\');}" />数字以\',\'号隔开 ex：1,2</p>\
 						 <p><label for="getTopic_Ck">显示主题数据：</label><input id="getTopic_Ck" type="checkbox" onclick="PDesigner.setDataPara(this,false)" value="getTopic" '+ (this.getPvalue('getTopic') == ""?"":'checked="checked"') +'/></p>\
 						 <p><label for="getTopicurl_Ck">是否包含主题地址：</label><input id="getTopicurl_Ck" type="checkbox" onclick="PDesigner.setDataPara(this,false)" value="getPreview" '+ (this.getPvalue('getPreview') == ""?"":'checked="checked"') +'/></p>\

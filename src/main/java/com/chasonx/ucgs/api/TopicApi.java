@@ -78,7 +78,7 @@ public class TopicApi extends Controller {
 		@ParaEntity(name = "tinjecter",xlen = 40,desc = "编辑人"),
 		@ParaEntity(name = "thumbnail",xlen = 400,empty = true,desc = "缩略图路径"),
 		@ParaEntity(name = "tinjectTime",xlen = 40,empty = true,desc = "注入时间"),
-		@ParaEntity(name = "tlable",xlen = 200,empty = true,desc = "标签"),
+		@ParaEntity(name = "tlabel",xlen = 200,empty = true,desc = "标签"),
 		@ParaEntity(name = "tsummary",xlen = 500,empty = true,desc = "简介"),
 		@ParaEntity(name = "tpvSize",xlen = 11,empty = true,desc = "浏览量"),
 		@ParaEntity(name = "titleSec",xlen = 500,empty = true,desc = "二级标题"),
@@ -93,7 +93,7 @@ public class TopicApi extends Controller {
 			String titleSec = getPara("titleSec");
 			String fthumbnail = getPara("thumbnail");
 			String fsummary = getPara("tsummary");
-			String flable = getPara("tlable");
+			String flabel = getPara("tlabel");
 			String fpvsize = getPara("tpvSize");
 			String topicId = getPara("topicId");
 			String tcolumnId = getPara("tcolmunId");
@@ -119,7 +119,7 @@ public class TopicApi extends Controller {
 				.set("fsource",StringUtils.deUnicode( tsource)).set("fclass", tclass)
 				.set("freleasetime", StringUtils.hasText(tinjectTime)?tinjectTime : DateFormatUtil.formatString(null))
 				.set("freleaseer", StringUtils.deUnicode(tinjecter)).set("fthumbnail", fthumbnail)
-				.set("flable", StringUtils.hasText(flable)?StringUtils.deUnicode(flable):null).set("fpvsize", StringUtils.hasText(fpvsize)?fpvsize:0);
+				.set("flabel", StringUtils.hasText(flabel)?StringUtils.deUnicode(flabel):null).set("fpvsize", StringUtils.hasText(fpvsize)?fpvsize:0);
 				t.save();
 				
 				TopicContent topicCon = new TopicContent();

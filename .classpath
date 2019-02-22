@@ -20,49 +20,101 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/commons pakage/commons-net-3.3-ftp.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/chasonx-tools.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/SCP jar/ganymed-ssh2-build210.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/commons-net-3.3-ftp.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/springggg/servlet-api.jar"/>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/googlelib/gson-2.2.4.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/commons-pool2-2.4.3.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/JFinal Framark/jfinal-2.0-all/jfinal-2.0-lib/log4j/log4j-1.2.16.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/cron4j-2.2.5.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="X:/izoe/code/projects/UDimensionService/project/udimensionservice-hessian.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/fastjson-1.2.32.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/spring Quartz JAR/cron4j-2.2.5.jar"/>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/work util tool/chasonx-tools.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/fst-2.29.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/userAgent/jregex-1.2_01.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/ganymed-ssh2-build210.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/userAgent/uasparser-0.6.2.jar">
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/iworkflow.1.0.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="Y:/闲人勿进/pakage/fastjson/fastjson-1.2.32.jar"/>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/jackson-core-2.5.3.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/javassist-3.19.0-GA.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/jregex-1.2_01.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/log4j-1.2.16.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/objenesis-2.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/uasparser-0.6.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/udimensionservice-hessian.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/jedis-2.7.2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/gson-2.2.4.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/zyq/eclipse/jar/org.json.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.web"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 [1.7.0_79]">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

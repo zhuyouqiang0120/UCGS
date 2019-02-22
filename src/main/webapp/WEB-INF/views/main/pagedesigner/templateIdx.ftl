@@ -58,7 +58,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 				<div class="domPanelBox">
 					<domitem style="color:#bdbdbd">选择站点：</domitem>
 					<domitem><select class="inputText select" id="tempSiteList" onchange="PDesTemplate.siteSelectChange(this)"></select>
-					<input type="text" id="tempSiteName" class="inputText" req="true" style="position: relative; left: -50.5%;top:-1px; width: 42%; border: none;background:#f6f6f6;"/>
+					<input type="text" id="tempSiteName" class="inputText" req="true" style="position: relative; left: -51.2%;top:-1px; width: 42%; border: none;"/>
 					</domitem>
 				</div>
 				<div class="domPanelBox">

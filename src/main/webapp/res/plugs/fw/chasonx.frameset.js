@@ -82,8 +82,10 @@
 					_html = this.window.top.html || '';
 				}
 				var _css = this.style.title;
-					_css += "background-color:" + (this.window.top.titleBgColor || this.style.defTitleBgColor) + ";" + 
-				  			"color:" + (this.window.top.color || this.style.defTtitleColor) + ";";
+				if(this.window.top.titleBgColor != false)
+					_css += "background-color:" + (this.window.top.titleBgColor || this.style.defTitleBgColor) + ";";
+				
+				_css += "color:" + (this.window.top.color || this.style.defTtitleColor) + ";";
 				this.addTitle(top,this.window.top.title,this.window.top.id,_html,_css);
 				mBox.appendChild(top);
 			}
@@ -107,8 +109,9 @@
 					_html = this.window.bottom.html || '';
 				}
 				var _css = this.style.title;
-				   _css += "background-color:" + (this.window.bottom.titleBgColor || this.style.defTitleBgColor) + ";" + 
-					 		"color:" + (this.window.bottom.color || this.style.defTtitleColor) + ";";
+				if(this.window.bottom.titleBgColor != false)
+				   _css += "background-color:" + (this.window.bottom.titleBgColor || this.style.defTitleBgColor) + ";";
+				_css += "color:" + (this.window.bottom.color || this.style.defTtitleColor) + ";";
 				this.addTitle(bottom,this.window.bottom.title,this.window.bottom.id,_html,_css);
 				mBox.appendChild(bottom);
 			}	
@@ -135,8 +138,9 @@
 					_html = this.window.left.html || '';
 				}
 				var _css = this.style.title;
-					_css +=  "background-color:" + (this.window.left.titleBgColor || this.style.defTitleBgColor) + ";" + 
-							 "color:" + (this.window.left.color || this.style.defTtitleColor) + ";";
+				if(this.window.left.titleBgColor != false)
+					_css +=  "background-color:" + (this.window.left.titleBgColor || this.style.defTitleBgColor) + ";" ;
+				_css += "color:" + (this.window.left.color || this.style.defTtitleColor) + ";";
 				this.addTitle(left,this.window.left.title,this.window.left.id,_html,_css);
 				if(this.window.left.slide){
 					var  open = ChasonTools.createEle({type:'img',css : this.style.open});
@@ -184,8 +188,9 @@
 					_html = this.window.right.html || '';
 				}
 				var _css = this.style.title;
-					_css += "background-color:" + (this.window.right.titleBgColor || this.style.defTitleBgColor) + ";" +
-							"color:" + (this.window.right.color || this.style.defTtitleColor) + ";";
+				if(this.window.right.titleBgColor != false)
+					_css += "background-color:" + (this.window.right.titleBgColor || this.style.defTitleBgColor) + ";";
+				_css += "color:" + (this.window.right.color || this.style.defTtitleColor) + ";";
 				this.addTitle(right,this.window.right.title,this.window.right.id,_html,_css);
 				mBox.appendChild(right);
 			}	

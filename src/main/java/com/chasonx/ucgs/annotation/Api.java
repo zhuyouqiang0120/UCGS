@@ -90,7 +90,6 @@ public class Api {
 					sb.append("<p><b>备注：</b></p>");
 					sb.append("<div class=\"postEx\">"+ remark.value() +"</div>");
 				}
-				
 				sb.append("</div>");
 			}
 		}

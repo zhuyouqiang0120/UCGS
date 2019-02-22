@@ -186,7 +186,6 @@
 			
 				$(".ConItem").die('mousedown');
 				$(".ConItem").live('mousedown',function(){
-					console.log(12);
 					
 					var _this = $(this);
 					Chasonx.FastMove(_this[0],$_this._drawPanelId,function(e){
@@ -376,7 +375,20 @@
 				 }
 			};
 		 },
+		 getSourcePluginByName : function(_name){
+			with(this){
+				var _config = {};
+				$.each(_PlugsContainer,function(i,u){
+					if(u.config.text == _name){
+						_config = u;
+						return false;
+					}
+				});
+				return _config;
+			} 
+		 },
 		 recoverConfig : function(_config){
+			 
 			 if(_config.length == 0) return;
 			 this.liveCtrlContainer = [];
 			 this.setMainCtrlStatus = false;
@@ -384,7 +396,10 @@
 			 $("#" + this._drawPanelId).html('');
 			 
 			 this.liveCtrlContainer = _config;
+			 var _sourcePlugin;
 			 for(var i = 0;i < this.liveCtrlContainer.length;i ++){
+				   _sourcePlugin = this.getSourcePluginByName(this.liveCtrlContainer[i].config.text);
+				 
 				   this.liveCtrlContainer[i].drawPanelId = this._drawPanelId;
 				   this.liveCtrlContainer[i].config.attr.left += 10;
 				   this.liveCtrlContainer[i].config.attr.top += 10;
@@ -399,7 +414,7 @@
 				   for(var fn in this.liveCtrlContainer[i]){
 					   if(fn == 'data' || fn == 'click' || fn == 'blur' || fn == 'focus' || fn == 'append' || fn == '$' || fn == 'getData' || fn == 'getStyle' || fn == 'creatEle' || fn == 'appendToDraw' || fn == 'addEventHandler' || fn == 'getConfigByKey'){ 
 						  if(fn == 'appendToDraw') this.liveCtrlContainer[i][fn] = new UPDTools().appendToDraw;
-						  else	this.liveCtrlContainer[i][fn] = eval('(' + this.liveCtrlContainer[i][fn] + ')');
+						  else	this.liveCtrlContainer[i][fn] = _sourcePlugin[fn] || null;   //eval('(' + this.liveCtrlContainer[i][fn] + ')');
 					   }
 				   }
 			  }
@@ -487,6 +502,8 @@
 					success : function(){
 						var _key = $('input[type="checkbox"][name="dataBindCheck"]:checked');
 							_conf.config.dataSourceKey =  _key.val();
+							console.log(PDesigner.pageData);
+							
 							_conf.data(ChasonxDataPicker.bindDataKey);
 						
 						//Link
@@ -698,6 +715,9 @@
           			  return true;
           		  }
           	  });
+			},
+			setCurrentFocusidEmplty : function(){
+				UU.currendFocusid = null;
 			},
 			clearDrawPanel : function(){
 				UU.clearDrawPanel();

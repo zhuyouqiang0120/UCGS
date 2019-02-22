@@ -42,8 +42,16 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <title>访问统计</title>
 <#include "../../common/head.ftl">
 <script type="text/javascript" src="${basePath}/res/plugs/lib/echarts.js"></script>
+<script type="text/javascript" src="${basePath}/res/plugs/mod/statistics/html2canvas.min.js"></script>
 <script type="text/javascript" src="${basePath}/main/load/jsLoader?_param=
      mod/statistics/index"></script>
+<style type="text/css">
+.drawPane  		{position:relative;height:auto !important;overflow : '' !important;}
+.drawAction		{overflow : unset !important;height : auto;background:#ffffff;}
+.drawAction #statisticsLeft {background:#ffffff !important;}
+.drawAction #statisticsRight{overflow : unset !important;height : auto;position : relative;}
+.drawAction #statisticsRight_box div:nth-child(1) {overflow : unset !important;height : auto;}
+</style>     
 </head>
 <body>
 <div id="statisticsMain">
@@ -91,7 +99,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		<div class="statisticsChartsPanel">
 			<div class="items">
 				<div class="title">栏目访问前30统计结果(按访问量倒序排序)：</div>
-				<div class="statistics" id="columnLimit" style="height:500px;"></div>
+				<div class="statistics" id="columnLimit" style="height:800px;"></div>
 			</div>
 			<div class="items">
 				<div class="title">栏目访问详情：</div>
@@ -105,7 +113,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		<div class="statisticsChartsPanel">
 			<div class="items">
 				<div class="title">站点访问统计</div>
-				<div class="statistics" id="siteStatistics" style="height:500px;"></div>
+				<div class="statistics" id="siteStatistics" style="height:800px;"></div>
 			</div>
 			<div class="items">
 				<div class="title">站点访问详情：</div>

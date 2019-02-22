@@ -11,6 +11,7 @@ package com.chasonx.ucgs.dao;
 import java.util.List;
 
 import com.chasonx.ucgs.common.Constant;
+import com.chasonx.ucgs.entity.Site;
 import com.jfinal.plugin.activerecord.Db;
 
 /**
@@ -35,5 +36,13 @@ public class SiteDao {
 	
 	public static List<String> getSiteGuidByCreater(String createGuid){
 		return Db.query("select fguid from t_site where fcreaterguid = ?",createGuid);
+	}
+	
+	public static Site querySiteByAliasName(String aname){
+		return Site.siteDao.findFirst("select * from " + PublicDao.getTableName(Site.class) + " where fsitealias = ?",aname);
+	}
+	
+	public static Site querySiteByGuid(String guid){
+		return Site.siteDao.findFirst("select * from " + PublicDao.getTableName(Site.class) + " where fguid = ?",guid);
 	}
 }

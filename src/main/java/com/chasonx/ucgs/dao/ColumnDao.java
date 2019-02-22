@@ -16,13 +16,19 @@ import java.util.List;
 
 
 
+
+
+
 import com.chasonx.tools.StringUtils;
+import com.chasonx.ucgs.api.CacheServerUtil;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.Tools;
 import com.chasonx.ucgs.entity.Column;
+import com.chasonx.ucgs.entity.TConfig;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.ehcache.CacheKit;
 
 /**
  * 业务列表modal处理
@@ -126,11 +132,11 @@ public class ColumnDao {
 	public static List<Column> selectAllColumnList(String siteGuid,Integer state,Record loginRec){
 		List<Column> colList = ColumnDao.selectList(siteGuid,state,loginRec);
 		Boolean suadmin = loginRec.getInt("fsysroletype") == 1;
-		colList.addAll(getRelationColumn(colList, suadmin));
+		colList.addAll(getRelationColumn(colList, suadmin,siteGuid));
 		return colList;
 	}
 	
-	public static List<Column> getRelationColumn(List<Column> colList,Boolean suadmin){
+	public static List<Column> getRelationColumn(List<Column> colList,Boolean suadmin,String siteGuid){
 		List<Integer> idxList = new ArrayList<Integer>();
 		List<String> relationSiteGuid = new ArrayList<String>();
 		List<Integer> relationIsChild = new ArrayList<Integer>();
@@ -146,8 +152,17 @@ public class ColumnDao {
 			}
 		}
 		if(relationSiteGuid.size() == 0) relationSiteGuid.add("0");
-		
-		List<Column> relationCol = Column.columnDao.find("select * from t_column where fsiteguid in ("+ Tools.joinForList(relationSiteGuid, ",") +") order by fsortnumber,flevel asc");
+		String imageCacheHost =  CacheServerUtil.getCacheServerHost(siteGuid); //getImageCacheHost();
+		StringBuilder sqlSb = new StringBuilder(100);
+		sqlSb.append("select `id`,`fguid`,`fservicename` ,`flevel`,`fparentuid`,`fsiteguid`,`fsortnumber`,`fremark`,`fstate`,`fextdata`,`fadtactics`,`ftopicsize`,`ftopicchecksize`,")
+		.append("`ftopicrecyclesize`,`ftype`, `frelationsiteguid`,`frelationcolguid`,`frelationdefname` ,`frelatitonischid`,")
+		.append(" CASE WHEN LOCATE('").append(Constant.Thumb_HTTP_Prefix).append("',ficon) > 0 or LOCATE('").append(Constant.Thumb_HTTPs_Prefix).append("',ficon) > 0 THEN ficon ")
+		.append(" WHEN ficon IS NOT NULL AND ficon != '' THEN CONCAT('").append(imageCacheHost).append("',ficon) ")
+		.append(" ELSE ficon END as ficon ")
+		.append(" from t_column where fsiteguid in (")
+		.append(Tools.joinForList(relationSiteGuid, ","))
+		.append(" ) order by fsortnumber,flevel asc ");
+		List<Column> relationCol = Column.columnDao.find(sqlSb.toString());
 		List<Column> relaChildNode = new ArrayList<Column>();
 		
 		int i;
@@ -206,6 +221,15 @@ public class ColumnDao {
 			}
 		}
 		return relaChildNode;
+	}
+	
+	private static String getImageCacheHost(){
+		String host = "";
+		TConfig config = CacheKit.get(Constant.CACHE_DEF_NAME, Constant.Config.ImageCacheServer.toString());
+		if(null != config){
+			host = config.getStr("remotedir");
+		}
+		return host;
 	}
 	
 	private static void chooseRelationNode(List<Column> data,String pguid,List<Column> container,int levelFlag,String admin,String siteGuid,

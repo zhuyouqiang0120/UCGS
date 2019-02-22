@@ -60,6 +60,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <script type="text/javascript" src="${basePath}/res/plugs/mod/column/colist.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/column/formatTreeData.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/topic/attr.js" ></script>
+<script type="text/javascript" src="${basePath}/res/plugs/mod/doc/doc.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/topic/edit.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/topic/resource.js" ></script>
 <script type="text/javascript" src="${basePath}/res/plugs/mod/topic/areaPanel.js" ></script>
@@ -70,8 +71,19 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 body 			   {overflow:hidden;}
 .ke-icon-imgsource { background-image: url(${basePath}/res/plugs/ke/themes/default/default.png); background-position: 0px -1232px; width: 16px; height: 16px;}
 #artColVal:hover   {background:#e0dbdb;border:1px solid #918e8e;}
-#labelBox	  	   {width:50%;height:auto !important;padding:5px;border:1px solid #918e8e;position:absolute;background:#f6f6f6;overflow:auto;display:none; word-wrap:break-word;white-space:normal;}
+#labelBox	  	   {width:50%;height:auto !important;padding:5px;border:1px solid #918e8e;position:absolute;background:#f6f6f6;overflow:auto;display:none; 
+					word-wrap:break-word;white-space:normal;z-index:10;}
 #labelBox span 	   {margin:5px;}
+#labelBox .btn	   {color: #545252; padding: 4px; text-align: right;}
+#labelBox .btn input{position: relative;top: 3px;}
+#labelBox .btn i   {color: #23364f; font-size: 15px; font-weight: bold;  margin-left: 10px;  cursor: pointer;}
+#labelBox .labeLeft{width: 20%; height: 220px; position: relative; display: inline-block;overflow:auto;overflow-x:hidden;}
+#labelBox .labeLeft p{color:  #35394e;  padding-left: 20px; font-size: 20px; cursor: pointer;}
+#labelBox .labeLeft p:hover,.labelGroupFocus{color: #3f92de !important;}
+#labelBox .labeRight{width: 79%; display: inline-block;  height: 220px;background: #ddd;position: absolute;overflow:auto;overflow-x:hidden;}
+.classFastAddLab	{display: inline-block;}
+.classFastAddLab input{border: none; background: #fff; width: 100px; padding: 2px; border-radius: 10px;}
+.classFastAddLab i  {color: #565454; font-size: 15px; cursor: pointer;}
 </style>
 </head>
 <body>
@@ -88,7 +100,6 @@ body 			   {overflow:hidden;}
 			<@btnpanel />
 		</div>
 	</div>
-	<div id="leftPanel"></div>
 	<div id="rightPanel">
 			<div class="linkImages"><span class="slideBtn" _open="false">展开资源</span>
 				<div class="items">
@@ -113,14 +124,18 @@ body 			   {overflow:hidden;}
 		 <div id="DragRightPanel">	
 			<div class="etopicTableRight">
 				<div class="etopicClass">
-					<span class="topicClassBtn topic_def" id="topic_def" for="topicBoxDef"></span><span class="topicClassBtn topic_video" id="topic_video" for="topicBoxVideo"></span>
-					<span class="topicClassBtn topic_img" id="topic_img" for="topicBoxImg"></span><span class="topicClassBtn topic_link" id="topic_link" for="topicBoxLink"></span><span class="topic_more" ></span>
+					<span class="topicClassBtn topic_def" id="topic_def" for="topicBoxDef"></span>
+					<span class="topicClassBtn topic_video" id="topic_video" for="topicBoxVideo"></span>
+					<span class="topicClassBtn topic_img" id="topic_img" for="topicBoxImg"></span>
+					<span class="topicClassBtn topic_link" id="topic_link" for="topicBoxLink"></span>
+					<span class="topicClassBtn topic_doc" id="topic_doc" for="topicDocPanel" ></span>
+					<!-- <span class="topic_more" ></span> -->
 				</div>
 				<div class="etopicTableBox">
 					<table id="contentTable" width="100%" cellpadding="0" cellspacing="0" align="center">
 						<tr>
 							<td class="etopicTd" width="10%">标题：</td>
-							<td><input type="text" id="ftitle" req="true"  class="inputText topicEditBgSec" style="font-size:18px;" maxlength="50" value="${(TOPICALINFO.ftitle)!}"/></td>
+							<td><input type="text" id="ftitle" req="true"  class="inputText topicEditBgSec" style="font-size:22px;" maxlength="50" value="${(TOPICALINFO.ftitle)!}"/></td>
 						</tr>
 						<tr>
 							<td class="etopicTd" width="10%">副标题：</td>
@@ -132,10 +147,16 @@ body 			   {overflow:hidden;}
 						</tr>
 						<tr>
 							<td class="etopicTd">标签：</td>
-							<td><input type="hidden" id="flable"  class="inputText"  value="${(TOPICALINFO.flable)!}" />
+							<td><input type="text" id="flabel" style="width:0px;border:none;"  value="${(TOPICALINFO.flabel)!}" />
+								<input type="text" id="flabelcode" style="width:0px;border:none;" value="${(TOPICALINFO.flabelcode)!}"/>
 								<div id="labelPanel"></div>
-								<span class="labelMore"  onclick="EtopicSet.showLabel(this)" >更多</span><span>最多支持3个标签</span>
-								<div id="labelBox" ></div></td>
+								<span class="labelMore"  onclick="EtopicSet.showLabel(this)" >更多</span><font color="#ddd">点击标签可删除</font>
+								<div id="labelBox">
+									<div class="btn"><input type="checkbox" id="getColumnLabel" value="1"/><label for="getColumnLabel">精确到栏目</label></div>
+									<div id="_editLabeLeft" class="labeLeft"></div>
+									<div id="_editLabeRight"class="labeRight"></div>
+								</div>
+							</td>
 						</tr>
 						<tr>
 							<td class="etopicTd">置顶：</td>
@@ -223,7 +244,7 @@ body 			   {overflow:hidden;}
 								<input type="hidden" id="videoMessUrl" />
 								<input type="hidden" id="videoRegion" /><input type="hidden" id="videoYears" />
 								<input type="hidden" id="videoGuid" /><input type="hidden" id="videoGrade" />
-								<textarea id="videoDetailJson" style="display:none;"></textarea>
+								<textarea id="videoDetailJson" style="display:none;">${(TOPICALINFO.fextdata)!}</textarea>
 								<Br>
 							</td>
 						</tr>
@@ -231,9 +252,9 @@ body 			   {overflow:hidden;}
 					<!-- topic img item -->
 					<table id="topicBoxImg" class="topicBoxItem" width="100%" cellpadding="0" cellspacing="0" align="center">
 						<tr>
-							<td class="etopicTd" width="10%">图片播放：</td>
+							<td class="etopicTd" width="10%">图片集：</td>
 							<td>
-								&nbsp;
+								<div class="etopicImgBox">Loading...</div>
 							</td>
 						</tr>
 						<tr>
@@ -259,6 +280,27 @@ body 			   {overflow:hidden;}
 							</td>
 						</tr>
 					</table>
+					
+					<!-- topic doc  -->
+					<table id="topicDocPanel" class="topicBoxItem" width="100%" cellpadding="0" cellspacing="0" align="center">
+						<tr>
+							<td class="etopicTd" width="10%">选择文档：</td>
+							<td>
+								<div class="topic_docPanel">
+									<div class="_docPanel_left"><i class="icon-note_add" onclick="DocList.show()" title="选择文档"></i></div>	
+									<div class="_docPanel_right">
+									</div>
+									<div style="clear:both;"></div>	
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="etopicTd" width="10%">&nbsp;</td>
+							<td>
+								提示：一篇主题只能选择一个文档，按ctrl+Q 可打开搜索框进行文档搜索.
+							</td>
+						</tr>
+					</table>
 				</div>
 				<br>
 				<br>
@@ -268,9 +310,24 @@ body 			   {overflow:hidden;}
 </div>
 <#if TOPICALINFO?exists>
 	<script type="text/javascript">
+	
 		function editDataInit(){
-			ResDialog.mediaMessDraw(${(TOPICALINFO.fextdata)!});
-			
+			var _clas = '${(TOPICALINFO.fclass)!}';
+			switch(~~_clas){
+				case 0: break;
+				case 1:
+					ResDialog.mediaMessDraw(${(TOPICALINFO.fextdata)!});
+				 break;
+				case 2: break;
+				case 3:
+					$("#_topicLink").val('${(TOPICALINFO.fextdata)!}');
+				 break;
+				case 4:
+					DocList.init(${(TOPICALINFO.fextdata)!}).drawDetail();
+				 break;
+			}
+			EtopicSet.labelInit();	
+					
 			var tempid = $("#_topicTemplate").val();
 			if(tempid != ""){
 				getAjaxData(DefConfig.Root + '/main/topic/topicTemplateList',{'siteGuid':$("#_topicSiteGuid").val()},function(d){
@@ -283,7 +340,7 @@ body 			   {overflow:hidden;}
 				});
 			}
 		}	
-		editDataInit();
+		editDataInit();	
 		
 		
 	</script>

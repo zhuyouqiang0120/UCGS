@@ -3,7 +3,7 @@ var BadWord = {
 		add : function(){
 			new Chasonx({
 				title : '敏感词编辑',
-				html : '<div id="badwordEditor"></div>',
+				html : '<div id="badwordEditor" class="global_bg_c"></div>',
 				width:400,height:220,
 				success : function(){
 					var word = $("#fword").val();

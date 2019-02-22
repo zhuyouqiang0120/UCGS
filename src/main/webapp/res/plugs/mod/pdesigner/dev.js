@@ -229,7 +229,14 @@
 		var keyCodes = [];
 		document.onkeydown = function(e){
 			e = e || window.event;
-			keyCodes[e.keyCode] = true;
+			switch(e.keyCode){
+			case 32:
+			case 67:
+			case 68:
+			case 69:
+				keyCodes[e.keyCode] = true;
+				break;
+			}
 		};
 		document.onkeyup = function(e){
 			e = e || window.event;

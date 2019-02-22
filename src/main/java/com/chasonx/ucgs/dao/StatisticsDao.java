@@ -25,7 +25,6 @@ import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.UserAgentUtil;
 import com.chasonx.ucgs.entity.PageStatistics;
-import com.chasonx.ucgs.entity.TQuartz;
 import com.jfinal.plugin.ehcache.CacheKit;
 import cz.mallat.uasparser.UserAgentInfo;
 
@@ -50,9 +49,6 @@ public class StatisticsDao {
 	 */
 	public static boolean cacheStatisticsData(HttpServletRequest req,String topicGuid,String siteGuid,String columnGuid,String title,long startTime,int type) throws IOException{
 		try{
-			String state = PublicDao.getFieldStr("fstate", " and ftype = 'PageView'", TQuartz.class);
-			//统计未开启
-			if(state.equals("0")) return false; 
 			
 			UserAgentInfo info = UserAgentUtil.getUAinfo(req.getHeader("User-Agent"));
 			String[] date = DateFormatUtil.formatString("yyyy-MM-dd HH:mm:ss").split(" ");

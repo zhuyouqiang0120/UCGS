@@ -38,25 +38,27 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>UCMS 工作流</title>
+<title>工作流</title>
 <#include "../../common/head.ftl">
 <script type="text/javascript" src="${basePath}/res/plugs/mod/workflow/list.js"></script>
 </head>
 <body >
+<input type="hidden" value="${(WORK_FLOW)!}" id="_WORKFLOW_URL"/>
 <div class="mainBox">
 	<div class="buttonBox" style="height:auto;">
 		<@PermisstionBtnHtml />
 	</div>
 	<table class="tableDefault" width="99%" cellpadding="0" cellspacing="0" >
 		<tr class="trDefault">
-			<td width="5%"><input id="_selectAll" type="checkbox" title="反选/全选" onclick="_selectAll(this,'topicval')"/></td>
+			<td width="5%"><input id="_selectAll" type="checkbox" title="反选/全选" onclick="_selectAll(this,'workflowVal')"/></td>
 			<td width="5%" >编号</td>
+			<td width="20%">模型ID</td>
 			<td width="20%">工作流名称</td>
 			<td width="10%">分类</td>
-			<td width="10%">标识</td>
-			<td width="50%">备注</td>
+			<td width="10%">创建时间</td>
+			<td width="30%">备注</td>
 		</tr>
-		<tbody id="topicData" class="tableData">
+		<tbody id="workflowListData" class="tableData">
 		</tbody>
 	</table>
 	<div  id="pagePanel"></div>

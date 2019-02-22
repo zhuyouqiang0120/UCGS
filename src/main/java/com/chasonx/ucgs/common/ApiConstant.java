@@ -24,4 +24,17 @@ public class ApiConstant {
 	public static final String jsonpName = "jsoncallback";
 	public static final String jsonpDesc = "jsonp参数名";
 	public static final String tscalerPreviewUrl = "/UCGS/data/preview/";
+	
+	public static enum ZDocFactory{
+		privew("/api/doc/previews");
+		
+		String value;
+		ZDocFactory(String str){
+			this.value = str;
+		}
+		
+		public String getString(){
+			return this.value;
+		}
+	}
 }

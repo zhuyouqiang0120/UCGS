@@ -324,7 +324,7 @@
 		Chasonx.Frameset({
 			main   : 'statisticsMain',
 			window : {
-				left : {id : 'statisticsLeft',width : '80px',bgColor : '#696969',border:false,slide : false},
+				left : {id : 'statisticsLeft',width : '80px',bgColor : false,border:false,slide : false},
 				right: {id : 'statisticsRight',bgColor : false,border:false}
 				}
 		});

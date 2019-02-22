@@ -16,11 +16,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.chasonx.directory.FileUtil;
+import com.chasonx.tools.HttpUtil;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.annotation.Api;
 import com.chasonx.ucgs.annotation.ApiRemark;
@@ -30,18 +30,22 @@ import com.chasonx.ucgs.annotation.Required;
 import com.chasonx.ucgs.common.ApiConstant;
 import com.chasonx.ucgs.common.Constant;
 import com.chasonx.ucgs.common.Constant.SiteBindType;
+import com.chasonx.ucgs.common.DateUtil;
 import com.chasonx.ucgs.common.PageViewConstant;
 import com.chasonx.ucgs.common.Tools;
 import com.chasonx.ucgs.common.TopicConstant;
 import com.chasonx.ucgs.config.PageUtil;
 import com.chasonx.ucgs.config.RuntimeLog;
 import com.chasonx.ucgs.dao.ColumnDao;
+import com.chasonx.ucgs.dao.DocDao;
 import com.chasonx.ucgs.dao.PublicDao;
+import com.chasonx.ucgs.dao.SiteDao;
 import com.chasonx.ucgs.dao.StatisticsDao;
 import com.chasonx.ucgs.dao.TMapDao;
 import com.chasonx.ucgs.entity.Column;
 import com.chasonx.ucgs.entity.Site;
 import com.chasonx.ucgs.entity.TConfig;
+import com.chasonx.ucgs.entity.TLabel;
 import com.chasonx.ucgs.entity.Topic;
 import com.chasonx.ucgs.entity.TopicContent;
 import com.jfinal.core.Controller;
@@ -99,6 +103,7 @@ public class UnifyRequestData extends Controller {
 		@ParaEntity(name = "getPreviewType",desc = "预览类型 template/data",empty = true,type = "String"),
 		@ParaEntity(name = "tpageSize",desc = "主题数量",empty = true,type = "int"),
 		@ParaEntity(name = "tpageNumber",desc = "主题页码",empty = true,type = "int"),
+		@ParaEntity(name = "labelCodes" , empty = true, type = "String", desc = "标签Guid,多个Guid之间以“,”符号分隔"),
 		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpDesc,empty = true,type = "String")
 	})
 	public void unifyJson(){
@@ -112,6 +117,7 @@ public class UnifyRequestData extends Controller {
 		String getPreviewType = getPara("getPreviewType"); //预览页的数据格式
 		Integer tpageSize = getParaToInt("tpageSize"); //主题分页数量
 		Integer tpageNumber = getParaToInt("tpageNumber"); //主题页码
+		String labelCodes = getPara("labelCodes"); //标签Guid
 		
 		if(!StringUtils.hasText(levelStr)) levelStr = "";
 		if(!StringUtils.hasText(getPreviewType)) getPreviewType = "template";
@@ -128,7 +134,7 @@ public class UnifyRequestData extends Controller {
 		try{
 			if(StringUtils.hasText(topic) && topic.equalsIgnoreCase("true")) getTopic = true;
 			if(StringUtils.hasText(topicPreview) && topicPreview.equalsIgnoreCase("true")){
-				previewHost = Db.queryStr("select remotehost from t_config where filetype = ?",Constant.Config.TopicPreview.toString());
+				previewHost = ((TConfig)CacheKit.get(Constant.CACHE_DEF_NAME, Constant.Config.TopicPreview.toString())).getStr("remotehost"); // Db.queryStr("select remotehost from t_config where filetype = ?",);
 			}
 			if(StringUtils.hasText(alias)){
 				String[] aliasss = alias.split(",");
@@ -139,13 +145,14 @@ public class UnifyRequestData extends Controller {
 				whereCase = " and fmark in ("+ Tools.join(marksss, ",") +")";
 			}
 			if(StringUtils.hasText(whereCase)){
-				List<Site> siteList = Site.siteDao.find("select * from t_site where 1 = 1 " + whereCase + " and fstate = 1");
-				Set<String> bindSiteSet = binderFilter(siteList);
-				dataChoose(siteList,level,getTopic,columnId,data,previewHost,tpageSize,tpageNumber,getPreviewType,cb,bindSiteSet);
+				Site site = Site.siteDao.findFirst("select * from t_site where 1 = 1 " + whereCase + " and fstate = 1");
+				Set<String> bindSiteSet = binderFilter(site);
+				dataChoose(site,level,getTopic,columnId,data,previewHost,tpageSize,tpageNumber,getPreviewType,cb,bindSiteSet,labelCodes);
 				
 				//
-				for(Site s : siteList)
-					StatisticsDao.cacheStatisticsData(getRequest(), "", s.getStr("fguid"), columnId, "", startTime, PageViewConstant.PageViewType);
+				if(null != site){
+					StatisticsDao.cacheStatisticsData(getRequest(), "", site.getStr("fguid"), columnId, "", startTime, PageViewConstant.PageViewType);
+				}
 			}
 			
 			//
@@ -154,7 +161,7 @@ public class UnifyRequestData extends Controller {
 			e.printStackTrace();
 		}
 		
-		data.set("Response time", System.currentTimeMillis() - startTime);
+		data.set("Elapsed", System.currentTimeMillis() - startTime);
 		if(StringUtils.hasText(cb))
 			renderJavascript(cb + "("+ JsonKit.toJson(data) +")");
 		else
@@ -168,14 +175,15 @@ public class UnifyRequestData extends Controller {
 	 * @param  
 	 * @return void
 	 */
-	private Set<String> binderFilter(List<Site> siteList){
+	private Set<String> binderFilter(Site site){
 		Set<String> binderGuid = new HashSet<String>();
-		for(Site site : siteList){
-			if(site.getInt("fbindsitetype") == SiteBindType.BIND){
-				site.set("fguid", site.getStr("fbindsiteguid"));
-			}else if(site.getInt("fbindsitetype") == SiteBindType.RELATION){
-				binderGuid.addAll(Arrays.asList(site.getStr("fbindsiteguid").split(",")));
-			}
+		if(null == site){
+			return binderGuid;
+		}
+		if(site.getInt("fbindsitetype") == SiteBindType.BIND){
+			site.set("fguid", site.getStr("fbindsiteguid"));
+		}else if(site.getInt("fbindsitetype") == SiteBindType.RELATION){
+			binderGuid.addAll(Arrays.asList(site.getStr("fbindsiteguid").split(",")));
 		}
 		return binderGuid;
 	}
@@ -185,22 +193,36 @@ public class UnifyRequestData extends Controller {
 	 * @createTime:2015-11-30 下午3:39:04
 	 * @author: chason.x
 	 */
-	private void dataChoose(List<Site> list,String[] level,boolean getTopic,String columnGuid,Record container,String previewHost,
-			Integer tpageSize,Integer tpageNumber,String getPreviewType,String callback,Set<String> bindSitesSet){
-		if(list.isEmpty()) return;
+	private void dataChoose(Site site,String[] level,boolean getTopic,String columnGuid,Record container,String previewHost,
+			Integer tpageSize,Integer tpageNumber,String getPreviewType,String callback,Set<String> bindSitesSet,String labelCodes){
+		if(site == null) return;
 		
 		Integer levelFlag = 1;
 		
 		List<String> siteGuidList = new ArrayList<String>();
 		List<String> siteNames = new ArrayList<String>();
-		for(int i = 0,len = list.size();i < len;i++){
-			siteGuidList.add(list.get(i).getStr("fguid"));
-			siteNames.add(list.get(i).getStr("fsitename"));
-		}
+//		for(int i = 0,len = list.size();i < len;i++){
+//			siteGuidList.add(list.get(i).getStr("fguid"));
+//			siteNames.add(list.get(i).getStr("fsitename"));
+//		}
+		siteGuidList.add(site.getStr("fguid"));
+		siteNames.add(site.getStr("fsitename"));
+		
 		container.set("Node", siteGuidList);
 		container.set("NodeNames", siteNames);
-		
-		List<Column> allColList = Column.columnDao.find("select * from t_column where fsiteguid in ("+ Tools.joinForList(siteGuidList, ",") + (bindSitesSet.isEmpty()?"":"," + Tools.join(bindSitesSet.toArray(), ",")) +") and fstate = 1 order by fsortnumber,flevel asc");
+		String imageCacheServerHost = CacheServerUtil.getCacheServerHost(site.getStr("fcache_server_guid")); //getImageCacheServerHost();
+		StringBuilder sqlSb = new StringBuilder(200);
+		sqlSb.append("select `id`,`fguid`,`fservicename` ,`flevel`,`fparentuid`,`fsiteguid`,`fsortnumber`,`fremark`,`fstate`,`fextdata`,`fadtactics`,`ftopicsize`,`ftopicchecksize`,")
+		.append("`ftopicrecyclesize`,`ftype`, `frelationsiteguid`,`frelationcolguid`,`frelationdefname` ,`frelatitonischid`,")
+		.append(" CASE WHEN LOCATE('").append(Constant.Thumb_HTTP_Prefix).append("',ficon) > 0 or LOCATE('").append(Constant.Thumb_HTTPs_Prefix).append("',ficon) > 0 THEN ficon ")
+		.append(" WHEN ficon IS NOT NULL AND ficon != '' THEN CONCAT('").append(imageCacheServerHost).append("',ficon) ")
+		.append(" ELSE ficon END as ficon ")
+		.append("from t_column where fsiteguid in ('").append(site.getStr("fguid")).append("'");
+		if(!bindSitesSet.isEmpty()){
+			sqlSb.append("," + Tools.join(bindSitesSet.toArray(), ","));
+		}
+		sqlSb.append(") and fstate = 1 order by fsortnumber,flevel asc");
+		List<Column> allColList = Column.columnDao.find(sqlSb.toString());
 		Column currColumn = null;
 		
 		if(StringUtils.hasText(columnGuid)){
@@ -214,15 +236,15 @@ public class UnifyRequestData extends Controller {
 		}
 		
 		/*筛选所有栏目*/
-		allColList.addAll(ColumnDao.getRelationColumn(allColList, false));
+		allColList.addAll(ColumnDao.getRelationColumn(allColList, false , site.getStr("fguid")));
 		
 		/*筛选所有主题*/
 		List<Record> topicList = new ArrayList<Record>();
 		if(getTopic)
-			topicChoose(allColList, topicList, tpageSize, tpageNumber, columnGuid);
+			topicChoose(allColList, topicList, tpageSize, tpageNumber, columnGuid,labelCodes,imageCacheServerHost);
 		
-		int i;
-		int ilen;
+//		int i;
+//		int ilen;
 		int j;
 		int jlen;
 		int c;
@@ -235,12 +257,12 @@ public class UnifyRequestData extends Controller {
 		Record child;
 		Record attrRec;
 		boolean hasChild = false;
-		for(i = 0,ilen = list.size();i < ilen;i++){
+//		for(i = 0,ilen = list.size();i < ilen;i++){
 			firstChild =  new ArrayList<Record>();
 			
 			for(j = 0,jlen = allColList.size();j < jlen;j ++){
 //				if(siteGuidList.get(i).equals(allColList.get(j).getStr("fsiteguid"))){
-				if(checkCurrentColumnSiteId(list.get(i),allColList.get(j).getStr("fsiteguid"))){
+				if(checkCurrentColumnSiteId(site,allColList.get(j).getStr("fsiteguid"))){
 					
 					if(level.length > 0 && !checkInLevels(level, allColList.get(j).getInt("flevel")))	continue;
 					
@@ -257,9 +279,9 @@ public class UnifyRequestData extends Controller {
 						
 						first.set("Id", allColList.get(j).getStr("fguid"));
 						first.set("Name", allColList.get(j).getStr("fservicename"));
-						first.set("Parentid", siteGuidList.get(i));
+						first.set("Parentid", site.getStr("fguid"));
 						first.set("Icon", allColList.get(j).getStr("ficon"));
-						extDataToRecord(allColList.get(j).getStr("fextdata"),first);
+						extDataToRecord(allColList.get(j).getStr("fextdata"),first,imageCacheServerHost);
 						first.set("HasChild", hasChild);
 						first.set("TopicSize", allColList.get(j).getInt("ftopicsize"));
 						first.set("TopicCount", getCurrColumnTopicCount(allColList, allColList.get(j).getStr("fguid"), allColList.get(j).getInt("ftopicsize")));
@@ -284,7 +306,7 @@ public class UnifyRequestData extends Controller {
 							child.set("TopicSize", childList.get(c).getInt("ftopicsize"));
 							child.set("TopicCount", getCurrColumnTopicCount(allColList, childList.get(c).getStr("fguid"), childList.get(c).getInt("ftopicsize")));
 							child.set("Icon", childList.get(c).getStr("ficon"));
-							extDataToRecord(childList.get(c).getStr("fextdata"),child);
+							extDataToRecord(childList.get(c).getStr("fextdata"),child,imageCacheServerHost);
 							child.set("Remark", childList.get(c).getStr("fremark"));
 							childRecList.add(child);
 						}
@@ -316,8 +338,8 @@ public class UnifyRequestData extends Controller {
 				frisrtNode.set(TotalRow, 0).set(TotalPage, 0);
 			}
 			
-			container.set(siteGuidList.get(i), frisrtNode);
-		}
+			container.set(site.getStr("fguid"), frisrtNode);
+//		}
 	}
 	
 	private boolean checkCurrentColumnSiteId(Site site,String siteGuid){
@@ -343,7 +365,7 @@ public class UnifyRequestData extends Controller {
 	 * @createTime:2015-11-30 下午3:58:50
 	 * @author: chason.x
 	 */
-	private void topicChoose(List<Column> list,List<Record> topicList,Integer tpageSize,Integer tpageNumber,String colGuidPara){
+	private void topicChoose(List<Column> list,List<Record> topicList,Integer tpageSize,Integer tpageNumber,String colGuidPara,String labelCodes,String imageCacheServerHost){
 		Set<String> colGuid = new HashSet<String>();
 		for(int i = 0,len = list.size();i < len;i++){
 			//if(checkHasChildNode(list,list.get(i).getStr("fguid")) == 0) //取最末尾栏目的文章
@@ -355,22 +377,43 @@ public class UnifyRequestData extends Controller {
 		List<String> coListList = new ArrayList<String>();
 		coListList.addAll(colGuid);
 		
+		int newTopicMarkDate = 0;
+		TConfig config = CacheKit.get(Constant.CACHE_DEF_NAME, "NewTopicMarkDate");
+		if(config != null){
+			newTopicMarkDate = config.getStr("localdir") != null?Integer.valueOf(config.getStr("localdir")):0;
+		}
+		
 		//List<Record> topicList = null;
-		String sql = "select t.fguid as Id,t.ftitle as Name,t.fsummary as Summary,t.freleasetime as Releasetime," +
-					"CASE WHEN LOCATE('"+ Constant.IMG_CATCH_DIR +"' ,t.fthumbnail) > 0 THEN t.fthumbnail WHEN t.fthumbnail IS NOT NULL AND t.fthumbnail != '' AND LOCATE('"+ Constant.IMG_CATCH_DIR +"' ,t.fthumbnail) = 0 THEN  CONCAT('"+ Constant.IMG_CATCH_DIR +"' ,t.fthumbnail) ELSE '' END as Thumbnail,t.fpvsize as Pvsize,t.ftopsize as Topsize,t.fcollectsize as Collectsize,r.fcolguid as Colguid, " +
-			    "t.fclass as Class,t.fextdata as Extdata from t_topic_relate r INNER JOIN t_topic t on r.ftopicguid = t.fguid ";
+		
+		StringBuilder sql = new StringBuilder( "select t.fguid as Id,t.ftitle as Name,t.fsummary as Summary,t.freleasetime as Releasetime,");
+		sql.append("CASE WHEN LOCATE('").append(Constant.Thumb_HTTP_Prefix).append("' ,t.fthumbnail) > 0 or LOCATE('").append(Constant.Thumb_HTTPs_Prefix).append("',t.fthumbnail) > 0 THEN t.fthumbnail ")
+		.append(" WHEN t.fthumbnail IS NOT NULL AND t.fthumbnail != '' AND t.fclass != ").append(Constant.TOPIC_TYPE_VIDEO).append(" THEN  CONCAT('").append(imageCacheServerHost).append("' ,t.fthumbnail) ELSE t.fthumbnail END as Thumbnail,")
+		.append("t.fpvsize as Pvsize,t.ftopsize as Topsize,t.fcollectsize as Collectsize,r.fcolguid as Colguid, ")
+		.append("t.fclass as Class,t.fextdata as Extdata,t.flabel as Label ,")
+		.append("CASE WHEN DATE(t.freleasetime) >= '").append( DateUtil.getDateSub(newTopicMarkDate)).append("' THEN 1 ELSE 0 END as IsNew,t.ftop as IsTop")
+		.append(" from t_topic_relate r INNER JOIN t_topic t on r.ftopicguid = t.fguid ");
+		
+		StringBuilder labSql = new StringBuilder();
+		if(StringUtils.hasText(labelCodes)){
+			String[] labArr = labelCodes.split(",");
+			if(null != labArr){
+				for(int l = 0,llen = labArr.length;l < llen;l ++){
+					if(StringUtils.hasText(labArr[l]))
+						labSql.append(" and  FIND_IN_SET('"+ labArr[l] +"',t.flabelcode) ");
+				}
+			}
+		}
 		
 		String whereCase = " and r.fdelete = 0 and t.fcheck = 1 ORDER BY t.ftop desc,r.fsortnum desc,t.id desc"; // t.fpvsize desc,t.fgrade desc,
 		//查询栏目下所有主题
 		if(null == tpageNumber && null == tpageSize){
-			String where = " where r.fcolguid in ("+ Tools.joinForList(coListList, ",") +") " + whereCase;
-			topicList.addAll(Db.find(sql + where));
+			topicList.addAll(Db.find(sql.toString() + " where r.fcolguid in ("+ Tools.joinForList(coListList, ",") +") " + labSql.toString() + whereCase));
 		}else{
 			if(null == tpageNumber) tpageNumber = 1;
 			if(null == tpageSize) tpageSize = 20;
 			
 			StringBuffer sbSql = new StringBuffer(200);
-			sbSql.append(sql + " where t.fguid in (");
+			sbSql.append(sql.toString() + " where t.fguid in (");
 			//String limitSql = "select t.id from t_topic_relate r2 INNER JOIN t_topic t2 on r2.ftopicguid = t2.fguid where r2.fcolguid = ? order by t2.id desc limit "+ ((tpageNumber - 1)*tpageSize) +",1";
 			for(int p = 0,plen = coListList.size();p < plen;p++){
 				//topicList.addAll(Db.find(sql + " where r.fcolguid = ? and r.fdelete = 0 and t.fcheck = 1 and t.id <= ( "+ limitSql +" ) order by t.id desc limit ?",coListList.get(p),coListList.get(p),tpageSize));
@@ -383,7 +426,9 @@ public class UnifyRequestData extends Controller {
 				.append("and t.id <= (select t2.id from t_topic_relate r2 INNER JOIN t_topic t2 on r2.ftopicguid = t2.fguid where r2.fcolguid = '"+ coListList.get(p) 
 						+"' and t2.fdelete = 0 and t2.fcheck = 1 ORDER BY t2.ftop desc,r2.fsortnum desc,t2.id desc limit "+ 
 						((tpageNumber - 1)*tpageSize) +",1) and r.fcolguid = '"+ coListList.get(p) +
-						"' and r.fdelete = 0 and t.fcheck = 1 ORDER BY t.ftop desc,r.fsortnum desc,t.id desc  limit "+ tpageSize + ") as tempt");
+						"' and r.fdelete = 0 and t.fcheck = 1")
+				.append(labSql.toString())
+				.append(" ORDER BY t.ftop desc,r.fsortnum desc,t.id desc  limit "+ tpageSize + ") as tempt");
 				if(p < (plen - 1)) sbSql.append(" UNION ");
 			}
 			sbSql.append(") ");
@@ -497,25 +542,28 @@ public class UnifyRequestData extends Controller {
 		return lvFlag;
 	}
 	
-	private void extDataToRecord(String json,Record ext){
+	private void extDataToRecord(String json,Record ext,String imageCacheServerHost){
 		if(!StringUtils.hasText(json)){
 			json = "{\"Message\":[],\"Image\":[],\"Link\":\"\"}";
 		}
 		try {
-			JSONObject obj = new JSONObject(json);
+			JSONObject obj = JSONObject.parseObject(json);
+			
 			JSONArray mess = obj.getJSONArray("Message");
 			List<String> messList = new ArrayList<String>();
-			if(mess.length() > 0){
-				for(int i = 0;i < mess.length();i++)
+			if(mess.size() > 0){
+				for(int i = 0,len = mess.size();i < len;i++)
 					messList.add(mess.get(i).toString());
 			}
 			
 			List<Record> imgList = new ArrayList<Record>();
 			JSONArray img = obj.getJSONArray("Image");
-			if(img.length() > 0){
+			if(img.size() > 0){
 				
-				for(int i = 0;i < img.length();i++){
-					imgList.add(new Record().set("src", img.getJSONObject(i).get("src"))
+				JSONObject jsonObj;
+				for(int i = 0,len = img.size();i < len;i++){
+					jsonObj = img.getJSONObject(i);
+					imgList.add(new Record().set("src", ((jsonObj.getString("src").indexOf(Constant.Thumb_HTTP_Prefix) >= 0 || jsonObj.getString("src").indexOf(Constant.Thumb_HTTPs_Prefix) >= 0)?"":imageCacheServerHost) + jsonObj.getString("src"))
 							.set("link", img.getJSONObject(i).get("link")));
 				}
 			}
@@ -548,15 +596,20 @@ public class UnifyRequestData extends Controller {
 		data.set("Desc", Constant.DATA_JSON_DESC_TOPIC + (StringUtils.hasText(cb)?"JSONP":"JSON"));
 		try{
 			if(StringUtils.hasText(guid)){
+				Column currCol = Column.columnDao.findFirst("select c.fguid,c.fparentuid,c.fservicename,c.fsiteguid from t_column c INNER JOIN t_topic_relate r ON r.fcolguid = c.fguid where r.ftopicguid = ?",guid);
+				Site site = SiteDao.querySiteByGuid(currCol.getStr("fsiteguid"));
+				//ImageCacheServerHost
+				String imgCacheServerHost = getImageCacheServerHost(site);
+				
 				Record topic = Db.findFirst("select id as aid,fguid as Id,ftitle as Title,ftitlesec as Titlesec,fsummary as Summary,fsource as Source," +
 											"freleasetime as Releasetime,freleaseer as Releaseer," + 
-											"CASE WHEN LOCATE('"+ Constant.IMG_CATCH_DIR +"', fthumbnail) > 0 THEN fthumbnail WHEN  fthumbnail IS NOT NULL AND fthumbnail != '' AND LOCATE('"+ Constant.IMG_CATCH_DIR +"', fthumbnail) = 0 THEN  CONCAT('"+ Constant.IMG_CATCH_DIR +"' , fthumbnail) ELSE '' END  as Thumbnail,flable as Label, " +
+											"CASE WHEN LOCATE('"+ Constant.Thumb_HTTP_Prefix +"', fthumbnail) > 0 or LOCATE('"+ Constant.Thumb_HTTPs_Prefix +"', fthumbnail) > 0  THEN fthumbnail WHEN  fthumbnail IS NOT NULL AND fthumbnail != '' THEN  CONCAT('"+ imgCacheServerHost +"' , fthumbnail) ELSE '' END  as Thumbnail,flabel as Label, " +
 											"fpvsize as Pvsize,ftopsize as Topsize,fcollectsize as Collectsize,fclass as Class,fextdata as extdata from t_topic where fguid = ?",guid);
 				List<Record> contents = Db.find("SELECT fcontent as Content FROM `t_topic_content` where ftopicguid = ?",guid);
 				//Db.queryStr("select remotehost from t_config where filetype = ?",Constant.Config.TopicPreview.toString());
 				
-				List<Column> col = Column.columnDao.findByCache(Constant.CACHE_DEF_NAME, "previewcoldata", "select * from t_column where fsiteguid = (  select fsiteguid from t_topic_relate where ftopicguid = ?)",guid);
-				Column currCol = Column.columnDao.findFirst("select c.fguid,c.fparentuid,c.fservicename,c.fsiteguid from t_column c INNER JOIN t_topic_relate r ON r.fcolguid = c.fguid where r.ftopicguid = ?",guid);
+				List<Column> col = Column.columnDao.findByCache(Constant.CACHE_DEF_NAME, "previewcoldata", "select fguid,fservicename,fparentuid,fsiteguid from t_column where fsiteguid = (  select fsiteguid from t_topic_relate where ftopicguid = ? limit 0,1)",guid);
+				
 				List<String> parentCol = new ArrayList<String>();
 				checkParentColName(col, currCol.getStr("fparentuid"), parentCol);
 				String parColStr = "";
@@ -570,11 +623,13 @@ public class UnifyRequestData extends Controller {
 				Pattern pat = Pattern.compile(Constant.IMG_SRC_REGEX);
 				Matcher mac = null;
 				if(!contents.isEmpty()){
+					
+					
 					for(int i = 0,len = contents.size();i < len;i++){
 						mac = pat.matcher(contents.get(i).getStr("Content"));
 						while (mac.find()) {
 							if(StringUtils.hasText(mac.group(1))){
-								contents.get(i).set("Content", contents.get(i).getStr("Content").replaceAll(mac.group(1), Constant.IMG_CATCH_DIR + mac.group(1)));
+								contents.get(i).set("Content", contents.get(i).getStr("Content").replaceAll(mac.group(1),imgCacheServerHost + mac.group(1)));
 							}
 						}
 						cont.add(contents.get(i).getStr("Content"));
@@ -642,8 +697,9 @@ public class UnifyRequestData extends Controller {
 				Integer templateId = Db.queryInt("select ftemplateid from t_topic_relate where ftopicguid = ?",topicGuid);
 				if(templateId != null)
 					tempateHtml = Db.queryStr("select fhtmldata from t_template where id = ?",templateId);
-				List<Column> col = Column.columnDao.findByCache(Constant.CACHE_DEF_NAME, "previewcoldata", "select * from t_column where fsiteguid = (  select fsiteguid from t_topic_relate where ftopicguid = ?)",topicGuid);
+				List<Column> col = Column.columnDao.findByCache(Constant.CACHE_DEF_NAME, "previewcoldata", "select fguid,fservicename,fparentuid,fsiteguid from t_column where fsiteguid = (  select fsiteguid from t_topic_relate where ftopicguid = ? limit 0,1)",topicGuid);
 				Column currCol = Column.columnDao.findFirst("select c.fguid,c.fparentuid,c.fservicename,c.fsiteguid from t_column c INNER JOIN t_topic_relate r ON r.fcolguid = c.fguid where r.ftopicguid = ?",topicGuid);
+				Site site = SiteDao.querySiteByGuid(currCol.getStr("fsiteguid"));
 				List<TopicContent> contents = TopicContent.contentDao.find("select * from t_topic_content where ftopicguid = ?",topicGuid);
 				
 				List<String> parentCol = new ArrayList<String>();
@@ -655,59 +711,67 @@ public class UnifyRequestData extends Controller {
 						if(i > 0) parColStr += " > ";
 					}
 				}
-				if(tempateHtml != null){
-					tempateHtml = tempateHtml.replaceAll(TopicConstant.TOPIC_TITLE, topic.getStr("ftitle"))
-					.replace(TopicConstant.TOPIC_CHARTSET, "UTF-8")
-					.replace(TopicConstant.TOPIC_CURRENT_COLUMN, currCol.getStr("fservicename"))
-					.replace(TopicConstant.TOPIC_PARENT_COLUMN, parColStr)
-					.replace(TopicConstant.TOPIC_SOURCE, topic.getStr("fsource"))
-					.replace(TopicConstant.TOPIC_EDIT_TIME, topic.getStr("freleasetime").substring(0, topic.getStr("freleasetime").indexOf(" ")));
-					
-					String topicCtrJsStr = CacheKit.get(Constant.CACHE_DEF_NAME, "topicPreviewCtrlJs");
-					if(!StringUtils.hasText(topicCtrJsStr)){
-						topicCtrJsStr = FileUtil.readFile(PathKit.getWebRootPath() + Constant.TEMPLATE_CTRL_JSNAME);
-						CacheKit.put(Constant.CACHE_DEF_NAME, "topicPreviewCtrlJs", topicCtrJsStr);
+				if(tempateHtml == null){
+					tempateHtml = CacheKit.get(Constant.CACHE_DEF_NAME, Constant.CACHE_DEFAULT_TEMPLATE);
+					if(!StringUtils.hasText(tempateHtml)){
+						tempateHtml = FileUtil.readFile(PathKit.getWebRootPath() + Constant.DEFAULT_TEMPLATE_PATH, null);
+						CacheKit.put(Constant.CACHE_DEF_NAME, Constant.CACHE_DEFAULT_TEMPLATE, tempateHtml);
 					}
-					
-					/*图片处理*/
-					Matcher mac = null;
-					Pattern pat = Pattern.compile(Constant.BACKGROUND_IMAGE);
-//					mac = pat.matcher(tempateHtml);
-//					String bgImg = "";
-//					/*背景图地址*/
-//					while (mac.find()) {
-//						bgImg = mac.group();
-//						if(StringUtils.hasText(bgImg)){
-//							bgImg = bgImg.replace("(", "").replace(")", "");
-//							tempateHtml = tempateHtml.replace(bgImg, Constant.IMG_CATCH_DIR + bgImg);
-//						}
-//					}
-					
-					/*广告图地址*/		
-					pat = Pattern.compile(Constant.IMG_SRC_REGEX);
-					mac = pat.matcher(tempateHtml);
-					while(mac.find()){
-						if(StringUtils.hasText(mac.group(1))) tempateHtml = tempateHtml.replace(mac.group(1), Constant.IMG_CATCH_DIR + mac.group(1));
-					}
-					/*内容图片地址*/
-					StringBuffer conSb = new StringBuffer(300);
-					if(!contents.isEmpty()){
-						for(int i = 0,len = contents.size();i < len;i++){
-							mac = pat.matcher(contents.get(i).getStr("fcontent"));
-							while (mac.find()) {
-								if(StringUtils.hasText(mac.group(1))){
-									contents.get(i).set("fcontent", contents.get(i).getStr("fcontent").replaceAll(mac.group(1), Constant.IMG_CATCH_DIR + mac.group(1)));
-								}
-							}
-							conSb.append("<div id=\"CMS_Content_"+ i +"\" "+ (i > 0?"style=\"display:none;\"":"") +">"+ contents.get(i).getStr("fcontent") +"</div>");
-						}
-					}
-					tempateHtml = tempateHtml.replace(TopicConstant.TOPIC_CONTENT, conSb.toString());
-					sb.append(tempateHtml)
-					.append("<script type=\"text/javascript\"> var $CMS_Content_PageNum = "+ contents.size() +";"+ topicCtrJsStr +"</script>");
-				}else{
-					sb.append("<div style=\"height:200px;vertical-align:middle;line-height:200px;text-align:center;font-size:25px;\">无法显示内容.(┬＿┬)</div>");
 				}
+				
+				tempateHtml = tempateHtml.replaceAll(TopicConstant.TOPIC_TITLE, topic.getStr("ftitle"))
+				.replace(TopicConstant.TOPIC_CHARTSET, "UTF-8")
+				.replace(TopicConstant.TOPIC_CURRENT_COLUMN, currCol.getStr("fservicename"))
+				.replace(TopicConstant.TOPIC_PARENT_COLUMN, parColStr)
+				.replace(TopicConstant.TOPIC_SOURCE, topic.getStr("fsource"))
+				.replace(TopicConstant.TOPIC_EDIT_TIME, topic.getStr("freleasetime").substring(0, topic.getStr("freleasetime").indexOf(" ")));
+				
+				String topicCtrJsStr = CacheKit.get(Constant.CACHE_DEF_NAME, "topicPreviewCtrlJs");
+				if(!StringUtils.hasText(topicCtrJsStr)){
+					topicCtrJsStr = FileUtil.readFile(PathKit.getWebRootPath() + Constant.TEMPLATE_CTRL_JSNAME);
+					CacheKit.put(Constant.CACHE_DEF_NAME, "topicPreviewCtrlJs", topicCtrJsStr);
+				}
+				
+				/*图片处理*/
+				Matcher mac = null;
+				
+				//ImageCacheServerHost
+				String imgCacheServerHost = getImageCacheServerHost(site);
+				
+				Pattern pat = Pattern.compile(Constant.BACKGROUND_IMAGE_REGEX);
+				mac = pat.matcher(tempateHtml);
+				/*背景图地址*/
+				while (mac.find()) {
+					if(StringUtils.hasText(mac.group(1))){
+						tempateHtml = tempateHtml.replace(mac.group(1), imgCacheServerHost + mac.group(1));
+					}
+				}
+				
+				/*广告图地址*/		
+				pat = Pattern.compile(Constant.IMG_SRC_REGEX);
+				mac = pat.matcher(tempateHtml);
+				while(mac.find()){
+					if(StringUtils.hasText(mac.group(1))){
+						tempateHtml = tempateHtml.replace(mac.group(1), imgCacheServerHost + mac.group(1));
+					}
+				}
+				/*内容图片地址*/
+				StringBuffer conSb = new StringBuffer(300);
+				if(!contents.isEmpty()){
+					for(int i = 0,len = contents.size();i < len;i++){
+						mac = pat.matcher(contents.get(i).getStr("fcontent"));
+						while (mac.find()) {
+							if(StringUtils.hasText(mac.group(1))){
+								contents.get(i).set("fcontent", contents.get(i).getStr("fcontent").replaceAll(mac.group(1),imgCacheServerHost + mac.group(1)));
+							}
+						}
+						conSb.append("<div id=\"CMS_Content_"+ i +"\" "+ (i > 0?"style=\"display:none;\"":"") +">"+ contents.get(i).getStr("fcontent") +"</div>");
+					}
+				}
+				tempateHtml = tempateHtml.replace(TopicConstant.TOPIC_CONTENT, conSb.toString());
+				sb.append(tempateHtml)
+				.append("<script type=\"text/javascript\"> var $CMS_Content_PageNum = "+ contents.size() +";"+ topicCtrJsStr +"</script>");
+			
 				
 				topic.set("fpvsize", topic.getInt("fpvsize") + 1);
 				topic.update();
@@ -724,6 +788,14 @@ public class UnifyRequestData extends Controller {
 		
 		setAttr("resData", sb.toString());
 		render(PageUtil.TOPIC_PREVIEW);
+	}
+	
+	private String getImageCacheServerHost(Site site){
+//		TConfig config = CacheKit.get(Constant.CACHE_DEF_NAME, Constant.Config.ImageCacheServer.toString());
+//		if(config != null){
+//			return StringUtils.hasText(config.getStr("remotedir"))?config.getStr("remotedir"):"";
+//		}
+		return CacheServerUtil.getCacheServerHost(site.getStr("fcache_server_guid"));
 	}
 	
 	private void checkParentColName(List<Column> data,String pGuid,List<String> container){
@@ -769,7 +841,7 @@ public class UnifyRequestData extends Controller {
 			e.printStackTrace();
 		}
 		
-		data.set("Response time", System.currentTimeMillis() - startTime);
+		data.set("Elapsed", System.currentTimeMillis() - startTime);
 		if(StringUtils.hasText(cb)){
 			renderJavascript(cb + "("+ JsonKit.toJson(data) +")");
 		}else{
@@ -824,7 +896,7 @@ public class UnifyRequestData extends Controller {
 		}
 		data.set("Mess", mess);
 		data.set("Data", res?1:0);
-		data.set("Response time", System.currentTimeMillis() - startTime);
+		data.set("Elapsed", System.currentTimeMillis() - startTime);
 		
 		///
 		try {
@@ -837,6 +909,115 @@ public class UnifyRequestData extends Controller {
 			renderJavascript(cb + "("+ JsonKit.toJson(data) +")");
 		}else{
 			renderJson(data);
+		}
+	}
+	/**
+	 * 获取标签列表
+	 * @author chasonx
+	 * @create 2017年12月8日 下午4:25:57
+	 * @update
+	 * @param  
+	 * @return void
+	 */
+	@ApiTitle("获取标签")
+	@ApiRemark("获取站点或栏目标签列表")
+	@Required({
+		@ParaEntity(name = "aliasName",desc = "站点别名",mlen = 1,xlen = 100,type = "String"),
+		@ParaEntity(name = "colGuid",desc = "栏目Guid",empty = true,type = "String"),
+		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpDesc,empty = true,type = "String")
+	})
+	public void getLabels(){
+		long st = System.currentTimeMillis();
+		String cb = getPara(ApiConstant.jsonpName);
+		String alias = getPara("aliasName");
+		String colGuid = getPara("colGuid");
+		
+		Record res = new Record();
+		res.set("Version", Constant.DATA_JSON_VERSION);
+		res.set("Desc", Constant.DATA_JSON_DESC_TOPIC + (StringUtils.hasText(cb)?"JSONP":"JSON"));
+		
+		List<Record> _Grouplabs = new ArrayList<Record>();
+		if(StringUtils.hasText(alias)){
+			res.set("Msg", "ok");
+			Site site = SiteDao.querySiteByAliasName(alias);
+			if(site != null){
+				String sql = "select * from " + PublicDao.getTableName(TLabel.class) + " where fsiteGuid = '"+ site.getStr("fguid") +"'";
+				sql += StringUtils.hasText(colGuid)?" and fcolumnGuid = '"+ colGuid +"'" : "";
+				sql += " and fstate order by id desc";
+				List<TLabel> labs = TLabel.lab.find(sql);
+				if(!labs.isEmpty()){
+					Record groupLab,lab;
+					List<Record> _labs;
+					
+					int j = 0;
+					for(int i = 0,len = labs.size();i < len;i++){
+						if(labs.get(i).getStr("fparentId").equals("0")){
+							groupLab = new Record();
+							_labs = new ArrayList<Record>();
+							groupLab.set("Guid", labs.get(i).getStr("fguid"));
+							groupLab.set("Text", labs.get(i).getStr("flabelName"));
+							for(j = 0;j < len;j++){
+								if(labs.get(j).getStr("fparentId").equals(labs.get(i).getStr("fguid"))){
+									lab = new Record();
+									lab.set("Guid", labs.get(j).getStr("fguid"));
+									lab.set("Text", labs.get(j).getStr("flabelName"));
+									_labs.add(lab);
+								}
+							}
+							groupLab.set("Childrens", _labs);
+							_Grouplabs.add(groupLab);
+						}
+					}
+				}
+			}
+		}else{
+			res.set("Msg", "'aliasName' is not allowed null.");
+		}
+		res.set("Data", _Grouplabs);
+		res.set("Elapsed", (System.currentTimeMillis() - st) );
+		if(StringUtils.hasText(cb)){
+			renderJavascript(cb + "("+ JsonKit.toJson(res) +")");
+		}else{
+			renderJson(res);
+		}
+	}
+	
+	/**
+	 * 文档详情
+	 * @author chasonx
+	 * @create 2017年12月15日 下午4:08:27
+	 * @update
+	 * @param  
+	 * @return void
+	 */
+	@ApiTitle("获取文档详情")
+	@ApiRemark("根据文档GUID获取文档详情")
+	@Required({
+		@ParaEntity(name = "docGuid",desc = "文档Guid",mlen = 1,xlen = 40,type = "String"),
+		@ParaEntity(name = ApiConstant.jsonpName,desc = ApiConstant.jsonpDesc,empty = true,type = "String")
+	})
+	public void docDetail(){
+		String docGuid = getPara("docGuid");
+		String cb = getPara(ApiConstant.jsonpName);
+		Ret ret = new Ret();
+		if(StringUtils.hasText(docGuid)){
+			try {
+				JSONObject param = DocDao.getAuthCode();
+				param.put("colGuid", docGuid);
+				String addRess = PublicDao.getFieldStr("localdir", " and filetype = '"+ Constant.Config.DocFactory.toString() +"'", TConfig.class);
+				String result = HttpUtil.UrlGetResponse(addRess + ApiConstant.ZDocFactory.privew.getString() + "?param=" + param.toJSONString());
+				if(StringUtils.hasText(result))
+					ret.setData(JSONObject.parseObject(result));
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(StringUtils.hasText(cb)){
+			renderJavascript(cb + "("+ JsonKit.toJson(ret) +")");
+		}else{
+			renderJson(ret);
 		}
 	}
 }

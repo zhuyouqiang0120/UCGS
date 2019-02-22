@@ -102,7 +102,7 @@ var OperationLogs = {
 			
 			new Chasonx({
 				title:'日志详情',
-				html : $("#logDetails").html(),
+				html : '<div class="global_bg_c" style="height:100%;" >' + $("#logDetails").html() + '</div>',
 				width: _w,height: _h,
 				modal : true
 			});

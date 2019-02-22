@@ -47,11 +47,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 #templateList	p			{padding:5px;color:#06aae5;display:block;cursor:pointer;transition:0.5s;-webkit-transition:0.5s;-moz-transition:0.5s;}
 #templateList	p:hover,.templateListFocus{font-weight:bold;padding-left:15px !important;color:#038abb !important;}
 #dragListRight div b		{display:inline-block;width:100px;}
-#previewBox 				{width:1280px;height:720px;position:relative;top:38px;border:3px solid #ccc;}
-#tabTitle					{position:absolute;width:200px;height:30px;border:1px solid #ccc;left:20px;top:-32px;transform:skew(-30deg,0deg);background:#b9b9b9;z-index:100;
-							border-right:none;}
-#tabTitle2					{position:absolute;width:50px;height:30px;border:1px solid #ccc;left:188px;top:-32px;transform:skew(30deg,0deg);background:#b9b9b9;border-left:none;}
-#tabTitle3 					{position:absolute;width:200px;height:20px;left:30px;top:-25px;z-index:102;color:#4c4d4e;}
+#dragListRight				{background:transparent !important;}
 </style>
 </head>
 <body>
@@ -68,7 +64,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 			<div class="areaListTitle">站点列表：<select id="siteList" class="inputText select"></select></div>
 			<div id="templateList"></div>
 		</div>
-		<div id="dragListRight" >
+		<div id="dragListRight" class="global_bg_c">
 			<div><b>背景图片：</b><input type="text" class="inputText textBrowse" readonly="readonly" id="fbgimg" style="width:50%;"  />
 						 <input type="button" class="button browse"   value="浏览" onclick="PContent.fileList('fbgimg')"/>
 			</div>

@@ -42,7 +42,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <#include "../../common/head.ftl">
 <script type="text/javascript" src="${basePath}/res/plugs/lib/datepicker/WdatePicker.js"></script>
 <style type="text/css">
-.detailTitle        {background:#E4E4E4;padding:5px;text-align:right;color:#8E8E8E;}
+.detailTitle        {padding:5px;text-align:right;color:#8E8E8E;}
 .detailCon		    {padding:5px;}
 #logDetails 		{display:none;}
 </style>

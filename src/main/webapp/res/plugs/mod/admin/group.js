@@ -22,7 +22,7 @@ var AdminGroup = {
 				var html = '';
 				if(d.length > 0){
 					$.each(d,function(i,u){
-						html += '<div class="roleItem'+ (_guid == u.fguid?' roleItemFocus':'') +'" val="'+ u.id +'" data="'+ u.fguid +'" admin="'+ u.fisadmin +'" gname="'+ u.fgname +'" dimensionguid="'+ u.dimensionguid +'"  state="'+ u.fstate +'"><i class="roleIcon"></i>'+ u.fgname + (u.fstate == 1?'<font color="red">角色冻结</font>':'') +'</div>';
+						html += '<div class="roleItem'+ (_guid == u.fguid?' roleItemFocus':'') +'" val="'+ u.id +'" data="'+ u.fguid +'" admin="'+ u.fisadmin +'" gname="'+ u.fgname +'" dimensionguid="'+ u.dimensionguid +'"  state="'+ u.fstate +'"><i class="icon-user"></i>'+ u.fgname + (u.fstate == 1?'<font color="red">角色冻结</font>':'') +'</div>';
 					});
 				}else{
 					html = '<div class="roleItem" data="" gname="" dimensionguid="" areaguid="" state="">未添加角色</div>';
@@ -40,7 +40,7 @@ var AdminGroup = {
 			 var html = '';
 				if(d.length > 0){
 					$.each(d,function(i,u){
-						html += '<div class="roleItem" data="'+ u.fguid +'" ><i class="roleIcon"></i>'+ u.fadminname + '&nbsp;<font color="#716e6e">' + (u.fdimensionname || '') + ' / ' + (u.fgname || '') + '</font>' + (u.fstate == 1?'<font color="red">角色冻结</font>':'') +'</div>';
+						html += '<div class="roleItem" data="'+ u.fguid +'" ><i class="icon-user"></i>'+ u.fadminname + '&nbsp;<font color="#ddd">' + (u.fdimensionname || '') + ' / ' + (u.fgname || '') + '</font>' + (u.fstate == 1?'<font color="red">角色冻结</font>':'') +'</div>';
 					});
 				}else{
 					html = '<div class="roleItem" data="" state="">未添加角色</div>';

@@ -76,7 +76,7 @@ public class PageStatisticsController extends Controller {
 			for(String d : pvDate) {
 				_pvSize = jd.zscore("pv_date", d);
 				pvSize.add( _pvSize == null?0:_pvSize );
-				pageSize.add(jd.zrange("pv_page_" + d, 0, -1).size() );
+				pageSize.add(jd.zrange("pv_topic_" + d, 0, -1).size() );
 				siteSize.add( jd.zrange("pv_site_" + d, 0, -1).size() );
 				ipSize.add( jd.zrange("pv_ip_" + d, 0, -1).size() );
 			}

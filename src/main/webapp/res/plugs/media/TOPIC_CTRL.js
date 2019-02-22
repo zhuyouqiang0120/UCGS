@@ -72,13 +72,15 @@ var ArtPage = {
 	 	}
 	 },
 	 showOrhide : function(id, type){
-		 ArtPage.byAttrName('UCGS_Class',id).style.display = (type == 1?'block':'none');
+		 //ArtPage.byAttrName('UCGS_Class',id).style.display = (type == 1?'block':'none');
+		 ArtPage.ele(id).style.display = (type == 1?'block':'none');
 	 },
 	 contentShowOrHide : function(id,type){
 		 ArtPage.ele(id).style.display =  (type == 1?'block':'none');
 	 },
 	 currPagination : function(){
-		 ArtPage.byAttrName('UCGS_Class','CmsComp_Ctrl_Pagination').innerHTML = ArtPage.currPage + '  / ' + $CMS_Content_PageNum;
+		 //ArtPage.byAttrName('UCGS_Class','CmsComp_Ctrl_Pagination').innerHTML = ArtPage.currPage + '  / ' + $CMS_Content_PageNum;
+		 ArtPage.ele('CmsComp_Ctrl_Pagination').innerHTML = ArtPage.currPage + '  / ' + $CMS_Content_PageNum;
 	 },
 	 ele : function(id){
 	 	return document.getElementById(id);

@@ -18,7 +18,7 @@ var UPDT = {
 		    		UPDT.recoverHandler();
 		    		
 		    		for(var i = 0;i < _UPDT_CONTAINER.length;i++){
-		    			if(_UPDT_CONTAINER[i].config.attr.mainDraw == true){
+		    			if(_UPDT_CONTAINER[i].config.attr.mainDraw == "true"){
 		    				_UPDT_CONTAINER[i].config.dataSourceKey = UPDT.baseData.Node[0];
 		    				
 		    				var _config = _UPDT_CONTAINER[i],_target;

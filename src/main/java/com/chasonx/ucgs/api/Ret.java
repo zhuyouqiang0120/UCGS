@@ -21,10 +21,11 @@ package com.chasonx.ucgs.api;
  */
 public class Ret {
 	
-	private String msg;
-	private Integer result;
-	private Object data;
-	private Long elapsed;
+	private String msg = "";
+	private Integer result = 0;
+	private Object data = "";
+	private Long elapsed = 0L;
+	private String desc = "UCGS UnifyJson v2.0";
 	/**
 	 * @return the msg
 	 */
@@ -72,6 +73,18 @@ public class Ret {
 	 */
 	public void setElapsed(long elapsed) {
 		this.elapsed = elapsed;
+	}
+	/**
+	 * @return the desc
+	 */
+	public String getDesc() {
+		return desc;
+	}
+	/**
+	 * @param desc the desc to set
+	 */
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 	
 	

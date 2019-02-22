@@ -48,7 +48,7 @@ var Dimension = {
 			var wsize = ChasonTools.getWindowSize();
 			new Chasonx({
 				title : (type == 1?"新增":"更新") + '机构信息',
-				html : '<div id="dimensionPanel"></div>',
+				html : '<div id="dimensionPanel"class="global_bg_c"></div>',
 				width : wsize[2] * 0.4,height : wsize[3] * 0.5,
 				modal : true,
 				success : function(){

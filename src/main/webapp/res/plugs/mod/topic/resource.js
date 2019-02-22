@@ -26,7 +26,7 @@ var ResDialog = {
 				 url:DefConfig.UAMS.getMediaList,
 				 PageNumber:this.PageNumber,
 				 PageSize:this.PageSize,
-				 data :{'sifter':'number:State@1'},
+				 data :{'sifter':'number:State@1,number:PID@0'},
 				 dataType : 'jsonp',
 				 jsonp : ResDialog.JSONP,
 				 before : function(op){
@@ -51,7 +51,7 @@ var ResDialog = {
 				 url:DefConfig.UAMS.getMediaList,
 				 PageNumber:this.PageNumber,
 				 PageSize:this.PageSize,
-				 data :{'sifter':'string:Title@' + $("#dialogVideoTitle").val()},
+				 data :{'sifter':'number:State@1,number:PID@0,string:Title@' + $("#dialogVideoTitle").val()},
 				 dataType : 'jsonp',
 				 jsonp : ResDialog.JSONP,
 				 before : function(op){

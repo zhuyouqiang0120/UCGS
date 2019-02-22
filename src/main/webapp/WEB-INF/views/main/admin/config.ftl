@@ -49,11 +49,11 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 	<table class="tableDefault" width="99%" cellpadding="0" cellspacing="0" >
 		<tr class="trDefault">
 			<td width="5%"></td>
-			<td width="10%"></td>
 			<td width="10%">类型名称</td>
-			<td width="20%">本地地址</td>
-			<td width="25%">远程地址</td>
-			<td width="20%">远程Host</td>
+			<td width="10%">标识</td>
+			<td width="20%">配置1</td>
+			<td width="25%">配置2</td>
+			<td width="20%">配置3</td>
 			<td>用户名</td>
 		</tr>
 		<tbody id="configData" class="tableData">

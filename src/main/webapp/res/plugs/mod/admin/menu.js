@@ -6,9 +6,9 @@ $(document).ready(function(){
 	Chasonx.Frameset({
 		main   : 'mainPanel',
 		window : {
-			top  : {id : 'topPanel' ,height : '65px'},
-			left : {id : 'leftPanel',width : '25%'},
-			right: {id : 'rightPanel'}
+			top  : {id : 'topPanel' ,height : '65px',bgColor : false,border : false},
+			left : {id : 'leftPanel',width : '25%',bgColor : false,border : false},
+			right: {id : 'rightPanel',bgColor : false,border : false}
 			}
 	});
 	
@@ -214,6 +214,7 @@ var AdminMenu = {
 }; 
 
 var CtrlTools = {
+		btnData : null,
 		addTab : function(){
 			var _tabname = $("#_addTabName").val();
 			var mo = $("div[class='menuItem menuItemFocus']");
@@ -240,14 +241,30 @@ var CtrlTools = {
 			});
 		},
 		del : function(T){
-			if(T == 1){ //del group
-				if(_BTN_GROUP_ID == null) return Chasonx.Hint.Faild('组未选择');
-				this.execTab({'type':3,'id':_BTN_GROUP_ID});
-			}else{
-				var mb = $("input[type='checkbox'][name='menubtn']:checked");
-				if(mb.size() == 0) return Chasonx.Hint.Faild('按钮未选择');
-				
-				this.execBtn({'type':3,'id':mb.val()});
+			with(this){
+				if(T == 1){ //del group
+					if(_BTN_GROUP_ID == null) return Chasonx.Hint.Faild('组未选择');
+					Chasonx.Alert({
+						html : '确定删除组吗?',
+						modal : true,
+						success : function(){
+							execTab({'type':3,'id':_BTN_GROUP_ID});
+							return true;
+						}
+					});
+				}else{
+					var mb = $("input[type='checkbox'][name='menubtn']:checked");
+					if(mb.size() == 0) return Chasonx.Hint.Faild('按钮未选择');
+					
+					Chasonx.Alert({
+						html : '确定删除按钮吗?',
+						modal : true,
+						success : function(){
+							execBtn({'type':3,'id':mb.val()});
+							return true;
+						}
+					});
+				}
 			}
 		},
 		update : function(T){
@@ -266,26 +283,46 @@ var CtrlTools = {
 					},
 					modal : true
 				});
-			}else{
+			}else if(T == 2){
 				var mb = $("input[type='checkbox'][name='menubtn']:checked");
 				if(mb.size() == 0) return Chasonx.Hint.Faild('按钮未选择');
 				
 				var btnObj = mb.next('input[type="button"]');
-				var method = btnObj.attr('onclick');
+				var method = btnObj.attr('onclick'),btnId = btnObj.attr('id');
 				new Chasonx({
 					title : '更新按钮名称',
 					html : '<br><br><p style="text-align:center;">名称：<input type="text" class="inputText" id="_updbtnpname" value="'+ btnObj.val() + '"/><br>\
+							<p style="text-align:center;">ID：<input type="text" class="inputText" id="_updbtnid" value="'+ (btnId || '') + '"/><br>\
 							方法：<input type="text" class="inputText" id="_updbtnmethod" value="'+ (method || '') +'" /></p>',
-					width:350,height : 200,
+					width:350,height : 280,
 					success : function(){
 						var gname = $("#_updbtnpname").val();
 						if(gname == '') return Chasonx.Hint.Faild('输入按钮名称');
 						
-						var btnStr = btnObj.prop('outerHTML').replace(btnObj.val(),gname);
-						if($("#_updbtnmethod").val() != ''){
-							btnStr = btnStr.replace(method,$("#_updbtnmethod").val());
+						btnObj.val(gname);
+						if(!StrKit.isBlank($("#_updbtnid").val())){
+							btnObj.attr("id",$("#_updbtnid").val());
 						}
-						CtrlTools.execBtn({'type':2,'id':mb.val(),'fbtnhtml':btnStr});
+						if($("#_updbtnmethod").val() != ''){
+							btnObj.attr("onclick",$("#_updbtnmethod").val());
+						}
+						CtrlTools.execBtn({'type':2,'id':mb.val(),'fbtnhtml':btnObj.prop('outerHTML')});
+						return true;
+					},
+					modal : true
+				});
+			}else{
+				var mb = $("input[type='checkbox'][name='menubtn']:checked");
+				if(mb.size() == 0) return Chasonx.Hint.Faild('按钮未选择');
+				var _btnData = this.getBtnData(mb.val());
+				
+				new Chasonx({
+					title : '更新HTML',
+					html : '<br><br><p style="text-align:center;">自定义HTML：<textarea class="inputText textarea" id="_updbtnHtml" rows="6">'+ _btnData.fbtnhtml +'</textarea><br>',
+					width:450,height : 300,
+					success : function(){
+						var _updbtnHtml = $("#_updbtnHtml").val();
+						CtrlTools.execBtn({'type':2,'id':mb.val(),'fbtnhtml':_updbtnHtml});
 						return true;
 					},
 					modal : true
@@ -334,16 +371,18 @@ var CtrlTools = {
 			}
 		},
 		list : function(){
+			this.btnData = [];
 			var mo =  $("div[class='menuItem menuItemFocus']");
 			if(mo.size() > 0){
 				getAjaxData(DefConfig.Root + '/main/menu/btnList',{'mid':mo.attr('mid')},function(d){
+					CtrlTools.btnData = d.BtnList;
 					var gHtml = '<ul class="buttonTabBox" style="height:61px;">';
 					$.each(d.BtnGroupList,function(i,u){
 						if(i == 0) _BTN_GROUP_ID = u.id;
 						gHtml += '<li data="'+ u.id +'"><input type="radio" id="tabBtn'+ i +'" name="tabs" '+ (i == 0?'checked':'') +'/><label for="tabBtn'+ i +'">'+ u.fmenubtngroup +'</label>\
 									<div id="tab-content'+ i +'" class="tabItems">';
 							$.each(d.BtnList,function(j,k){
-								if(k.fmbgid == u.id) gHtml += '&nbsp;&nbsp;<input type="checkbox" name="menubtn" value="'+ k.id +'" />' +  k.fbtnhtml + '['+ (k.fbtnstate == 1?'<font color="green">使用中</font>':'<font color="red">禁用</font>') +']';
+								if(k.fmbgid == u.id) gHtml += '&nbsp;&nbsp;<input type="checkbox"  name="menubtn" value="'+ k.id +'" />' +  k.fbtnhtml + '['+ (k.fbtnstate == 1?'<font color="green">使用中</font>':'<font color="red">禁用</font>') +']';
 							});
 						gHtml += '</div></li>';
 					});
@@ -351,6 +390,16 @@ var CtrlTools = {
 					$(".centerPanel").html(gHtml);
 				});
 			}
+		},
+		getBtnData : function(id){
+			var _b;
+			$.each(this.btnData,function(i,u){
+				if(u.id == id){
+					_b = u;
+					return false;
+				}
+			});
+			return _b;
 		}
 };
 

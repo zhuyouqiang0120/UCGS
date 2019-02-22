@@ -6,7 +6,7 @@ var SitePub = {
 				if(typeof(callback) == 'function'){
 					callback(d);
 				}else{
-					var op = '<p style="background: #f6f6f6;text-align:center;padding:5px 0px 5px 0px;"><b>站点列表</b></p>';
+					var op = '<p style="text-align:center;padding:5px 0px 5px 0px;" class="global_bg_c"><b>站点列表</b></p>';
 					$.each(d.list,function(i,u){
 						op += '<div data="'+ u.fguid +'">'+ u.fsitename +'</div>';
 					});

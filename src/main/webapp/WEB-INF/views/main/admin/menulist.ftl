@@ -45,16 +45,16 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <script type="text/javascript" src="${basePath}/res/plugs/mod/admin/menu.js"></script>
 <style type="text/css">
 .menuPanel     				{min-height:200px;width:auto !important;display: inline-block;}
-.menuPanel .menuItem		{height:28px;line-height:28px;vertical-align:middle;position:relative;border:1px solid #F5F5F5;}
-.menuPanel .menuItem:hover,.menuItemFocus	{border:1px solid #d6972a;background:#3CA5F2;color:#fff;width:100%;}
+.menuPanel .menuItem		{height:28px;line-height:28px;vertical-align:middle;position:relative;color : #f6f6f6;}
+.menuPanel .menuItem:hover,.menuItemFocus	{background:#2a3a46;color:#fff;width:100%;}
 .menuPanel .menuItem span	{height:28px;border:2px solid #99C1CC;}
-.topPanel 					{border:1px solid #ccc;height:40%;}
-.centerPanel 				{border:1px solid #ccc;height:35%;padding-top:5%;}
+.topPanel 					{height:40%;background: #394458;color : #f6f6f6;}
+.centerPanel 				{height:35%;padding-top:5%;background: #394458;}
 #tabItem 					{height:30%;}
 #btnItem 					{height:70%;overflow-x:auto;}
-.btnItems 					{width:100px;display:inline-block;height:45px;padding-top:10px;vertical-align:middle;text-align:center;text-align: center;border: 1px solid #ccc;
+.btnItems 					{width:100px;display:inline-block;height:45px;padding-top:10px;vertical-align:middle;text-align:center;text-align: center;border: 1px solid #394458;
 							cursor:pointer;}
-.btnItems:hover,.btnItemFocus{border:1px solid #f09;}
+.btnItems:hover,.btnItemFocus{border:1px solid #3889c0;}
 .addBtn 					{display:inline-block;min-width:200px;width:auto !important;height:75px;}
 </style>
 </head>
@@ -109,8 +109,9 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 		<p>
 		<input type="button" class="button blue" onclick="CtrlTools.state(1)" value="设置使用" />
 		<input type="button" class="button blue" onclick="CtrlTools.state(0)" value="设置禁用" />
-		<input type="button" class="button blue" onclick="CtrlTools.update(2)" value="更新按钮名称" />
 		<input type="button" class="button blue" onclick="CtrlTools.update(1)" value="更新组名称" />
+		<input type="button" class="button blue" onclick="CtrlTools.update(2)" value="更新按钮名称" />
+		<input type="button" class="button blue" onclick="CtrlTools.update(3)" value="更新HTML" />
 		<input type="button" class="button red" onclick="CtrlTools.del(2)" value="删除按钮" />
 		<input type="button" class="button red" onclick="CtrlTools.del(1)" value="删除组" />
 		</p>

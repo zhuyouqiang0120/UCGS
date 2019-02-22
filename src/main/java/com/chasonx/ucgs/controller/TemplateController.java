@@ -17,7 +17,7 @@ import org.json.JSONObject;
 
 import com.chasonx.directory.FileListUtil;
 import com.chasonx.directory.FileUtil;
-import com.chasonx.directory.RarUtil;
+import com.chasonx.directory.RarDirUtil;
 import com.chasonx.entity.FileEntity;
 import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.HttpUtil;
@@ -136,8 +136,7 @@ public class TemplateController extends Controller {
 				res = ResourceDao.saveRes(entity);
 				
 				if(res > 0){
-					RarUtil.deCompress(fileDir + "/source/" + fname, fileDir + "/upzipfiles");
-					
+					RarDirUtil.deCompress(fileDir + "/source/" + fname, fileDir + "/upzipfiles");
 					//String sql = "update t_site set ftempguid = ? where fguid = ?";
 					//PublicDao.updateBatch(sql,tempGuid,siteGuid);
 				}

@@ -7,7 +7,7 @@ var SiteList = {
 		  var winSize = ChasonTools.getWindowSize();
 		  var _menuDialog = new Chasonx({
 			 title:'新建站点信息',
-			 html : '<div id="sitePanel" class="adminUserPanel" style="background:#fff;width:50%;"></div><div id="adminAreaPanel" class="adminUserPanel" style="background:#fff;width:50%;"></div>',
+			 html : '<div id="sitePanel" class="adminUserPanel global_bg_c" style="width:50%;"></div><div id="adminAreaPanel" class="adminUserPanel global_bg_c" style="width:50%;"></div>',
 			 modal : true,
 			 width:winSize[2] * 0.6,height:winSize[3] * 0.7,
 			 success:function(){
@@ -60,8 +60,8 @@ var SiteList = {
 				    			 data:{'alias':this.value},
 				    			 success : function(d){
 				    				 if(~~d > 0){
-				    					 $("#showSiteErr").html('<span class="badge badge_del">&nbsp;该网站别名已被使用了&nbsp;</span>');
-				    					 I.select();
+				    					 $("#showSiteErr").html('<span class="badge badge_del">&nbsp;该网站别名['+ I.value +']已被使用了&nbsp;</span>');
+				    					 I.value = '';
 				    				 }else{
 				    					 $("#showSiteErr").html('');
 				    				 }
@@ -206,7 +206,44 @@ function getState(s){
 	return v;
 }
 
-window.onload = function(){
+var CacheServerSetting = {
+		choosePane : function(){
+			SiteList.choose(function(_site){
+				var cacheServerPane = new Chasonx({
+					title : 'CacheServer 选择',
+					html : '<div id="cacheServerPane" class="global_bg_c"></div>',
+					width : 500,height : 380,
+					modal : true,
+					success : function(){
+						//console.log($("#server_guid").val());
+						SiteList.exec({id : _site.val(),fcache_server_guid : $("#server_guid").val(),type : 2});
+						//return true;
+					}
+				});
+				ChasonxDom.draw({
+					  id : 'cacheServerPane',
+					  item : [
+					      {text : '',type:'br' , info : '&nbsp;'},
+					      {text : '',type:'br' , info : '&nbsp;'},
+					      {text:'选择服务器:',name:'server_guid',type:'select',attr : ' style="width : 90%;" '},
+					      {text:'',type:'br',info : '&nbsp;'},
+					      {text:'',type : 'br',info : '<i class="icon_tip"></i>不设置CacheServer将使用默认值，若没有默认值则不进行映射'},
+					      {text:'',type : 'br',info : '<i class="icon_tip"></i>冻结中的CacheServer将不会被映射'}
+					      ]
+				});
+				getAjaxData(DefConfig.Root + '/main/config/listCacheServer',null,function(d){
+					var line = ['<option value="">--选择server</option>'];
+					$.each(d.data,function(i,u){
+						line.push('<option value="'+ u.guid +'">'+ u.server_name + ' [' + DefConfig.CacheServer.getState(u.cache_state) +']</option>');
+					});
+					$("#server_guid").html(line.join(''));
+				});
+			});
+		}
+};
+
+$(function(){
+
 	SiteList.getArea();
 	
 	Chasonx.Frameset({
@@ -234,6 +271,10 @@ window.onload = function(){
 		}
 	});
 	
+	$("#cacheServerSetting").live('click',function(){
+		CacheServerSetting.choosePane();
+	});
+	
     var _handler = function(v){ return getString(v);}
 	SiteList.table =  Chasonx.Table({
 		id : 'siteListTable',
@@ -250,11 +291,11 @@ window.onload = function(){
 		      {name : 'fissuestarttime|fissueendtime' ,text : '发布/结束时间' ,width : '13%' ,handler : _handler},
 		      {name : 'fcreatetime' ,text : '创建时间' ,width : '9%'},
 		      {name : 'fadminname' ,text : '创建人' ,width : '9%'},
-		      {name : 'fassetname' ,text : '当前模板' ,width : '9%',handler:_handler},
+		      {name : 'server_name' ,text : 'CacheServer' ,width : '9%',handler:_handler},
 		      {name : 'fremark' ,text : '备注' ,width : '9%',handler:_handler}
 		             ]
 	}).createTable();
 	SiteList.getList();
 	
 	Chasonx.TableResizable('siteListTable');
-};
+});

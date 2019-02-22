@@ -109,6 +109,7 @@ window.onload = function(){
 				<div style="padding:8px;text-align:center;">暂无数据</div>
 			</div>
 			<div  id="pagePanel"></div>
+			<br><br><br>
 		</div>	
 	</div>
 </div>

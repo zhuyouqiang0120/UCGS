@@ -10,43 +10,43 @@ function EditerInit(W,H){
 			allowImageUpload : false,
 			autoHeightMode : false,
 			resizeType:0,
-			htmlTags:{
-				font : ['color', 'size', 'face', '.background-color'],
-		        span : [
-		                '.color', '.background-color', '.font-size', '.font-family', '.background',
-		                '.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.line-height'
-		        ],
-		        div : [
-		                'align', '.border', '.margin', '.padding', '.text-align', '.color',
-		                '.background-color', '.font-size', '.font-family', '.font-weight', '.background',
-		                '.font-style', '.text-decoration', '.vertical-align', '.margin-left'
-		        ],
-		        table: [
-		                'border', 'cellspacing', 'cellpadding', 'width', 'height', 'align', 'bordercolor',
-		                '.padding', '.margin', '.border', 'bgcolor', '.text-align', '.color', '.background-color',
-		                '.font-size', '.font-family', '.font-weight', '.font-style', '.text-decoration', '.background',
-		                '.width', '.height', '.border-collapse'
-		        ],
-		        'td,th': [
-		                'align', 'valign', 'width', 'height', 'colspan', 'rowspan', 'bgcolor',
-		                '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.font-weight',
-		                '.font-style', '.text-decoration', '.vertical-align', '.background', '.border'
-		        ],
-		        img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
-		        'p,ol,ul,li,blockquote,h1,h2,h3,h4,h5,h6' : [
-		                'align', '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.background',
-		                '.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.text-indent', '.margin-left'
-		        ],
-		        pre : ['class'],
-		        hr : ['class', '.page-break-after'],
-		        'br,tbody,tr,strong,b,sub,sup,em,i,u,strike,s,del,&nbsp;' : []
-			},
+//			htmlTags:{
+//				font : ['color', 'size', 'face', '.background-color'],
+//		        span : [
+//		                '.color', '.background-color', '.font-size', '.font-family', '.background',
+//		                '.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.line-height'
+//		        ],
+//		        div : [
+//		                'align', '.border', '.margin', '.padding', '.text-align', '.color',
+//		                '.background-color', '.font-size', '.font-family', '.font-weight', '.background',
+//		                '.font-style', '.text-decoration', '.vertical-align', '.margin-left'
+//		        ],
+//		        table: [
+//		                'border', 'cellspacing', 'cellpadding', 'width', 'height', 'align', 'bordercolor',
+//		                '.padding', '.margin', '.border', 'bgcolor', '.text-align', '.color', '.background-color',
+//		                '.font-size', '.font-family', '.font-weight', '.font-style', '.text-decoration', '.background',
+//		                '.width', '.height', '.border-collapse'
+//		        ],
+//		        'td,th': [
+//		                'align', 'valign', 'width', 'height', 'colspan', 'rowspan', 'bgcolor',
+//		                '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.font-weight',
+//		                '.font-style', '.text-decoration', '.vertical-align', '.background', '.border'
+//		        ],
+//		        img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
+//		        'p,ol,ul,li,blockquote,h1,h2,h3,h4,h5,h6' : [
+//		                'align', '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.background',
+//		                '.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.text-indent', '.margin-left'
+//		        ],
+//		        pre : ['class'],
+//		        hr : ['class', '.page-break-after'],
+//		        'br,tbody,tr,strong,b,sub,sup,em,i,u,strike,s,del,&nbsp;' : []
+//			},
 			items : [
 				'source','undo', 'redo', '|',  'template',  'cut', 'copy', '|', 'justifyleft', 'justifycenter', 'justifyright',
 				'justifyfull','|', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent','|','subscript',
 				'superscript', 'clearhtml','/', 'quickformat', 'selectall', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor','|', 'bold',
 				'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 
-				 'table','fullscreen','imgsource'],
+				 'table','fullscreen','imgsource','about'],
 			afterChange : function() {
 				
 				//getEditersImg
@@ -89,6 +89,9 @@ function EditerInit(W,H){
 				},200);
 			}
 		});
+		
+		/*content init*/
+		EtopicSet.contentInit();
 	});
 }
 
@@ -117,7 +120,6 @@ $(document).ready(function(){
 		main   : 'mainPanel',
 		window : {
 			top  : {id : 'topPanel' ,height : '52px',border:false,bgColor:false},
-			left : {id : 'leftPanel',width : '0%',border:false,bgColor:false},
 			right: {id : 'rightPanel',border:false,bgColor:false}
 			}
 	});
@@ -141,9 +143,9 @@ $(document).ready(function(){
 	EtopicSet.siteList();
 	EditerInit('98%','500px');
 	
-	setTimeout(function(){
-		EtopicSet.contentInit();
-	},200);
+//	setTimeout(function(){
+//		EtopicSet.contentInit();
+//	},200);
 	
 	$("#siteItems").bind('change',function(){
 		PublicCol.list('topicColTree',{'id':$(this).val(),'name':$(this).find('option:selected').text(),'state':1},function(node){
@@ -178,19 +180,19 @@ $(document).ready(function(){
 		}});
 	});
 	
-	$("#labelBox > span").live('click',function(){
-		var _v = $("#flable").val(),_s = $(this).html();
-		
-		if(_v.indexOf(_s) < 0)	_v += _s + ",";
-		else	_v = _v.replace(_s + ',','');
-		
-		var vdata = _v.split(',');
-		if(vdata.length > 4) return;
-		
-		$("#labelPanel").html('');
-		for(var n = 0;n < vdata.length;n++) if(vdata[n] != '')  $("#labelPanel").append('<span class="labelMore">'+ vdata[n] +'</span>');
-		$("#flable").val(_v);
-	});
+//	$("#labelBox > span").live('click',function(){
+//		var _v = $("#flabel").val(),_s = $(this).html();
+//		
+//		if(_v.indexOf(_s) < 0)	_v += _s + ",";
+//		else	_v = _v.replace(_s + ',','');
+//		
+//		var vdata = _v.split(',');
+//		if(vdata.length > 4) return;
+//		
+//		$("#labelPanel").html('');
+//		for(var n = 0;n < vdata.length;n++) if(vdata[n] != '')  $("#labelPanel").append('<span class="labelMore">'+ vdata[n] +'</span>');
+//		$("#flabel").val(_v);
+//	});
 	
 	$(".etopicClass > span").live('click',function(){
 		$(".topicClassBtn").each(function(){
@@ -206,11 +208,11 @@ $(document).ready(function(){
 	
 	Chasonx.Tips.Move({id:'pageSetting',direction:'bottom',text:'该选项意在编辑内容时提供视图区域参考，编辑时不超出编辑框可见区域然后分页，效果最佳。'});
 	
-	var label = '';
-	$.each(TopicAttr.types.data,function(i,u){
-		label += '<span class="badge badge_blue">'+ u.t +'</span>';
-	});
-	$("#labelBox").html(label);
+//	var label = '';
+//	$.each(TopicAttr.types.data,function(i,u){
+//		label += '<span class="badge badge_blue">'+ u.t +'</span>';
+//	});
+//	$("#labelBox").html(label);
 	
 	$(".linkImages > .slideBtn").bind('click',function(){
 		if($(this).attr('_open') == 'true'){
@@ -292,7 +294,6 @@ var EtopicSet = {
 				if($("#_topicSiteGuid").val() != ''){
 					_editColumnInit();
 				}else{
-					console.debug(11);
 					PublicCol.list('topicColTree',{'id':$("#siteItems").val(),'name':$("#siteItems").find('option:selected').text(),'state':1},function(node){
 						EtopicSet.columnData = node;
 					});
@@ -304,10 +305,64 @@ var EtopicSet = {
 			if(O.innerHTML == '更多'){
 				O.innerHTML = "收起";
 				$("#labelBox").slideDown(200);
+				$("#_editLabeLeft").html('');
+				$("#_editLabeRight").html('');
+				this.getLabelData();
 			}else{
 				O.innerHTML = "更多";
 				$("#labelBox").slideUp(200);
 			}
+		},
+		getLabelData : function(t,pid){
+			var _getCol = $("#getColumnLabel:checked").val(),_siteGuid = $("#siteItems").val(),colGuid = (_getCol == 1?this.columnData?this.columnData.guid:'' : '');
+			if(_siteGuid == '') return Chasonx.Hint.Faild('请先选择站点');
+			
+			pid = pid || 0;
+			t = t || 1;
+			
+			getAjaxData(DefConfig.Root + '/main/label/list',{siteGuid : _siteGuid,columnGuid : (colGuid || ''),pid : pid},function(d){
+				var ht = [];
+				$.each(d,function(i,u){
+					if(t == 1){
+						ht.push('<p onclick="EtopicSet.getLabelData(2,\''+ u.fguid +'\')">#'+ u.flabelName +'</p>')
+					}else{
+						ht.push('<span class="badge badge_blue" data="'+ u.fguid +'" onclick="EtopicSet.setLabel(this)">'+ u.flabelName + '</span>');
+					}
+				});
+				ht.push('<span class="classFastAddLab"><input type="" id="_fastAddLab'+ t +'" placeholder="添加标签"/>\
+						<i class="icon-control_point" onclick="EtopicSet.fastAddLab('+ t +',\''+ _siteGuid +'\',\''+ pid +'\',\''+ colGuid +'\')"></i></span>');
+				$("#" + (t == 1?'_editLabeLeft':'_editLabeRight')).html(ht.join(''));
+			});
+		},
+		setLabel : function(o,r) {
+			var _v = $("#flabel").val(),_guid = $("#flabelcode").val(),_s = o.innerHTML,_g = o.getAttribute('data');
+			if(_v.indexOf(_s) < 0){
+				_v += _s + ",";
+				_guid += _g + ",";
+				$("#labelPanel").append('<span class="labelMore" data="'+ _g +'" onclick="EtopicSet.setLabel(this,true)" title="点击删除">'+ _s +'</span>');
+			}else if(r == true){
+				_v = _v.replace(_s + ',','');
+				_guid = _guid.replace(_g + ',','');
+				$(o).remove();
+			}
+			$("#flabel").val(_v);
+			$("#flabelcode").val(_guid);
+		},
+		labelInit : function(){
+			var text = $("#flabel").val(),guid = $("#flabelcode").val();
+			if(StrKit.isBlank(text)) return;
+			var t = text.split(','),g = guid.split(',');
+			for(var i = 0;i < t.length;i++)
+				if(!StrKit.isBlank(t[i])) $("#labelPanel").append('<span class="labelMore" data="'+ g[i] +'" onclick="EtopicSet.setLabel(this,true)" title="点击删除">'+ t[i] +'</span>');
+		},
+		fastAddLab : function(t,siteGuid,pid,colGuid){
+			 var lab = $("#_fastAddLab" + t).val();
+			 if(StrKit.isBlank(lab)) return;
+			 var formData = {fsiteGuid : siteGuid,flabelName : lab,fparentId : pid,fcolumnGuid : colGuid };
+			 getAjaxData(DefConfig.Root + '/main/label/modify',formData,function(d){
+				 if(d > 0)
+					 EtopicSet.getLabelData(t,pid);
+			 });
 		},
 		contentInit : function(){
 			var _guid = $("#_topicguid").val();
@@ -355,7 +410,6 @@ var EtopicSet = {
 			$("#fthumbnailPrewImg").attr("src",DefConfig.Root + '/res/skin/images/prewimg.png');
 		},
 		save : function(T){
-			
 			if(ETOPIC_TYPE_VAL === 0){
 				this.saveText(T);
 			}else if(ETOPIC_TYPE_VAL === 1){
@@ -364,6 +418,34 @@ var EtopicSet = {
 				
 			}else if(ETOPIC_TYPE_VAL == 3){
 				this.saveLink(T);
+			}else if(ETOPIC_TYPE_VAL == 4){
+				this.saveDoc(T);
+			}
+		},
+		saveDoc : function(T){
+			if(T == 1 && this.columnData == null ) return Chasonx.Hint.Faild('未选择栏目');
+			
+			if(FormData.requiredByAttr('contentTable',['input']) && DocList.currentDoc != null){
+				var formdata = FormData.getFormData('contentTable',['input','textarea','select']);
+				formdata['fclass'] = ETOPIC_TYPE_VAL;
+				formdata['type'] = T;
+				formdata['siteGuid'] = $("#siteItems").val();
+				formdata['UCGSFORMDATAFILTER'] = $("#UCGSFORMDATAFILTER").val();
+				formdata['fextdata'] = JSON.stringify( DocList.currentDoc );
+				
+				if(T == 2){
+					formdata['id'] = $("#_uepk").val();
+				}else{
+					formdata['colguid'] = this.columnData.guid;
+					if($("#siteItems option:selected").attr('data') == 'public' && $("#siteItems").val() == this.columnData.attributes.siteGuid)
+						formdata['topicType'] = 1;
+					else
+						formdata['topicType'] = 0;
+				}
+				console.log(formdata);
+				this.exec(DefConfig.Root + "/main/topic/videoTopicOperation", formdata , T);
+			}else{
+				Chasonx.Hint.Faild('请完善信息');
 			}
 		},
 		saveVideo : function(T){
@@ -404,13 +486,13 @@ var EtopicSet = {
 				var formdata =  FormData.getFormData('contentTable',['input','textarea','select']);
 				
 				formdata['type'] = T;
-				formdata['flable'] = $("#flable").val();
 				formdata['fclass'] = ETOPIC_TYPE_VAL;
 				formdata['contents'] = this.pageData;
 				formdata['templateId'] = $("#templateList").val();
 				formdata['colguid'] = this.columnData.guid;
 				formdata['UCGSFORMDATAFILTER'] = $("#UCGSFORMDATAFILTER").val();
 				formdata['siteGuid'] = $("#siteItems").val();
+				
 				if(T == 1){
 					if($("#siteItems option:selected").attr('data') == 'public' && $("#siteItems").val() == this.columnData.attributes.siteGuid)
 						formdata['topicType'] = 1;
@@ -430,7 +512,6 @@ var EtopicSet = {
 				
 				var formdata =  FormData.getFormData('contentTable',['input','textarea','select']);
 				formdata['type'] = T;
-				formdata['flable'] = $("#flable").val();
 				formdata['fclass'] = ETOPIC_TYPE_VAL;
 				formdata['fextdata'] = $("#_topicLink").val();
 				formdata['contents'] = [];
@@ -453,29 +534,44 @@ var EtopicSet = {
 			if(this.pageData.length == 0 && this.currPage == "") return;
 			
 			$(".pagePanelBox").html('');
-			if(this.currPage != null){
-				this.pageData.push(this.currPage);
-				this.currPage = null;
+//			if(this.currPage != null){
+//				this.pageData.push(this.currPage);
+//				this.currPage = null;
+//			}
+			var _pageData = [];
+			_pageData.push(this.currPage);
+			
+			if(this.pageData.length > 0){
+				for(var i = 0;i < this.pageData.length;i ++)
+					_pageData.push(this.pageData[i]);
 			}
 			
 			Chasonx.Wait.Show();
 			var _data = FormData.getFormData('contentTable',['input','textarea','select']);
-			_data['contents'] = this.pageData;
+			_data['contents'] = _pageData;
 			getAjaxData(DefConfig.Root + '/main/topic/badwordCheck',_data,function(d){
 				Chasonx.Wait.Hide();
 				Chasonx.Hint.Success({text:"敏感词已标记",time:4000});
-				EtopicSet.pageData = d.contentData;
 				
-				contentEditor.html(EtopicSet.pageData[EtopicSet.pageData.length - 1]);
-				if(EtopicSet.pageData.length > 1){
+				if(d.contentData.length > 1){
+					EtopicSet.pageData = d.contentData;
+				}
+				contentEditor.html(d.contentData[0]);
+				if(d.contentData.length > 1){
 					for(var i = 0;i < EtopicSet.pageData.length - 1;i++){
 						$(".pagePanelBox").append('<div class="pageItem"><span></span>'+ ($(".pagePanelBox > .pageItem").size() + 1) +'</div>');
 					}
 				}
+				
 				if($("#ftitle").val().trim() != '' && $("#ftitle").val() != d.topicData.ftitle) EtopicSet.inputBorderError(true,true,0); 
 				if($("#ftitlesec").val().trim() != '' && $("#ftitlesec").val() != d.topicData.ftitlesec) EtopicSet.inputBorderError(true,true,1); 
 				if($("#fsource").val().trim() != '' && $("#fsource").val() != d.topicData.fsource) EtopicSet.inputBorderError(true,true,2); 
 				if($("#fsummary").val().trim() != '' && $("#fsummary").val() != d.topicData.fsummary) EtopicSet.inputBorderError(true,true,3); 
+			
+				$("#ftitle").val(d.topicData.ftitle || '');
+				$("#ftitlesec").val(d.topicData.ftitlesec || '');
+				$("#fsource").val(d.topicData.fsource || '');
+				$("#fsummary").val(d.topicData.fsummary || '');
 			});
 		},
 		exec : function(URL,D,T){
@@ -526,8 +622,9 @@ var EtopicSet = {
 			$("#fsource").val('');
 			$("#ftitlesec").val('');
 			$("#fextendtitle").val('');
-			$("#flable").val('');
-			$("#labelBox").html('');
+			$("#flabel").val('');
+			$("#flabelcode").val('');
+			$("#labelPanel").html('');
 			$("#fsummary").val('');
 			$("#fartfrom").val('');
 			$(".pagePanelBox").html('');
@@ -552,6 +649,62 @@ var EtopicSet = {
 		}
 };
 
+var DocList = {
+		currentDoc : null,
+		init : function(data){
+			with(this){
+				currentDoc = data;
+				Doc.currentDocData = data;
+				Doc.bindDetailHandler();
+			}
+			return this;
+		},
+		show : function(){
+			with(this){
+				var pane = new Chasonx({
+					title : '文档列表',
+					modal : true,
+					html : '<div id="topicDocPane" class="global_bg_c" style="height:100%;">\
+							<div id="topicDocPane_left"></div>\
+							<div id="topicDocPane_right"></div>\
+						    </div>',
+					height : 700,width : 1000,
+					success : function(){
+						currentDoc = Doc.currentDocData;
+						if(currentDoc == null) return Chasonx.Hint.Faild('请选择文档');
+						drawDetail();
+						
+						return pane.Hide();
+					}
+				});
+				
+				Chasonx.Frameset({
+					target   : 'topicDocPane',
+					window : {
+						left  : {id : 'topicDocPane_left' ,width : '25%',slide : false,border : '#2c3b54',bgColor:false,title : '<div style="text-align:center;">目录列表</div>',titleBgColor : false},
+						right: {id : 'topicDocPane_right',bgColor:false,border : false}
+						}
+				});
+				
+				Doc.init('topicDocPane_left','topicDocPane_right').appendSearch().getFolder().getDocList();
+			}
+		},
+		drawDetail : function(){
+			with(this){
+				var ht = [];
+				ht.push('<p><label>文档名称：</label>'+ currentDoc.FTitle +'</p>');
+				ht.push('<p><label>文档大小：</label>'+ fileSizeForamt(currentDoc.FSize) +'</p>');
+				ht.push('<p><label>创建人：</label>'+ currentDoc.FCreaterName +'</p>');
+				ht.push('<p><label>更新时间：</label>'+ currentDoc.FModifyTime +'</p>');
+				ht.push('<p><label>备注：</label>'+ currentDoc.FRemark +'</p>');
+				ht.push('<p><label>原始文件名：</label>'+ currentDoc.FFileName +'</p>');
+				ht.push('<p><label>文档类型：</label>'+ currentDoc.FType +'</p>');
+				ht.push('<p><label>&nbsp;</label><input type="button" class="button green btninsmall" value="查看详情" onclick="Doc.docDetail()" /></p>');
+				$("._docPanel_right").html(ht.join(''));
+			}
+		}
+};
+
 function _editColumnInit(){
 	PublicCol.list('topicColTree',{'id':$("#siteItems").val(),'name':$("#siteItems").find('option:selected').text(),'state':1},function(node){
 		EtopicSet.columnData = node;
@@ -569,6 +722,7 @@ function _editColumnInit(){
 	
 	_templateListload($("#siteItems").val());
 }
+
 
 function moveToDoPlay(){
 	$(".videoDetailBox > .ctrl").addClass('vbctrlAnimate').css('top','60px');

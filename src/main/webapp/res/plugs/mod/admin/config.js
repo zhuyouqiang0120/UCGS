@@ -34,7 +34,7 @@ var SysConfig = {
 				var D = SysConfig.data[_i.val()];
 				new Chasonx({
 					title : '配置编辑',
-					html : '<div id="configPanel"></div>',
+					html : '<div id="configPanel" class="global_bg_c" style="height:100%;"></div>',
 					width:_w > 500?_w:500,height:_h > 400?_h:400,
 					success : function(){
 						var formdata = FormData.getFormData('configPanel',['input']);
@@ -59,9 +59,9 @@ var SysConfig = {
 						      {text:'&nbsp;',type:'br',info:'&nbsp;'},
 						      {text:'名称:',name:'filename',attr : ' maxlength="50" ',type:'input',value : (D.filename || '')},
 						      {text:'标示:',name:'filetype',attr:' readonly="readonly" ',type:'input',value : (D.filetype || '')},
-						      {text:'本地地址:',name:'localdir',attr : ' maxlength="100" ',type:'input',value : (D.localdir || '')},
-						      {text:'远程地址:',name:'remotedir',attr : ' maxlength="100" ',attr : ' maxlength="100" ',type:'input',value : (D.remotedir || '')},
-						      {text:'远程Host:',name:'remotehost',attr : ' maxlength="50" ',type:'input',value : (D.remotehost || '')},
+						      {text:'配置1:',name:'localdir',attr : ' maxlength="100" ',type:'input',value : (D.localdir || '')},
+						      {text:'配置2:',name:'remotedir',attr : ' maxlength="100" ',attr : ' maxlength="100" ',type:'input',value : (D.remotedir || '')},
+						      {text:'配置三:',name:'remotehost',attr : ' maxlength="50" ',type:'input',value : (D.remotehost || '')},
 						      {text:'&nbsp;',type:'br'}
 						  ]
 					  });

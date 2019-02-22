@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>直播</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-title" content="BestTv" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="keywords" content="BestTv" />
+<meta name="description" content="BestTv" />
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="email=no">
+<!-- 强制全屏 Start-->
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes" />
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true" />
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application" />
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app" />
+<!--强制全屏 END-->
+<!--字体全局样式-->
+<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+<link rel="stylesheet" type="text/css" href="css/base.css" />
+<!--轮播样式-->
+<link href="css/swiper.min.css" rel="stylesheet" type="text/css">
+<!--网页样式-->
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<script src="js/jquery.js"></script>
+<script src="js/common.js"></script>
+<script src="js/jquery.lazyload.js"></script>
+</head>
+
+<body>
+<div class="Top">
+	<a href="javascript:history.go(-1);" class="fl"><i class="fa fa-angle-left fa-2x"></i></a>
+	<p>直 播</p>
+</div>
+<div class="Container">
+	<div  OPG_MR_TYPE="Image" OPG_MR_NAME="首页首屏轮播图" OPG_MR_WIDTH="640px" OPG_MR_HEIGHT="218px" OPG_MR_SIZE="800" id="ad_top" name="ad_top" >
+		<a href="EuroCup.html"><img src="image/23.jpg"></a>
+	</div>
+	<div class="p10">
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/4.jpg">
+				<p>CCTV-1</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/5.jpg">
+				<p>CCTV-2</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/6.jpg">
+				<p>湖南卫视</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/7.jpg">
+				<p>浙江卫视</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/8.jpg">
+				<p>东方卫视</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/9.jpg">
+				<p>星尚频道</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+		<div class="Channel">
+			<a href="LiveDetail.html">
+				<img src="image/10.jpg">
+				<p>第一财经</p>
+				<div class="cb"></div>
+			</a>
+		</div>
+	</div>
+	<div OPG_MR_TYPE="Image" OPG_MR_NAME="首页底部通栏" OPG_MR_WIDTH="640px" OPG_MR_HEIGHT="100px" OPG_MR_SIZE="800" id="ad4" name="ad4" ></div>
+	<script src="js/swiper.min.js"></script>
+	   <!-- Initialize Swiper -->
+	<script>
+		   var swiper = new Swiper('.swiper-container', {
+			   pagination: '.swiper-pagination',
+			   nextButton: '.swiper-button-next',
+			   prevButton: '.swiper-button-prev',
+			   paginationClickable: true,
+			   spaceBetween: 30,
+			   centeredSlides: true,
+			   autoplay: 7000,
+			   autoplayDisableOnInteraction: false
+		   });
+	</script>
+</div>
+<div class="Bottom">
+	<a href="index.html"><i class="fa fa-home fa-2x"></i><p>首页</p></a>
+	<a href="Live.html" class="Current"><i class="fa fa-toggle-right fa-2x"></i><p>直播</p></a>
+	<a href="Video.html"><i class="fa fa-video-camera fa-2x"></i><p>点播</p></a>
+	<a href="#"><i class="fa fa-wifi fa-2x"></i><p>我要上网</p></a>
+	<div class="cb"></div>
+</div>
+<div id="back-to-top"><a href="#top"><i class="fa fa-arrow-up fa-lg"></i></a></div>
+</body>
+</html>

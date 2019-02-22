@@ -576,7 +576,7 @@
 		  });
 	}
 	
-	var statistics = [ {Url : '/main/statistics/dataCheckForWeek',Fn : 'SWeek'},
+	var statistics = [ {Url : '/main/statistics/dataCheckForWeek',Fn : 'SWeek'}
 	                   //{Url : '/main/statistics/dataCheckForDevice',Fn : 'SDevice'},
 	                   //{Url : '/main/statistics/dataCheckForOSType',Fn : 'SOSName'},
 	                   //{Url : '/main/statistics/dataCheckForBrowser',Fn : 'SBrowser'}
@@ -608,13 +608,42 @@
 	win.SDevice = function(d){statisticsDevice(d); };
 	win.SOSName = function(d){statisticsOsName(d); }
 	win.SBrowser = function(d){statisticsBrowser(d); };
+	win.GennerImg = function(){
+		
+		var _statis = $(".statisticsChartsPanel:visible"),_topPane = $("#statisticsTop");
+		_statis.addClass("drawPane");
+		$("#statisticsMain").addClass('drawAction');
+		_topPane.hide();
+		html2canvas(document.body, {
+			  background : '#ffffff',
+			  onrendered: function(canvas) {
+				  var imgData = canvas.toDataURL();
+			   	   imgData = imgData.replace('image/png','image/octet-stream');
+			   
+			   	var _saveFile = function(data, filename){
+			   	    var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+			   	    save_link.href = data;
+			   	    save_link.download = filename;
+			   	    save_link.click();
+			   	};
+			   	_saveFile(imgData,'UCGS_统计图_' + (new Date().getTime()) + ".png");
+			   	
+			   	_statis.removeClass("drawPane");
+			   	$("#statisticsMain").removeClass("drawAction");
+			   	_topPane.show();
+			  }
+		});
+	};
+	win.SPrint = function(){
+		$("body").print();
+	};
 	
 	win.onload = function(){
 		Chasonx.Frameset({
 			main   : 'statisticsMain',
 			window : {
-				top  : {id : 'statisticsTop' ,height : '0px',bgColor : false,border:false},
-				left : {id : 'statisticsLeft',width : '80px',bgColor : '#696969',border:false,slide : false},
+				top  : {id : 'statisticsTop' ,height : '70px',bgColor : false,border:false},
+				left : {id : 'statisticsLeft',width : '80px',bgColor : false,border:false,slide : false},
 				right: {id : 'statisticsRight',bgColor : false,border:false}
 				}
 		});

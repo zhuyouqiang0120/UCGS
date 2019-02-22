@@ -7,7 +7,7 @@ var Area = {
 			if(T == 2 && this.currArea == null) return Chasonx.Hint.Faild('区域未选中');
 			new Chasonx({
 				title : (T == 1?'新建':'编辑') + '区域信息',
-				html : '<div id="areaPanel"></div>',
+				html : '<div id="areaPanel" class="global_bg_c"></div>',
 				width : 500, height : 360,
 				success : function(){
 					 if(FormData.requiredByAttr('areaPanel',['input'])){

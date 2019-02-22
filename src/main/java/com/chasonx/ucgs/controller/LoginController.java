@@ -8,10 +8,12 @@
 package com.chasonx.ucgs.controller;
 
 import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
 import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.annotation.AnnPara;
@@ -51,8 +53,8 @@ public class LoginController extends Controller {
 		int[] fontColor = null;
 		switch (type) {
 		case 1:
-			bgColor = new  int[]{73,74,74};
-			fontColor = new int[]{255, 255, 255};
+			bgColor = new  int[]{36,53,64};
+			fontColor = new int[]{49, 164, 172};
 			break;
 		case 2:
 			bgColor = new int[]{246,246,246};
@@ -104,9 +106,8 @@ public class LoginController extends Controller {
 					shiroSubject.login(token);
 					
 					String logInSessionId = user.getStr("floginSessionId");
-					if(StringUtils.hasText(logInSessionId) && MySessionDao.sessionMap.containsKey(logInSessionId)){
-						MySessionDao.sessionMap.remove(user.getStr("floginSessionId"));
-					}
+					MySessionDao.deleteSessionId(logInSessionId);
+					
 					logInSessionId = shiroSubject.getSession().getId().toString();
 					adminUser.set("floginSessionId", logInSessionId);
 					user.set("floginSessionId", logInSessionId);

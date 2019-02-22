@@ -41,7 +41,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 <title>模版上传</title>
 <#include "../../common/head.ftl">
 <style type="text/css">
-.upgradeHistory		 {width: 98%; position: relative; top: 2%;margin:0px auto; background:#f1f1f1;}
+.upgradeHistory		 {width: 98%; position: relative; top: 2%;margin:0px auto;}
 .upgradeHistory .folder{display:inline-block;border:1px solid #f7b353;padding:12px 8px;margin:2px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;
 					   background:#f5d988;overflow:hidden;position:relative;cursor:pointer;}
 .upgradeHistory .folder input{position:absolute;right:0px;bottom:0px;}					   
@@ -50,7 +50,7 @@ G8GG8GG8GXXXXXX&AAA&88G&&&X899351s9BG95              ，； ， 。
 								top: 12px; right: -34px;  background: #a4e2ec;  width: 63%; text-align: center;}	
 #previewTemplateFrame{width:400px;height:750px;position: absolute;left: -800px;border:0px;}		
 #templateHistory {padding: 8px;}
-#templateHistory .templateItem{display:inline-block;width:200px;height:300px;border:1px solid #fff;background:#fff;text-align:center;padding:5px;position:relative;float:left;margin:5px;
+#templateHistory .templateItem{display:inline-block;width:200px;height:300px;border:1px solid #ddd;text-align:center;padding:5px;position:relative;float:left;margin:5px;
 							  box-shadow: 0px 0px 4px #4a4a4a;-moz-box-shadow: 0px 0px 4px #4a4a4a;-webkit-box-shadow: 0px 0px 4px #4a4a4a;}
 #templateHistory .templateItem div{position: absolute;  top: 0px; left: 0px; width: 100%;height: 100%; background: rgba(0, 0, 0, 0.3);color:#d4d4d4;text-align:left;
 								  transition:0.5s;-moz-transition:0.5s;-webkit-transition:0.5s;}	
@@ -194,7 +194,7 @@ function _drawSite(d){
 			<div class="swfuploadPanel">
 				<@PermisstionBtnHtml />	
 				<br><br>
-				<table bgColor="#f1f1f1" width="100%" height="100%" cellpadding="0" cellspacing="0">
+				<table class="global_bg_c" width="100%" height="100%" cellpadding="0" cellspacing="0">
 				<!-- <div class="fileStats" style="height:40px;vertical-align:middle;line-height:50px;">选择网站：<select id="fileSite" class="inputText select" style="width:30%;"></select></div> -->
 					<tr>
 						<td class="etopicTd" width="10%">模版描述：</td>
@@ -215,7 +215,7 @@ function _drawSite(d){
 				</table>			
 			</div>
 		</div>	
-		<div class="upgradeHistory">
+		<div class="upgradeHistory global_bg_c">
 			<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>模板文件列表：</b></p><br>
 			<div id="templateHistory"></div>
 			<div style="clear:both;"></div>

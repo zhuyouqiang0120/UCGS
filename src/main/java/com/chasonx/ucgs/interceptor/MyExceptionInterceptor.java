@@ -28,6 +28,7 @@ public class MyExceptionInterceptor implements Interceptor {
 		try {
 			inv.invoke();
 		} catch (Exception e) {
+			e.printStackTrace();
 			Tools.writeLog(inv, e);
 		}
 	}

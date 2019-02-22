@@ -130,7 +130,7 @@ var  Ghtml = {
 				type : 'get',
 				dataType : 'text',
 				success : function(d){
-//					var _jsHandler = '';
+					var _jsHandler = '';
 //					for(var i = 0;i < UPDT.container.length;i ++){
 //						if(typeof UPDT.container[i].data == 'function')
 //							_jsHandler += '_UPDT_CONTAINER['+ i +'].append();\n_UPDT_CONTAINER['+ i +'].data('+ (UPDT.container[i].config.dataSourceKey != ''?"'"+ UPDT.container[i].config.dataSourceKey + "'":undefined) +');\n';
