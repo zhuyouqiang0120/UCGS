@@ -94,13 +94,24 @@ var AdminUser = {
 				      {text:'昵称:',name:'fadminname',type:'input',attr : ' maxlength="12" req="true"',value : (data.fadminname || '')},
 				      {text:'登录名:',name:'fadminuser',attr:' maxlength="16" req = "true" ' + (type == 2?'readonly="readyonly"':''),type:'input',value : (data.fadminuser || ''),
 				       handler : {
-				    	   type : 'blur',
-				    	   event : function(){
-				    		   if(type == 2) return;
-				    		   AdminUser.validateLoginName(this);
-				    	   }
+					    	   type : 'blur',
+					    	   event : function(){
+					    		   if(type == 2) return; 
+					    		   //alert("fadminuser: "+this.value);
+					    		  // if($("#fadminuser").value){
+					    			   AdminUser.validateLoginName(this);
+					    		  // }
+					    	   }
 				       },info : '(5-16位字符)<font color="red" id="add_adminuser_error"></font>'},
-				      {text:'密码:',name:'fadminpwd',type:'input',atype : 'password',value : '',attr : ' maxlength="40" '},
+				      {text:'密码:',name:'fadminpwd',type:'input',atype : 'password',value : '',handler : {
+					    	   type : 'blur',
+					    	   event : function(){ 
+					    		  // alert("fadminpwd: "+this.value);
+					    		  // if($("#fadminpwd").value){
+					    			   AdminUser.validate(this,1);
+					    		  // }
+					    	   }
+				       }, attr : ' maxlength="40" ',info : '<font color="red" id="password_error"></font>'},
 				      {text:'邮箱:',name:'femail',type:'input',value : (data.femail || ''),attr : ' maxlength="50" '},
 				      {text:'状态:',name:'fstate',type:'select',value : (data.fstate || ''),options:[{v:'0',t:'正常'},{v:'1',t:'冻结'}]},
 				      {text:'备注:',name:'fremark',type:'textarea',value : (data.fremark || ''),attr : ' maxlength="150" '},
@@ -159,7 +170,7 @@ var AdminUser = {
 			var _ad = $("input[type='checkbox'][name='admin']:checked");
 			if(_ad.size() > 0){
 				var html = '<table id="upwdEditer" class="global_bg_c" border="0" width="100%" height="100%" cellpadding="0" cellspacing="0">\
-					<tr><td width="25%" align="right">密		码：</td><td><input id="fpassword"  maxlength="20" type="password" onblur="AdminUser.validate(this,1)" class="inputText" />(5-20位字母开头密码)</td></tr>\
+					<tr><td width="25%" align="right">密		码：</td><td><input id="fpassword"  maxlength="20" type="password" onblur="AdminUser.validate(this,1)" onfocus="AdminUser.validate(this,3)" class="inputText" /><font color="red" id="password_error">(5-20位字母开头密码)</font></td></tr>\
 					<tr><td width="25%" align="right" style="vertical-align:top">确认密码：</td><td  style="vertical-align:top"><input id="fpassword2"  maxlength="20" type="password" class="inputText" onblur="AdminUser.checkpwd()"/></td></tr>\
 					</table>';
 				var upwd = new Chasonx({
@@ -244,17 +255,34 @@ var AdminUser = {
 				}
 			});
 		},
-		validate : function(obj,t){
-			 var patrn = /^([a-zA-Z0-9]|[._]){5,20}$/ig;
-			 var pemail = /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/ig;
+		validate : function(obj,t){ 
+			 //var patrn = /^([a-zA-Z0-9]|[._]){5,20}$/ig;
+			 //var pemail = /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/ig;
+			 var regex = new RegExp('(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,30}');	//密码中必须包含大小字母、数字、特称字符，至少8个字符，最多30个字符		 
+			 if (t == 1 && !regex.test(obj.value)) {
+			    //alert("您的密码复杂度太低（密码中必须包含字母、数字、特殊字符），请及时改密码！");
+			    $("#password_error").html('<span class="badge badge_del">密码复杂度太低！！！！</span>');
+			    obj.value = "";
+			 }else if(t == 3 && !regex.test(obj.value)) {
+				    //alert("您的密码复杂度太低（密码中必须包含字母、数字、特殊字符），请及时改密码！");
+				    $("#password_error").html('<span class="badge badge_del">(5-20位字母开头密码)</span>');
+				    obj.value = "";
+			}
+			 /*
 			 if(t == 1 && !patrn.exec(obj.value)){
 				 obj.value = "";
 			 }else if(t == 2 && !pemail.exec(obj.value)){
 				 obj.value = "";
 			 }
+			 */
 		},
-		checkpwd : function(){
-			if($("#fpassword2").val() != $("#fpassword").val()) $("#fpassword2").val('');
+		checkpwd : function(){ 
+			var regex = new RegExp('(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,30}');	//密码中必须包含大小字母、数字、特称字符，至少8个字符，最多30个字符		 
+			 if (t == 1 && !regex.test(obj.value)) {
+			    alert("您的密码复杂度太低（密码中必须包含字母、数字、特殊字符），请及时改密码！");
+			    obj.value = "";
+			 }
+			//if($("#fpassword2").val() != $("#fpassword").val()) $("#fpassword2").val('');
 		},
 		drawHtml : function(d){
 			var html = '',mark = d.pageNumber;
