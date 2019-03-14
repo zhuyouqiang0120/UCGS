@@ -58,12 +58,11 @@ import com.zens.xworkflow.entity.TaskEntity;
  */
 public class TopicController extends Controller {
 	
-	IWorkflowDao workflowDao = new IWorkflowDao();
+	//IWorkflowDao workflowDao = new IWorkflowDao();
 
 	@AnnPara("访问主题列表页面")
 	@Before(SaveLog.class)
-	public void index(){
-		System.out.println(12);
+	public void index(){ 
 		setAttr("PAGETYPE", 1);
 		render(PageUtil.TOPIC_LIST);
 	}
@@ -246,7 +245,7 @@ public class TopicController extends Controller {
 					ColumnDao.changeCheckSize(colGuid, 1, 0,0);
 				}
 				
-				startWorkFlow(guid, siteGuid);
+				//startWorkFlow(guid, siteGuid);
 			}else{
 				 throw new RuntimeException();
 			}
@@ -748,6 +747,7 @@ public class TopicController extends Controller {
 		renderJson(Template.temp.deleteById(tid)?1:0);
 	}
 	
+	/*
 	private boolean startWorkFlow(String topicGuid,String siteGuid){
 		boolean res = false;
 		try {
@@ -765,5 +765,5 @@ public class TopicController extends Controller {
 		System.out.println("工作流启动状态：" + res);
 		return res;
 	}
-	
+	*/
 }
