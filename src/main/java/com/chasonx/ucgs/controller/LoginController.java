@@ -71,7 +71,7 @@ public class LoginController extends Controller {
 	
 	@AnnPara("登录操作")
 	@Before(SaveLog.class)
-	public void userlogin(){
+	public void userlogin() throws Exception{
 		String username = getPara("logname");
 		String pwd = getPara("logpwd");
 		String captcha = getPara("captcha");
@@ -81,17 +81,24 @@ public class LoginController extends Controller {
 			mess = "参数不能为空";
 		}else if(!CaptchaRender.validate(this, captcha, "UCMSLOGINCAPTCHA")){
 			mess = "验证码错误";
+		}else if(!AdminUserDao.getUserState(username)){//查询当前账号是否处于锁定状态
+			mess = "账号已锁定！请一小时后再登录！";
 		}else{
 			Record user = AdminUserDao.getUserEntity(username);
 			if(null == user){
-				mess = "用户名或密码错误";
+				mess = "用户名错误";
 			}else if(!pwd.equals(user.getStr("fadminpwd"))){
-				mess = "用户名或密码错误";
+				int tag = AdminUserDao.updateLogErr(username);//记录账号错误登陆状态
+				mess = "密码错误！错误超过五次账号将被锁定！";
+				if(tag == 2) {
+					mess = "密码错误超过5次，账号已锁定！请一小时后再登录！";
+				}
 			}else if(user.getInt("fstate") != 0){
 				mess = "该账户已被冻结，无法登录";
 			}else if(user.getInt("fdimensionState") == 0){
 				mess = "该账户所在机构组已被冻结，无法登录";
 			}else{
+				AdminUserDao.delUserState(username);//删除用户登陆错误记录，用于在超过锁定时间后正确登陆时使用
 				try{
 					AdminUser adminUser = new AdminUser();
 					adminUser.set("id", user.getLong("id"));

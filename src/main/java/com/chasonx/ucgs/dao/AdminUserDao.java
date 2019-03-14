@@ -7,9 +7,12 @@
 */ 
 package com.chasonx.ucgs.dao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.chasonx.tools.DateFormatUtil;
 import com.chasonx.tools.StringUtils;
 import com.chasonx.ucgs.entity.AdminGroup;
 import com.chasonx.ucgs.entity.AdminMenuGroup;
@@ -124,5 +127,72 @@ public class AdminUserDao {
 	public static List<Record> getAdminUserList(){
 		String sql = "select fguid as guid,fadminname as name from t_adminuser where fstate = 0";
 		return Db.find(sql);
+	}
+	
+	public static int updateLogErr(String logname) throws Exception {//记录账号错误登陆状态
+		int tag = 0;
+		String sql = "select * from ";
+		Record user = Db.findFirst("select * from t_loginerror where fusername = ?",logname);
+		
+		if(null == user) {//第一次登陆错误
+			sql = "insert into t_loginerror (fusername, flasterrtime, ferrortime) values ('"+ logname + "',"+ DateFormatUtil.formatLong(new Date()) +", 1) ";
+			tag = 0;
+			Db.update(sql);
+		}else {
+			
+			if(user.getInt("ferrortime") < user.getInt("fmaxtime")) {//少于等于5次登录错误
+				int ferrortime = user.getInt("ferrortime") + 1;
+				sql = "update t_loginerror set ferrortime = "+ ferrortime +"";
+				tag = 1;
+				if(user.getInt("ferrortime") == user.getInt("fmaxtime") - 1) {
+					sql = "update t_loginerror set ferrortime = "+ ferrortime +", flasterrtime = "+ DateFormatUtil.formatLong(new Date()) +", fislock = 1 where fusername = '" + logname + "'";
+					tag = 2;
+				}
+				Db.update(sql);
+			}else {//大于五次登录错误，锁定账号
+					tag = 2;
+			}
+		}
+		return tag;
+	}
+	
+	public static boolean getUserState(String logname) throws Exception {//查询当前账号是否处于锁定状态
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String datestr = format.format(date);
+		Long timeSlot = 0L;
+		Record user = Db.findFirst("select * from t_loginerror where fusername = ?",logname);
+		Boolean b = true;
+		if(null == user) {
+			b = true;
+		}else {
+			int fislock = user.getInt("fislock"); 
+			Date lasterrtime = user.getDate("flasterrtime");
+			int ferrormin = user.getInt("ferrormin");
+			timeSlot = format.parse(datestr).getTime() - lasterrtime.getTime();
+			if(timeSlot > ferrormin*60*1000) {
+				String sql = "delete from t_loginerror where fusername = '" + logname + "'";
+				Db.update(sql);
+				b = true;
+			}else {
+				if(fislock == 1) { 
+					b = false;
+				}
+			} 
+		}
+		return b;
+	}
+	
+	public static boolean delUserState(String logname) throws Exception {//删除用户登陆错误记录，用于在超过锁定时间后正确登陆时使用
+		String sql = "delete from t_loginerror where fusername = '" + logname + "'";
+		Db.update(sql);
+		return true;
+	}
+	
+	public static String  formateDate() {
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String datestr = format.format(date);
+		return datestr;
 	}
 }
